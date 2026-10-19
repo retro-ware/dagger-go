@@ -472,7 +472,7 @@ func LinkStep(l *Link) int32 {
 		LinkStepTimer -= int32(FrameTicks)
 		if LinkStepTimer <= 0 {
 			LinkStepTimer = 1000
-			DiseaseInfect(PlayerEntity, nil, RandRange(0, 16), 0)
+			DiseaseInfect(PlayerEntity, 0, RandRange(0, 16), 0)
 		}
 	case 28:
 		if l.Axis != 0 {

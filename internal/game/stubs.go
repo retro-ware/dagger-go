@@ -108,56 +108,54 @@ func TavernOpen()                                                 {}
 
 var Factions []Faction
 
-func PotionDrink(recipe *Record)                                  {}
-func CastPlayerSpell(spell *Record) bool                          { return true }
-func SpfxEffectEnd(spell *Spell, slot int32, target *Record)      {}
-func SpfxEffectTick(spellObject, target *Record, slot int32)      {}
-func EnginePickObject(x, y int32, pick *PickResult)               {}
-func CastFireMissile(o *Record)                                   {}
-func PlayerMouseLook()                                            {}
-func CursorDraw(region int16)                                     {}
-func FatigueAdd(n int32)                                          {}
-func DamageApply(o *Record, damage int32, attacker *Record) int32 { return 0 }
-func QuestsUnlinkAll(root *Record)                                {}
-func QuestsRelinkAll(root *Record)                                {}
-func QuestFacesAfterLoad()                                        {}
-func MonsterReloadAnims()                                         {}
-func BuildingUpdateOpenState()                                    {}
-func CheatReturnToLastPosition()                                  {}
-func CastRecastLast()                                             {}
-func TravelMapOpen(mode int32)                                    {}
-func AutomapOpen()                                                {}
-func SpellAddSkillUses(s *Spell, n int32)                         {}
-func RestOpen()                                                   {}
-func OptionsToggleFullScreen()                                    {}
-func MagicItemsOpen()                                             {}
-func TransportMenu()                                              {}
-func FactionRandomOfType(typ int32) *Faction                      { return &Faction{} }
-func MonsterWakeAll()                                             {}
-func QuestLoadText(q *Quest, id int32, a int16, b int32)          { TextRSCBuffer = "" }
+func PotionDrink(recipe *Record)                             {}
+func CastPlayerSpell(spell *Record) bool                     { return true }
+func SpfxEffectEnd(spell *Spell, slot int32, target *Record) {}
+func SpfxEffectTick(spellObject, target *Record, slot int32) {}
+func EnginePickObject(x, y int32, pick *PickResult)          {}
+func CastFireMissile(o *Record)                              {}
+func PlayerMouseLook()                                       {}
+func CursorDraw(region int16)                                {}
+func FatigueAdd(n int32)                                     {}
+func QuestsUnlinkAll(root *Record)                           {}
+func QuestsRelinkAll(root *Record)                           {}
+func QuestFacesAfterLoad()                                   {}
+func MonsterReloadAnims()                                    {}
+func BuildingUpdateOpenState()                               {}
+func CheatReturnToLastPosition()                             {}
+func CastRecastLast()                                        {}
+func TravelMapOpen(mode int32)                               {}
+func AutomapOpen()                                           {}
+func SpellAddSkillUses(s *Spell, n int32)                    {}
+func RestOpen()                                              {}
+func OptionsToggleFullScreen()                               {}
+func MagicItemsOpen()                                        {}
+func TransportMenu()                                         {}
+func FactionRandomOfType(typ int32) *Faction                 { return &Faction{} }
+func QuestLoadText(q *Quest, id int32, a int16, b int32)     { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
-func AIUpdateCreatures()                                    {}
-func AmbientDungeonSounds()                                 {}
-func AmbientOutdoorSounds()                                 {}
-func BankFrame()                                            {}
-func BreathUpdate()                                         {}
-func CastAnimUpdate()                                       {}
-func CourtFrame()                                           {}
-func CovenMenuFrame()                                       {}
-func DamageExpireDrainBonuses()                             {}
-func EffectsTick()                                          {}
-func FootstepSounds()                                       {}
-func GuildCheckInvitations()                                {}
-func HeadBobUpdate()                                        {}
-func InfoPopupUpdate()                                      {}
-func ItemmakerUpdate()                                      {}
-func LevelupCheck()                                         {}
-func CastCreatureSpell(caster, target *Record, spell int32) {}
-func SpfxDamage(spell *Record, slot int32, target *Record)  {}
-func PoisonApply(o *Record, poison, flag int32)             {}
-func DiseaseInfect(o, from *Record, disease, flag int32)    {}
-func AIAlertCreatures(o *Record)                            {}
+func AIUpdateCreatures()                                            {}
+func AmbientDungeonSounds()                                         {}
+func AmbientOutdoorSounds()                                         {}
+func BankFrame()                                                    {}
+func BreathUpdate()                                                 {}
+func CastAnimUpdate()                                               {}
+func FactionChangeReputation(f *Faction, amount int32)              {}
+func MusicPlayCourt()                                               {}
+func CovenMenuFrame()                                               {}
+func EffectsTick()                                                  {}
+func FootstepSounds()                                               {}
+func GuildCheckInvitations()                                        {}
+func HeadBobUpdate()                                                {}
+func InfoPopupUpdate()                                              {}
+func ItemmakerUpdate()                                              {}
+func LevelupCheck()                                                 {}
+func CastCreatureSpell(caster, target *Record, spell int32)         {}
+func SpfxDamage(spell *Record, slot int32, target *Record)          {}
+func PoisonApply(o *Record, poison, flag int32)                     {}
+func DiseaseInfect(target *Record, list uint32, id, noResist int32) {}
+func AIAlertCreatures(o *Record)                                    {}
 
 var (
 	EnchantCasterLevel  int8
@@ -173,7 +171,6 @@ func MusicUpdate()                                  {}
 func OptionsFrame()                                 {}
 func InteriorRestrictionAtPlayer(kind int32) int32  { return 0 }
 func BuildingAccessLevel(kind int32) int32          { return 0 }
-func PlayDeathVideo()                               {}
 func SpellRemoveEffectType(o *Record, effect int32) {}
 func PotionmakerUpdate()                            {}
 func QuestFacesDraw()                               {}
@@ -200,18 +197,20 @@ func TravelMapUpdate()                              {}
 func WeatherDrawPrecipitation()                     {}
 
 // click.c and the damage code, not ported yet.
-func ClickItem(pick *PickResult, o *Record)                    {}
-func ClickDungeonModel(pick *PickResult, o *Record)            {}
-func ClickNPC(pick *PickResult, o *Record)                     {}
-func ClickCreature(pick *PickResult, o *Record)                {}
-func ClickDoor(pick *PickResult, o *Record)                    {}
-func ClickMarker(pick *PickResult, o *Record)                  {}
-func ClickInteriorModel(pick *PickResult, o *Record)           {}
-func ClickCorpse(pick *PickResult, o *Record)                  {}
-func ClickPedestrian(pick *PickResult, o *Record)              {}
-func ClickLootContainer(pick *PickResult, o *Record)           {}
-func ClickTownScenery(pick *PickResult, o *Record)             {}
-func ClickWorldFace(pick *PickResult) bool                     { return false }
-func DamageResolveAttack(attacker, target *Record, slot int32) {}
-func DamageMissSound(weapon *Item, target int32) int32         { return 0 }
-func DamageSpawnSplash(target *Record, image, altImage int32)  {}
+func ClickItem(pick *PickResult, o *Record)                                     {}
+func ClickDungeonModel(pick *PickResult, o *Record)                             {}
+func ClickNPC(pick *PickResult, o *Record)                                      {}
+func ClickCreature(pick *PickResult, o *Record)                                 {}
+func ClickDoor(pick *PickResult, o *Record)                                     {}
+func ClickMarker(pick *PickResult, o *Record)                                   {}
+func ClickInteriorModel(pick *PickResult, o *Record)                            {}
+func ClickCorpse(pick *PickResult, o *Record)                                   {}
+func ClickPedestrian(pick *PickResult, o *Record)                               {}
+func ClickLootContainer(pick *PickResult, o *Record)                            {}
+func ClickTownScenery(pick *PickResult, o *Record)                              {}
+func ClickWorldFace(pick *PickResult) bool                                      { return false }
+func MonsterWabbajack(weapon, target *Record)                                   {}
+func SpfxResistRoll(a, b int32, c *Character, career *Career, d, e int32) int32 { return 0 }
+func ItemArtifactEquipped(id int32) bool                                        { return false }
+func CastItemStrikeSpell(spell int32, target *Record)                           {}
+func SpellFindActiveEffect(o *Record, effect int32) *Record                     { return nil }
