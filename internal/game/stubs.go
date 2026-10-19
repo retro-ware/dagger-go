@@ -39,8 +39,6 @@ func TextRSCOpen()                     {}
 func FlatsCfgLoad()                    {}
 func MagicDefLoad()                    {}
 func BooksScan()                       {}
-func IntrfaceInit()                    {}
-func IntrfaceSetRegions()              {}
 func ModelHeapInit(size int32)         {}
 func RegionLoadTables()                {}
 func SkyInit()                         {}
@@ -52,7 +50,6 @@ func AutomapButtonViewMode()           {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
-func IntrfaceFree()                                  {}
 func InvResetLeftList()                              {}
 func KeysWorldActions()                              {}
 func LocationUnload(index int32)                     {}
@@ -60,8 +57,6 @@ func MapGotoLocation(region, env, mapID, flag int32) {}
 func MarkerCount(root *Record, kind int32) int32     { return 0 }
 func ModelHeapFreeAll()                              {}
 func PaperdollDraw(x, y int32)                       {}
-func PlayerComputeJumpVelocity()                     {}
-func PlayerMovementUpdate()                          {}
 func PlayerToNearestMarker(root *Record, kind int32) {}
 func QuestDebugOverlay()                             {}
 func QuestInitRecordSizes()                          {}
@@ -101,7 +96,6 @@ func SoundPlay(sound int32, o *Record, volume int32) int32                      
 func GuildCountCrime(crime, count int32)                                        {}
 func AIAngleDiff(a, b int32, turn *int32) int32                                 { return 0 }
 func CollideCreatureNear(o *Record) bool                                        { return false }
-func CursorRestoreBackground()                                                  {}
 func FactionFindTypeInRegion(region, typ int16) *Faction                        { return &Faction{} }
 func GroundTileAt(x, z int32) uint8                                             { return 0 }
 func GuardsSummon(n int32)                                                      {}
@@ -145,8 +139,25 @@ func TavernOpen()                                                               
 var Factions []Faction
 var MsgboxWrapWidth int16
 
-func InventoryOpen(mode, trade, icon int32) int32            { return 0 }
-func InpstrBeginNumber(n int32)                              {}
-func TextExpandWrap(flags, width int32, text []byte) []byte  { return text }
-func SpfxEffectEnd(spell *Spell, slot int32, target *Record) {}
-func SpfxEffectTick(spellObject, target *Record, slot int32) {}
+func InventoryOpen(mode, trade, icon int32) int32                            { return 0 }
+func InpstrBeginNumber(n int32)                                              {}
+func TextExpandWrap(flags, width int32, text []byte) []byte                  { return text }
+func SpfxEffectEnd(spell *Spell, slot int32, target *Record)                 {}
+func SpfxEffectTick(spellObject, target *Record, slot int32)                 {}
+func EnginePickObject(x, y int32, pick *PickResult)                          {}
+func ClickWorldObject(pick *PickResult, o *Record)                           {}
+func CastFireMissile(o *Record)                                              {}
+func KeyActionHeld(action int32) bool                                        { return false }
+func KeyActionPressed(action int32) bool                                     { return false }
+func PlayerMouseLook()                                                       {}
+func HudUpdate() bool                                                        { return false }
+func CursorDraw(region int16)                                                {}
+func PlayerTryMove(step int32) bool                                          { return false }
+func PlayerTryMoveVertical(dy int32) bool                                    { return false }
+func LinksObjectMotion(o *Record) bool                                       { return false }
+func FatigueAdd(n int32)                                                     {}
+func DamageApply(o *Record, damage int32, attacker *Record) int32            { return 0 }
+func SoundChannelDone(ch int32) bool                                         { return true }
+func SoundStopChannel(ch int32)                                              {}
+func SoundPlayLoop(sound int32, o *Record, volume int32) int32               { return -1 }
+func CollideMovePlayer(o *Record, a int32, r *MoveRequest, mode int32) int32 { return 0 }

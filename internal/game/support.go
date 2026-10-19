@@ -492,6 +492,9 @@ func SwiftInit() int32 { SwiftPresent = 0; return 0 }
 // SwiftClose closes the SWIFT device.
 func SwiftClose() { SwiftPresent = 0 }
 
+// SwiftPoll reads the Logitech Cyberman (none: the port has no such device).
+func SwiftPoll() {}
+
 // GuildNoteHalls marks the player's guilds' halls on the town map.
 func GuildNoteHalls() {
 	ObjectForeach(PlayerEntity.Children, func(o *Record) {
