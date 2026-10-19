@@ -206,7 +206,9 @@ func InitVideo() {
 	PaletteBuffer = make([]byte, 768)
 	DiskReadFileInto("pal.raw", PaletteBuffer)
 	xn.WorldInit()
-	xn.WorldOpen("woods.wld")
+	// FALL.EXE opened "woods.wld" from the current directory, which its launcher set up; the
+	// port finds it like any data file.
+	xn.WorldOpen(DiskResolvePath("woods.wld"))
 }
 
 // ShutdownVideo leaves the video mode.
