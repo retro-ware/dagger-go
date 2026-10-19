@@ -34,7 +34,6 @@ func FactionLoadFile()                 {}
 func FactionPoliticsUpdate(kind int32) {}
 func GameFrame()                       {}
 func HudDrawHeadingStrip(force int32)  {}
-func TextRSCOpen()                     {}
 func FlatsCfgLoad()                    {}
 func MagicDefLoad()                    {}
 func BooksScan()                       {}
@@ -62,7 +61,6 @@ func RegionUnload()                                  {}
 func SkyFree()                                       {}
 func SoundCacheFreeAll()                             {}
 func SoundShutdownMusic()                            {}
-func TextRSCClose()                                  {}
 func TimePass(n int32)                               {}
 func TitleMenu()                                     {}
 func WeaponFreeSprites()                             {}
@@ -72,7 +70,6 @@ var (
 	BigBuffer []byte
 )
 
-func BuildingName(b *Building) string                                           { return "" }
 func CastSpellOn(spell, target *Record, flag int32)                             {}
 func DetectConsiderCreature(o *Record, distance int32)                          {}
 func HolidayAnnounce()                                                          {}
@@ -80,7 +77,6 @@ func LocationContains(x, z int32) bool                                          
 func MarkerMakeClutter(o *Record, b *Building)                                  {}
 func MarkerMakeLootPile(o *Record, b *Building)                                 {}
 func MonsterDespawnToMarker(o *Record) bool                                     { return false }
-func ObjectWeight(o *Record) int32                                              { return 0 }
 func PlaceSpawnFromMarker(o *Record)                                            {}
 func SpellMissileUpdate(o *Record, flag int32) bool                             { return false }
 func TavernRoomRented() bool                                                    { return false }
@@ -103,7 +99,6 @@ func PedestrianPickSprite(o *Record)                                            
 func SoundApplyVolume()                                                         {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool                           { return false }
 func TextQRCLoadForQuest(q *Quest, id int16, a, b int16) []byte                 { return nil }
-func TextRSCLoad(id int16, a uint16, b int16) []byte                            { return nil }
 func TownMapAreaClear(x, z int32) bool                                          { return false }
 func ItemMakeRandom(group uint16, item *Item)                                   {}
 func ItemMake(group uint16, index int32, item *Item)                            {}
@@ -116,7 +111,16 @@ func InvCreateWagon()                                                           
 func InvAddArrows(o *Record, n int32)                                           {}
 func GuildJoinDarkBrotherhood()                                                 {}
 func FactionFind(id int16) *Faction                                             { return &Faction{} }
-func GuildFindMembershipByKind(kind uint8) *Membership                          { return &Membership{} }
+func GuildFindMembershipByKind(kind uint8) *Membership                          { return nil }
+func GuildFindMembershipByBits(bits uint8) *Membership                          { return nil }
+func QuestSymbolText(hash int32, level uint8, hash2 int32) string               { return "" }
+func QuestFindSiteForBuilding(b *Building) *Record                              { return nil }
+func ItemArmorValue(item *Item) int32                                           { return 0 }
+func EnchantPowersText(item *Item) string                                       { return "" }
+func CalendarFormatDate(minutes uint32) string                                  { return "" }
+func TalkMacroHint(which int32) string                                          { return "" }
+func TalkMacro1Com() string                                                     { return "" }
+func SpellmakerEnterName()                                                      {}
 func ObjectFindItem(o *Record, group, index int16) *Record                      { return nil }
 func RumorShowLocal()                                                           {}
 func ListPopupOpen(items uint32)                                                {}
@@ -133,7 +137,6 @@ var MsgboxWrapWidth int16
 
 func InventoryOpen(mode, trade, icon int32) int32                            { return 0 }
 func InpstrBeginNumber(n int32)                                              {}
-func TextExpandWrap(flags, width int32, text []byte) []byte                  { return text }
 func SpfxEffectEnd(spell *Spell, slot int32, target *Record)                 {}
 func SpfxEffectTick(spellObject, target *Record, slot int32)                 {}
 func EnginePickObject(x, y int32, pick *PickResult)                          {}
@@ -167,4 +170,3 @@ func FactionRandomOfType(typ int32) *Faction                                 { r
 func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
 func MonsterWakeAll()                                                        {}
 func MaploadsEnterRegion(region int32)                                       {}
-func ParseRSCText(id, a, b int32) []byte                                     { return nil }

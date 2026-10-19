@@ -27,3 +27,6 @@ func Bytes(a, n uint32) []byte { return append([]byte(nil), image.At(a, n)...) }
 func U8At(a uint32) uint8   { return image.At(a, 1)[0] }
 func U16At(a uint32) uint16 { return image.U16(a) }
 func U32At(a uint32) uint32 { return image.U32(a) }
+
+// PtrAt is the address the pointer at a points to (0 for NULL).
+func PtrAt(a uint32) uint32 { return image.Ptr(a) }

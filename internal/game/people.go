@@ -356,8 +356,8 @@ func SongGenerate(skip int32) {
 	}
 	n := Rand()
 	Srand(uint32(n))
-	title := CString(ParseRSCText(850, 0, 0))
-	title += CString(ParseRSCText(851, 0, 0))
+	title := ParseRSCText(850, 0, 0)
+	title += ParseRSCText(851, 0, 0)
 	if len(title) > 159 {
 		title = title[:159]
 	}
@@ -369,7 +369,7 @@ func SongGenerate(skip int32) {
 	patterns := []byte(SP(addrSongPatterns))
 	p := xn.StrSkipFields(patterns, 33, int(n))
 	for ; patterns[p] != 33; p++ {
-		song = append(song, CString(ParseRSCText(int32(SongRSCIDs[patterns[p]]), 0, 0))...)
+		song = append(song, ParseRSCText(int32(SongRSCIDs[patterns[p]]), 0, 0)...)
 		song = append(song, "\r\n"...)
 	}
 	SongText = append(song, "\r\n\r\n"...)

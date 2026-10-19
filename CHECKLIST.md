@@ -15,6 +15,8 @@
       hardware, serial, pc/sys DPMI and vectors, mem locks); tables from FALL.EXE object 2
 - [ ] spell thunks (with the game's spell dispatch)
 - [ ] DEVIATIONS.md (Q-LIGHT-04/07, tex heap read at 0, tmap pool as a count, Q-ANIM-01..03,
-      Q-VID-03/04, D-VID-01, world river/path passes, hardware layer)
+- [ ] game: done init, support, archive, object, args, config, disk, color, intro, kludge,
+      book, intrface, keys, camera, rumor, picklist, people, steal, region, trade haggling,
+      song, parse (macros, TEXT.RSC, wrapping), names; next msgbox_render, QRC, title menu
 - [ ] game
 - [ ] parity traces
