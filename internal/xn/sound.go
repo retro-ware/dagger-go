@@ -41,7 +41,7 @@ func SoundUseHost() {
 	}
 	SoundDigiDevice = 0
 	SoundStart = func(s *Sample) int {
-		h := host.AudioStart(host.Voice{Data: s.Data, Rate: s.Rate, Volume: s.Volume, Pan: s.Pan, Loop: s.Loop})
+		h := host.AudioStart(host.Voice{Data: s.Data, Rate: s.Rate, Volume: s.Volume, Pan: s.Pan, Loop: s.Loop, Chained: s.Done != nil})
 		soundPlaying[h] = s
 		return h
 	}
