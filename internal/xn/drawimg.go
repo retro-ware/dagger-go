@@ -2,7 +2,6 @@ package xn
 
 // The game's tables and buffers the blits read.
 var (
-	ShadeTable          []byte // 64 rows of 256 colours, darker downwards (SHADE.nnn)
 	ColorRemap          []byte // the game's current colour remap (a dye): 256 bytes
 	PaperdollBackground []byte // the paperdoll's background copy, 320 wide
 	IconImage           []byte // the spell icons: 20 a row, 16x16, 320 wide

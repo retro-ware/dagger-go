@@ -10,12 +10,6 @@ func at(s []byte, i int) byte {
 	return s[i]
 }
 
-func put(s []byte, i int, c byte) {
-	if i >= 0 && i < len(s) {
-		s[i] = c
-	}
-}
-
 // CStr is s up to its NUL.
 func CStr(s []byte) string {
 	for i, c := range s {
