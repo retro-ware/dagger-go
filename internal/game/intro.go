@@ -9,10 +9,20 @@ func clearScreens() {
 	clear(xn.Screen[:64000])
 }
 
+// SkipIntro (the -skipintro flag, a testing aid) skips the logo and the new game's movies.
+var SkipIntro bool
+
+// introVid plays a movie unless SkipIntro is set.
+func introVid(name string, flags int32) {
+	if !SkipIntro {
+		xn.VidPlay(DiskResolvePath(name), flags, 0, true)
+	}
+}
+
 // IntroPlayLogo plays the Bethesda logo.
 func IntroPlayLogo() {
 	waitMouseUp()
-	xn.VidPlay(DiskResolvePath("anim0001.vid"), 0, 0, true)
+	introVid("anim0001.vid", 0)
 	clearScreens()
 	waitMouseUp()
 	clear(xn.VGA[:64000])
@@ -23,13 +33,13 @@ func IntroPlayLogo() {
 func IntroPlayMovie() {
 	clear(xn.VGA[:64000])
 	waitMouseUp()
-	xn.VidPlay(DiskResolvePath("anim0000.vid"), 0, 0, true)
+	introVid("anim0000.vid", 0)
 	clearScreens()
 	waitMouseUp()
-	xn.VidPlay(DiskResolvePath("anim0011.vid"), 0, 0, true)
+	introVid("anim0011.vid", 0)
 	clearScreens()
 	waitMouseUp()
-	xn.VidPlay(DiskResolvePath("dag2.vid"), 32, 0, true)
+	introVid("dag2.vid", 32)
 	clearScreens()
 	PaletteRestore()
 }

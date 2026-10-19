@@ -87,7 +87,7 @@ var (
 	}
 )
 
-const textClimbingMode = 0x17D1E2 // a pointer to "Climbing mode."
+const textClimbingMode = 0x1845C8 // a pointer to "Climbing mode."
 
 // IntrfaceInit loads the cursors.
 func IntrfaceInit() {

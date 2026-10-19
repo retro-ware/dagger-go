@@ -22,7 +22,9 @@ func main() {
 	shots := flag.String("shot", "", "write the game's frame to PNGs: SECONDS:FILE[,SECONDS:FILE...]")
 	input := flag.String("input", "", "replace the keyboard and mouse with a script: SECONDS:ACTION[,...], "+
 		"ACTION kHEX (tap a scan code), aX/Y (put the mouse at X, Y), mDX/DY (move the mouse), bN (click button N), dN/uN (button N down/up)")
+	skipIntro := flag.Bool("skipintro", false, "skip the logo and the new game's movies (a testing aid, not in the original)")
 	flag.Parse()
+	game.SkipIntro = *skipIntro
 	if _, err := os.Stat(filepath.Join(*data, "ARENA2")); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
 		os.Exit(1)

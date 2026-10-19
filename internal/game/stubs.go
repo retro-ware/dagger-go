@@ -32,7 +32,6 @@ func DungeonLoad(n int32)              {}
 func FactionFree()                     {}
 func FactionLoadFile()                 {}
 func FactionPoliticsUpdate(kind int32) {}
-func GameFrame()                       {}
 func HudDrawHeadingStrip(force int32)  {}
 func FlatsCfgLoad()                    {}
 func MagicDefLoad()                    {}
@@ -157,3 +156,57 @@ func CollideLineOfSight(a, b *Record) uint8                                  { r
 func MonsterWakeAll()                                                        {}
 func MaploadsEnterRegion(region int32)                                       {}
 func QuestLoadText(q *Quest, id int32, a int16, b int32)                     { TextRSCBuffer = "" }
+
+// Per-frame callees of GameFrame not yet ported.
+func AIUpdateCreatures()        {}
+func AmbientDungeonSounds()     {}
+func AmbientOutdoorSounds()     {}
+func BankFrame()                {}
+func BreathUpdate()             {}
+func CastAnimUpdate()           {}
+func CourtFrame()               {}
+func CovenMenuFrame()           {}
+func CreaturesFindNearest()     {}
+func DamageExpireDrainBonuses() {}
+func EffectsTick()              {}
+func FootstepSounds()           {}
+func GuildCheckInvitations()    {}
+func HeadBobUpdate()            {}
+func HudDraw()                  {}
+func InfoPopupUpdate()          {}
+func InventoryFrame()           {}
+func ItemmakerUpdate()          {}
+func LevelupCheck()             {}
+func LinksUpdate()              {}
+func LoanCollectorsUpdate()     {}
+func LogbookUpdate()            {}
+func MagicItemsFrame()          {}
+func MusicChooseSong()          {}
+func MusicUpdate()              {}
+func OptionsFrame()             {}
+func PlayerFrameUpdate()        {}
+func PotionmakerUpdate()        {}
+func QuestFacesDraw()           {}
+func QuestPromptAnswer()        {}
+func QuestsRunAll()             {}
+func QuestStartPending()        {}
+func RepairMenuFrame()          {}
+func RestUpdate()               {}
+func ServiceMenuFrame()         {}
+func SheetUpdate()              {}
+func ShelfBookListUpdate()      {}
+func SkyUpdate()                {}
+func SpellbookFrame()           {}
+func SpellHudDrawIcons()        {}
+func SpellmakerUpdate()         {}
+func SpfxPopupUpdate()          {}
+func StatusShow(mode int16)     {}
+func TalkUpdate()               {}
+func TavernFrame()              {}
+func TimeUpdateRealtime()       {}
+func TradeHaggleFrame()         {}
+func TrainingUpdate()           {}
+func TravelMapUpdate()          {}
+func WeaponPlayerUpdate()       {}
+func WeatherDrawPrecipitation() {}
+func WorldUpdateLocation()      {}
