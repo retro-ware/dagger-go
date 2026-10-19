@@ -15,6 +15,6 @@ require (
 	golang.org/x/sys v0.47.0 // indirect
 )
 
-replace gpu => ../por-go/gpu
+replace gpu => ./gpu
 
 replace github.com/gogpu/wgpu => ../gogpu-wgpu
