@@ -48,23 +48,28 @@ func AutomapButtonViewMode()           {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
-func InvResetLeftList()                              {}
-func LocationUnload(index int32)                     {}
-func MapGotoLocation(region, env, mapID, flag int32) {}
-func MarkerCount(root *Record, kind int32) int32     { return 0 }
-func ModelHeapFreeAll()                              {}
-func PaperdollDraw(x, y int32)                       {}
-func PlayerToNearestMarker(root *Record, kind int32) {}
-func QuestDebugOverlay()                             {}
-func QuestInitRecordSizes()                          {}
-func RegionUnload()                                  {}
-func SkyFree()                                       {}
-func SoundCacheFreeAll()                             {}
-func SoundShutdownMusic()                            {}
-func TimePass(n int32)                               {}
-func TitleMenu()                                     {}
-func WeaponFreeSprites()                             {}
-func WeaponReloadHandSprites()                       {}
+func InvResetLeftList()                               {}
+func LocationUnload(index int32)                      {}
+func MapGotoLocation(region, env, mapID, flag int32)  {}
+func MarkerCount(root *Record, kind int32) int32      { return 0 }
+func ModelHeapFreeAll()                               {}
+func PaperdollDraw(x, y int32)                        {}
+func PlayerToNearestMarker(root *Record, kind int32)  {}
+func QuestDebugOverlay()                              {}
+func QuestInitRecordSizes()                           {}
+func RegionUnload()                                   {}
+func SkyFree()                                        {}
+func SoundCacheFreeAll()                              {}
+func SoundShutdownMusic()                             {}
+func TimePass(n int32)                                {}
+func ClassmakerRun()                                  {}
+func ClassQuestionsRun() int32                        { return 0 }
+func CareerBackgroundSummary(class, background int32) {}
+func ChargenNameCharacter() bool                      { return false }
+func QuestsStartInitial()                             {}
+func SoundPlayUI(id int32)                            {}
+func WeaponFreeSprites()                              {}
+func WeaponReloadHandSprites()                        {}
 
 var (
 	BigBuffer []byte
