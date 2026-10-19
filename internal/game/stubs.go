@@ -161,3 +161,4 @@ func FactionRandomOfType(typ int32) *Faction                                 { r
 func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
 func MonsterWakeAll()                                                        {}
 func MaploadsEnterRegion(region int32)                                       {}
+func QuestLoadText(q *Quest, id int32, a int16, b int32)                     { TextRSCBuffer = "" }

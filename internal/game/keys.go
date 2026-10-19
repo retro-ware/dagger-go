@@ -23,6 +23,12 @@ const (
 	scanW     = 0x11
 	scanLBrkt = 0x1A
 	scanRBrkt = 0x1B
+	scanA     = 0x1E
+	scanC     = 0x2E
+	scanN     = 0x31
+	scanY     = 0x15
+	scanUp    = 0x48
+	scanDown  = 0x50
 )
 
 var (
