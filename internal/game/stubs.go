@@ -41,7 +41,6 @@ func ModelHeapInit(size int32)         {}
 func RegionLoadTables()                {}
 func SkyInit()                         {}
 func WeatherRoll()                     {}
-func SoundInitMusic() int32            { return 1 }
 func MusicSelectTables()               {}
 func AutomapDeleteFiles()              {}
 func AutomapButtonViewMode()           {}
@@ -59,15 +58,12 @@ func QuestDebugOverlay()                              {}
 func QuestInitRecordSizes()                           {}
 func RegionUnload()                                   {}
 func SkyFree()                                        {}
-func SoundCacheFreeAll()                              {}
-func SoundShutdownMusic()                             {}
 func TimePass(n int32)                                {}
 func ClassmakerRun()                                  {}
 func ClassQuestionsRun() int32                        { return 0 }
 func CareerBackgroundSummary(class, background int32) {}
 func ChargenNameCharacter() bool                      { return false }
 func QuestsStartInitial()                             {}
-func SoundPlayUI(id int32)                            {}
 func WeaponFreeSprites()                              {}
 func WeaponReloadHandSprites()                        {}
 
@@ -88,7 +84,6 @@ func TavernRoomRented() bool                                      { return false
 func TownNoteFactionBuildings(faction int32)                      {}
 func LinksTrigger(o *Record, kind int32)                          {}
 func SkillAddUses(skill, uses int32)                              {}
-func SoundPlay(sound int32, o *Record, volume int32) int32        { return 0 }
 func GuildCountCrime(crime, count int32)                          {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func CollideCreatureNear(o *Record) bool                          { return false }
@@ -98,7 +93,6 @@ func InpstrUpdate() int32                                         { return 0 }
 func MonsterInit(o *Record, mobile int32)                         {}
 func PaintingDraw()                                               {}
 func PedestrianPickSprite(o *Record)                              {}
-func SoundApplyVolume()                                           {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
 func ItemMakeRandom(group uint16, item *Item)                     {}
@@ -150,9 +144,6 @@ func PlayerTryMoveVertical(dy int32) bool                                    { r
 func LinksObjectMotion(o *Record) bool                                       { return false }
 func FatigueAdd(n int32)                                                     {}
 func DamageApply(o *Record, damage int32, attacker *Record) int32            { return 0 }
-func SoundChannelDone(ch int32) bool                                         { return true }
-func SoundStopChannel(ch int32)                                              {}
-func SoundPlayLoop(sound int32, o *Record, volume int32) int32               { return -1 }
 func CollideMovePlayer(o *Record, a int32, r *MoveRequest, mode int32) int32 { return 0 }
 func SaveloadMenu(mode int32)                                                {}
 func CheatReturnToLastPosition()                                             {}

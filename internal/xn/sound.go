@@ -29,6 +29,8 @@ var (
 	SoundEnded = func() []int { return nil }
 	// SoundRequeue plays data next on the ended sample h.
 	SoundRequeue = func(h int, data []byte) {}
+	// SoundSet changes a playing sample's volume (0..0x7F) and pan.
+	SoundSet = func(h, volume, pan int) {}
 )
 
 // soundPlaying is the samples started, by handle.
@@ -53,6 +55,14 @@ func SoundUseHost() {
 	}
 	SoundEnded = host.AudioEnded
 	SoundRequeue = host.AudioRequeue
+	SoundSet = host.AudioSet
+}
+
+// SoundDone is whether sample h has finished (or was stopped), as the driver's sample-done
+// query answered it.
+func SoundDone(h int) bool {
+	runSoundCallbacks()
+	return soundPlaying[h] == nil
 }
 
 func runSoundCallbacks() {

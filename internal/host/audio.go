@@ -104,6 +104,15 @@ func AudioStop(h int) {
 	}
 }
 
+// AudioSet changes voice h's volume (0..0x7F) and pan.
+func AudioSet(h, volume, pan int) {
+	mix.mu.Lock()
+	defer mix.mu.Unlock()
+	if h >= 0 && h < len(mix.voices) && mix.voices[h].used {
+		mix.voices[h].Volume, mix.voices[h].Pan = volume, pan
+	}
+}
+
 // AudioEnded returns the voices that have ended since the last call.
 func AudioEnded() []int {
 	mix.mu.Lock()
