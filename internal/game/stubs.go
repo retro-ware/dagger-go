@@ -90,7 +90,6 @@ func SheetOpen(mode int16) int32                                  { return 0 }
 func TavernOpen(mode int16)                                       {}
 
 // click.c's callees, not ported yet.
-func FurnitureIsContainer(id int32) bool                         { return false }
 func QuestEventClickedFaction(faction uint16) bool               { return false }
 func QuestEventIndividualNPC(event int16, o, other *Record) bool { return false }
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool           { return false }
@@ -114,7 +113,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 var Factions []Faction
 
 func PotionDrink(recipe *Record)                         {}
-func EnginePickObject(x, y int32, pick *PickResult)      {}
 func PlayerMouseLook()                                   {}
 func CursorDraw(region int16)                            {}
 func FatigueAdd(n int32)                                 {}
