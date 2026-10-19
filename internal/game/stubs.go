@@ -27,7 +27,8 @@ func CalendarUpdate()                            {}
 func FactionFree()                               {}
 func FactionLoadFile()                           {}
 func FactionPoliticsUpdate(kind int32)           {}
-func HudDrawHeadingStrip(force int32)            {}
+func SpellbookOpen(mode int32)                   {}
+func OptionsOpen(mode int32)                     {}
 func FlatsCfgLoad()                              {}
 func MagicDefLoad()                              {}
 func BooksScan()                                 {}
@@ -123,7 +124,6 @@ func EnginePickObject(x, y int32, pick *PickResult)               {}
 func ClickWorldObject(pick *PickResult, o *Record)                {}
 func CastFireMissile(o *Record)                                   {}
 func PlayerMouseLook()                                            {}
-func HudUpdate() bool                                             { return false }
 func CursorDraw(region int16)                                     {}
 func FatigueAdd(n int32)                                          {}
 func DamageApply(o *Record, damage int32, attacker *Record) int32 { return 0 }
@@ -133,7 +133,6 @@ func CastRecastLast()                                             {}
 func TravelMapOpen(mode int32)                                    {}
 func AutomapOpen()                                                {}
 func SpellAddSkillUses(s *Spell, n int32)                         {}
-func HudToggleWeapon()                                            {}
 func RestOpen()                                                   {}
 func OptionsToggleFullScreen()                                    {}
 func MagicItemsOpen()                                             {}
@@ -156,7 +155,6 @@ func EffectsTick()                                          {}
 func FootstepSounds()                                       {}
 func GuildCheckInvitations()                                {}
 func HeadBobUpdate()                                        {}
-func HudDraw()                                              {}
 func InfoPopupUpdate()                                      {}
 func InventoryFrame()                                       {}
 func ItemmakerUpdate()                                      {}
