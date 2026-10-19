@@ -38,3 +38,6 @@ func CursorDelta() (float64, float64) {
 	capture.lx, capture.ly = x, y
 	return dx, dy
 }
+
+// IsFocused reports whether the window has the input focus.
+func IsFocused() bool { return win.w != nil && win.w.GetAttrib(glfw.Focused) == glfw.True }

@@ -30,8 +30,7 @@ var st struct {
 	pal     [256]Color
 	rgba    []byte
 	keys    []byte // scan codes not yet read: make codes, and break codes with bit 7 set
-	mx, my  int    // the mouse, in the frame's pixels
-	buttons int    // bit 0 left, bit 1 right, bit 2 middle
+	mouse   []MouseEvent // mouse events not yet read
 	quit    bool
 	start   time.Time
 	shot    string // a PNG to write of the next frame shown
@@ -80,17 +79,37 @@ func PushKey(code byte) {
 	st.mu.Unlock()
 }
 
-// Mouse returns the cursor in the frame's pixels and the buttons held.
-func Mouse() (x, y, buttons int) {
-	st.mu.Lock()
-	defer st.mu.Unlock()
-	return st.mx, st.my, st.buttons
+// A MouseEvent is the mouse moving (Button < 0: DX, DY in the frame's pixels) or a button
+// (0 left, 1 right, 2 middle) going down or up.
+type MouseEvent struct {
+	DX, DY float64
+	Button int
+	Down   bool
 }
 
-// SetMouse moves the cursor and sets the buttons, as a script does.
-func SetMouse(x, y, buttons int) {
+// ReadMouse returns the next mouse event, or false.
+func ReadMouse() (MouseEvent, bool) {
 	st.mu.Lock()
-	st.mx, st.my, st.buttons = x, y, buttons
+	defer st.mu.Unlock()
+	if len(st.mouse) == 0 {
+		return MouseEvent{}, false
+	}
+	e := st.mouse[0]
+	st.mouse = st.mouse[1:]
+	return e, true
+}
+
+// MouseMove queues motion, as a script or the window sends it.
+func MouseMove(dx, dy float64) {
+	st.mu.Lock()
+	st.mouse = append(st.mouse, MouseEvent{DX: dx, DY: dy, Button: -1})
+	st.mu.Unlock()
+}
+
+// MouseButton queues a button going down or up.
+func MouseButton(b int, down bool) {
+	st.mu.Lock()
+	st.mouse = append(st.mouse, MouseEvent{Button: b, Down: down})
 	st.mu.Unlock()
 }
 

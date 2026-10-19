@@ -34,9 +34,22 @@ func init() {
 	}
 }
 
-// Poll runs whatever the game's interrupts would have run by now (its timers): every busy
-// wait calls it. The game sets it.
-var Poll = func() {}
+// Poll runs whatever the game's interrupts would have run by now: the keyboard handler for
+// every queued scancode, the mouse driver, the timers, then PollHook. Every busy wait calls it.
+func Poll() {
+	pumpKeys()
+	pumpMouse()
+	runTimers()
+	if PollHook != nil {
+		PollHook()
+	}
+}
+
+// PollHook is the game's addition to Poll (nil for none).
+var PollHook func()
+
+// idle lets the host breathe inside a busy wait.
+func idle() { host.Sleep() }
 
 // retrace is 70 Hz, VGA's vertical refresh in mode 13h.
 const retrace = time.Second / 70

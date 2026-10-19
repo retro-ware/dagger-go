@@ -63,6 +63,7 @@ type window struct {
 	held   map[gpu.Key]bool
 	screen *gpu.Image
 	dw, dh int
+	buttons [3]bool
 }
 
 func (g *window) Update() error {
@@ -99,26 +100,34 @@ func (g *window) Update() error {
 	return nil
 }
 
-// mouse maps the cursor from the window into the frame's pixels.
+// mouse sends the window's mouse to the driver: motion while the window has the pointer
+// captured (the first click captures it, Ctrl+G or losing focus releases it), and buttons.
 func (g *window) mouse() {
-	cx, cy := gpu.CursorPosition()
+	if gpu.CursorCaptured() && (!gpu.IsFocused() ||
+		gpu.IsKeyPressed(gpu.KeyG) && (gpu.IsKeyPressed(glfwLeftControl) || gpu.IsKeyPressed(glfwRightControl))) {
+		gpu.SetCursorCaptured(false)
+	}
+	dx, dy := gpu.CursorDelta()
+	if !gpu.CursorCaptured() {
+		if gpu.IsMouseButtonJustPressed(gpu.MouseButtonLeft) {
+			gpu.SetCursorCaptured(true)
+			gpu.CursorDelta()
+		}
+		return
+	}
 	st.mu.Lock()
-	defer st.mu.Unlock()
-	if g.dw > 0 && g.dh > 0 {
-		x, y := cx*st.w/g.dw, cy*st.h/g.dh
-		st.mx, st.my = min(max(x, 0), st.w-1), min(max(y, 0), st.h-1)
+	w, h := st.w, st.h
+	st.mu.Unlock()
+	if (dx != 0 || dy != 0) && g.dw > 0 && g.dh > 0 {
+		MouseMove(dx*float64(w)/float64(g.dw), dy*float64(h)/float64(g.dh))
 	}
-	b := 0
-	if gpu.IsMouseButtonPressed(gpu.MouseButtonLeft) {
-		b |= 1
+	for b, mb := range []gpu.MouseButton{gpu.MouseButtonLeft, gpu.MouseButtonRight, gpu.MouseButtonMiddle} {
+		down := gpu.IsMouseButtonPressed(mb)
+		if down != g.buttons[b] {
+			g.buttons[b] = down
+			MouseButton(b, down)
+		}
 	}
-	if gpu.IsMouseButtonPressed(gpu.MouseButtonRight) {
-		b |= 2
-	}
-	if gpu.IsMouseButtonPressed(gpu.MouseButtonMiddle) {
-		b |= 4
-	}
-	st.buttons = b
 }
 
 func (g *window) Draw(dst *gpu.Image) {
