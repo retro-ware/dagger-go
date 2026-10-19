@@ -20,8 +20,6 @@ var (
 )
 
 func AutomapLoad()                     {}
-func FactionFree()                     {}
-func FactionLoadFile()                 {}
 func FactionPoliticsUpdate(kind int32) {}
 func SpellbookOpen(mode int32)         {}
 func OptionsOpen(mode int32)           {}
@@ -66,7 +64,6 @@ func TownNoteFactionBuildings(faction int32)                      {}
 func SkillAddUses(skill, uses int32)                              {}
 func GuildCountCrime(crime, count int32)                          {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
-func FactionFindTypeInRegion(region, typ int16) *Faction          { return &Faction{} }
 func GuardsSummon(n int32)                                        {}
 func MonsterInit(o *Record, mobile int32)                         {}
 func PedestrianPickSprite(o *Record)                              {}
@@ -76,7 +73,6 @@ func QuestRaiseEvent(event int16, o, other *Record) bool          { return false
 func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func GuildJoinDarkBrotherhood()                                   {}
-func FactionFind(id int16) *Faction                               { return &Faction{} }
 func GuildFindMembershipByKind(kind uint8) *Membership            { return nil }
 func GuildFindMembershipByBits(bits uint8) *Membership            { return nil }
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
@@ -85,7 +81,6 @@ func EnchantPowersText(item *Item) string                         { return "" }
 func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
-func RumorShowLocal()                                             {}
 func SheetOpen(mode int16) int32                                  { return 0 }
 func TavernOpen(mode int16)                                       {}
 
@@ -110,7 +105,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 	return &npcRecordBuffer
 }
 
-var Factions []Faction
 
 func PotionDrink(recipe *Record)                         {}
 func PlayerMouseLook()                                   {}
@@ -126,14 +120,12 @@ func RestOpen()                                          {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
 func TransportMenu()                                     {}
-func FactionRandomOfType(typ int32) *Faction             { return &Faction{} }
 func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()                               {}
 func BankFrame()                                       {}
 func BreathUpdate()                                    {}
-func FactionChangeReputation(f *Faction, amount int32) {}
 func MusicPlayCourt()                                  {}
 func GuildCheckInvitations()                           {}
 func HeadBobUpdate()                                   {}

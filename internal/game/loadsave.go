@@ -251,17 +251,6 @@ func SavevarsWrite(slot int32) {
 	}
 }
 
-// FactionSave writes the changed factions; the faction module is not ported, so none.
-func FactionSave(w io.Writer) { binary.Write(w, binary.LittleEndian, int32(0)) }
-
-// FactionLoad reads them (skipping their 92-byte records until the module is ported).
-func FactionLoad(r io.Reader) {
-	var n int32
-	if binary.Read(r, binary.LittleEndian, &n) == nil && n > 0 {
-		io.CopyN(io.Discard, r, int64(n)*92)
-	}
-}
-
 // ---- SAVETREE.DAT ----------------------------------------------------------------------
 
 // SavetreeShouldSave is whether the object goes into the save (with its subtree).
