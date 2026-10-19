@@ -12,7 +12,6 @@ import (
 const (
 	strUnableToInitSound = 0x1751DF
 	addrDefaultKeyMap    = 0x18484C
-	spellRecordSize      = 89
 )
 
 // ControlSettings is the controls file's first 54 bytes (mouse_control_mode at 0x195E7A).
@@ -34,7 +33,7 @@ var (
 
 	ButtonsRCI          []byte
 	IconImage           []byte
-	SpellRecordsRaw     []byte
+	SpellRecords        []Spell
 	SpellRecordCount    uint32
 	HudBarImage         []byte
 	HudVitalBarImages   []byte
@@ -96,8 +95,12 @@ func InitGameData() {
 	GridVisitFunc = ObjectForeachOpen
 	ButtonsRCI = DiskReadFile("buttons.rci")
 	IconImage = DiskReadFile("icon00i0.img")
-	SpellRecordsRaw = DiskReadFile("spells.std")
-	SpellRecordCount = uint32(DiskLastFileSize) / spellRecordSize
+	raw := DiskReadFile("spells.std")
+	SpellRecordCount = uint32(DiskLastFileSize) / spellSize
+	SpellRecords = make([]Spell, SpellRecordCount)
+	for i := range SpellRecords {
+		SpellRecords[i] = decodeSpell(raw[i*spellSize:])
+	}
 	HudBarImage = DiskReadFile("main00i0.img")
 	HudVitalBarImages = DiskReadFile("main03i0.img")
 	MainImage4 = DiskReadFile("main04i0.img")

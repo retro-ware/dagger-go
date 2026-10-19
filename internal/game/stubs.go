@@ -8,7 +8,6 @@ import (
 
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
-func LocationFindDoor(id uint32) *LocationDoor          { return nil }
 func UnequipObject(o *Record)                           {}
 func ClimateCategory() int32                            { return 0 }
 func ObjectDrawCb(o *Record)                            {}
@@ -57,7 +56,6 @@ var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 func IntrfaceFree()                                  {}
 func InvResetLeftList()                              {}
 func KeysWorldActions()                              {}
-func KludgePrintBuild(n int32)                       {}
 func LocationUnload(index int32)                     {}
 func MapGotoLocation(region, env, mapID, flag int32) {}
 func MarkerCount(root *Record, kind int32) int32     { return 0 }
@@ -91,7 +89,6 @@ func BuildingName(b *Building) string                                           
 func CastSpellOn(spell, target *Record, flag int32)                             {}
 func DetectConsiderCreature(o *Record, distance int32)                          {}
 func HolidayAnnounce()                                                          {}
-func ItemAddToContainer(c *Record, group, index, flag int32) *Record            { return nil }
 func LocationContains(x, z int32) bool                                          { return false }
 func MarkerMakeClutter(o *Record, b *Building)                                  {}
 func MarkerMakeLootPile(o *Record, b *Building)                                 {}
@@ -126,4 +123,28 @@ func SpawnFindPoint(o *Record, minD, maxD int32) bool                           
 func TextQRCLoadForQuest(q *Quest, id int16, a, b int16) []byte                 { return nil }
 func TextRSCLoad(id int16, a uint16, b int16) []byte                            { return nil }
 func TownMapAreaClear(x, z int32) bool                                          { return false }
-func StartingEquipmentGive()                                                    {}
+func ItemMakeRandom(group uint16, item *Item)                                   {}
+func ItemMake(group uint16, index int32, item *Item)                            {}
+func ItemMakeInRange(group uint16, lo, hi int32, it *Item)                      {}
+func ItemMakeArtifact(item *Item, artifact int32)                               {}
+func ItemAddRandomToContainer(c *Record, group int32)                           {}
+func InvEquipItem(o *Record)                                                    {}
+func InvStoreItem(o *Record)                                                    {}
+func InvCreateWagon()                                                           {}
+func InvAddArrows(o *Record, n int32)                                           {}
+func GuildJoinDarkBrotherhood()                                                 {}
+func FactionFind(id int16) *Faction                                             { return &Faction{} }
+func GuildFindMembershipByKind(kind uint8) *Membership                          { return &Membership{} }
+func ObjectFindItem(o *Record, group, index int16) *Record                      { return nil }
+func PickpocketAttempt(o *Record)                                               {}
+func RumorShowLocal()                                                           {}
+func ListPopupOpen(items uint32)                                                {}
+func ListPopupPoll() int32                                                      { return -1 }
+func SheetOpen(mode int16) int32                                                { return 0 }
+func DiseaseBecomeVampire()                                                     {}
+func DiseaseCureVampirism()                                                     {}
+func DiseaseBecomeLycanthrope()                                                 {}
+func DiseaseCureLycanthropy()                                                   {}
+func TavernOpen()                                                               {}
+
+var Factions []Faction
