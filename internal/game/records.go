@@ -3,7 +3,11 @@
 // C (src/lifted, src/hand, src/*.c).
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import (
+	"encoding/binary"
+
+	"github.com/memmaker/dagger-go/internal/xn"
+)
 
 // The game's record structures (records.h). Every game object is a Record: the 71-byte header
 // the save file stores, then its data by type. C's unions of one header offset become one
@@ -246,8 +250,23 @@ type Item struct {
 	Variants       uint8
 	DrawOrder      uint8
 	Enchantments   [10]Enchantment
-	// ArrowDirection is an arrow in flight's unit direction (over enchantments 1..3).
-	ArrowDirection [3]int32
+}
+
+// ArrowDirection is an arrow in flight's unit direction: C's union over enchantments 1..3.
+func (it *Item) ArrowDirection() [3]int32 {
+	var d [3]int32
+	for i := range d {
+		e := it.Enchantments[1+i]
+		d[i] = int32(uint32(uint16(e.Type)) | uint32(uint16(e.Param))<<16)
+	}
+	return d
+}
+
+// SetArrowDirection stores an arrow's direction over enchantments 1..3.
+func (it *Item) SetArrowDirection(d [3]int32) {
+	for i, v := range d {
+		it.Enchantments[1+i] = Enchantment{int16(v), int16(v >> 16)}
+	}
 }
 
 // SpellEffect is one of a spell's effects: type 255 none.
@@ -261,21 +280,35 @@ type SpellMagnitude struct{ BaseMin, BaseMax, PlusMin, PlusMax, PerLevel int8 }
 
 // Spell is the data of a spell (type 9), the SPELLS.STD format.
 type Spell struct {
-	Effects     [3]SpellEffect
-	Element     uint8 // 0 fire, 1 frost, 2 poison, 3 shock, 4 magic
-	Target      uint8 // 0 caster, 1 touch, 2 distance, 3/4 areas
-	EffectCosts [3]uint16
-	Durations   [3]SpellRange
-	Chances     [3]SpellRange
-	Magnitudes  [3]SpellMagnitude
-	Name        [25]byte
-	// MissileDirection is a missile in flight's unit direction (over the name).
-	MissileDirection [3]int32
-	Icon             uint8 // 200+slot item spell, 250 item/potion/strike
-	ID               uint8
-	CastDurations    [3]uint16
-	CastMagnitudes   [3]uint16
-	CastChances      [3]uint8
+	Effects        [3]SpellEffect
+	Element        uint8 // 0 fire, 1 frost, 2 poison, 3 shock, 4 magic
+	Target         uint8 // 0 caster, 1 touch, 2 distance, 3/4 areas
+	EffectCosts    [3]uint16
+	Durations      [3]SpellRange
+	Chances        [3]SpellRange
+	Magnitudes     [3]SpellMagnitude
+	Name           [25]byte
+	Icon           uint8 // 200+slot item spell, 250 item/potion/strike
+	ID             uint8
+	CastDurations  [3]uint16
+	CastMagnitudes [3]uint16
+	CastChances    [3]uint8
+}
+
+// MissileDirection is a missile in flight's unit direction: C's union over the name.
+func (s *Spell) MissileDirection() [3]int32 {
+	var d [3]int32
+	for i := range d {
+		d[i] = int32(binary.LittleEndian.Uint32(s.Name[i*4:]))
+	}
+	return d
+}
+
+// SetMissileDirection stores a missile's direction over the name.
+func (s *Spell) SetMissileDirection(d [3]int32) {
+	for i, v := range d {
+		binary.LittleEndian.PutUint32(s.Name[i*4:], uint32(v))
+	}
 }
 
 // Disease is the data of a disease or poison (type 11).
@@ -331,6 +364,7 @@ type Faction struct {
 	Next           *Faction
 	Child          *Faction
 	Parent         *Faction
+	placeholder    bool // a link read from disk: only ID is set
 }
 
 // BankAccount is a region's bank account.
@@ -368,6 +402,7 @@ type Location struct {
 	Pad23         [2]byte
 	ObjectCounter uint16
 	MarkerCounter uint16
+	BuildingCount uint16 // len(Buildings) once they are read
 	Buildings     []Building
 	Pad2F         uint8
 }
@@ -672,6 +707,8 @@ type Record struct {
 	DataSize int32
 	// DrawHandle is the engine's handle of a drawn flat (C's draw_handle at +0x2F).
 	DrawHandle any
+	// placeholder marks a link read from disk: only ID is set (persist.go).
+	placeholder bool
 }
 
 // copyRecord is a copy of the record with its data (the links are copied as they are).
