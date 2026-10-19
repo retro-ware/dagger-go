@@ -60,7 +60,6 @@ func RegionUnload()                                  {}
 func SkyFree()                                       {}
 func TimePass(n int32)                               {}
 func ClassmakerRun()                                 {}
-func ChargenNameCharacter() bool                     { return false }
 func QuestsStartInitial()                            {}
 func WeaponFreeSprites()                             {}
 func WeaponReloadHandSprites()                       {}
@@ -87,7 +86,6 @@ func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func CollideCreatureNear(o *Record) bool                          { return false }
 func FactionFindTypeInRegion(region, typ int16) *Faction          { return &Faction{} }
 func GuardsSummon(n int32)                                        {}
-func InpstrUpdate() int32                                         { return 0 }
 func MonsterInit(o *Record, mobile int32)                         {}
 func PaintingDraw()                                               {}
 func PedestrianPickSprite(o *Record)                              {}
@@ -128,7 +126,6 @@ func TavernOpen()                                                 {}
 var Factions []Faction
 
 func InventoryOpen(mode, trade, icon int32) int32                            { return 0 }
-func InpstrBeginNumber(n int32)                                              {}
 func SpfxEffectEnd(spell *Spell, slot int32, target *Record)                 {}
 func SpfxEffectTick(spellObject, target *Record, slot int32)                 {}
 func EnginePickObject(x, y int32, pick *PickResult)                          {}

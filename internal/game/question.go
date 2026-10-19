@@ -157,7 +157,7 @@ func ClassQuestionScrollBy(scroll [2]*xn.Cel, delta int16) {
 
 func ClassQuestionAnswerAnim(kind int16) {
 	SoundPlayUI(18)
-	PflcPlay(SP(PtrAt(addrClassAnswerCels+uint32(kind)*4)), &FlcPlayer{Flags: 16})
+	PflcPlay(ptrIndex(addrClassAnswerCels, int32(kind)), &FlcPlayer{Flags: 16})
 }
 
 // ClassQuestionGetAnswer is the answer given (1..3: a..c), by key or a click on its text.

@@ -28,6 +28,7 @@ func LoadData(m *exe.Image) {
 	m.I32s(0x15D400, AsinValues[:])
 	m.U8s(0x0C7B7A, SkyStarPalette[:])
 	m.U8s(0x0C7DF1, RainStreakColours[:])
+	m.U8s(0x142397, Keymap[:]) // xn_kbd_ascii_table
 	var dirs [16]int32
 	m.I32s(0x12F49A, dirs[:])
 	for q := range WaterQuadrantDirs {
