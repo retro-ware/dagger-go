@@ -51,7 +51,6 @@ func AutomapButtonViewMode()           {}
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
 func InvResetLeftList()                              {}
-func KeysWorldActions()                              {}
 func LocationUnload(index int32)                     {}
 func MapGotoLocation(region, env, mapID, flag int32) {}
 func MarkerCount(root *Record, kind int32) int32     { return 0 }
@@ -147,8 +146,6 @@ func SpfxEffectTick(spellObject, target *Record, slot int32)                 {}
 func EnginePickObject(x, y int32, pick *PickResult)                          {}
 func ClickWorldObject(pick *PickResult, o *Record)                           {}
 func CastFireMissile(o *Record)                                              {}
-func KeyActionHeld(action int32) bool                                        { return false }
-func KeyActionPressed(action int32) bool                                     { return false }
 func PlayerMouseLook()                                                       {}
 func HudUpdate() bool                                                        { return false }
 func CursorDraw(region int16)                                                {}
@@ -161,3 +158,15 @@ func SoundChannelDone(ch int32) bool                                         { r
 func SoundStopChannel(ch int32)                                              {}
 func SoundPlayLoop(sound int32, o *Record, volume int32) int32               { return -1 }
 func CollideMovePlayer(o *Record, a int32, r *MoveRequest, mode int32) int32 { return 0 }
+func SaveloadMenu(mode int32)                                                {}
+func CheatReturnToLastPosition()                                             {}
+func CastRecastLast()                                                        {}
+func TravelMapOpen(mode int32)                                               {}
+func AutomapOpen()                                                           {}
+func SpellAddSkillUses(s *Spell, n int32)                                    {}
+func HudToggleWeapon()                                                       {}
+func RestOpen()                                                              {}
+func OptionsToggleFullScreen()                                               {}
+func MagicItemsOpen()                                                        {}
+func TransportMenu()                                                         {}
+func MarkerFindNth(root *Record, kind, n int32) *Record                      { return root }
