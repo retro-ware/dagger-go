@@ -8,9 +8,13 @@
 
 ## Go
 - [x] module skeleton, plan
-- [ ] window + framebuffer presenter (gpu)
-- [ ] audio (oto)
+- [x] window + framebuffer presenter (gpu)
+- [x] audio (oto): 8-bit voices mixed to 44.1 kHz stereo; chained samples on one handle
 - [ ] format readers
-- [ ] engine
+- [x] engine (internal/xn): every XnGine unit except the DOS hardware layer (helmet, joy
+      hardware, serial, pc/sys DPMI and vectors, mem locks); tables from FALL.EXE object 2
+- [ ] spell thunks (with the game's spell dispatch)
+- [ ] DEVIATIONS.md (Q-LIGHT-04/07, tex heap read at 0, tmap pool as a count, Q-ANIM-01..03,
+      Q-VID-03/04, D-VID-01, world river/path passes, hardware layer)
 - [ ] game
 - [ ] parity traces
