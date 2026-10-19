@@ -37,7 +37,6 @@ func FactionLoadFile()                 {}
 func FactionPoliticsUpdate(kind int32) {}
 func GameFrame()                       {}
 func HudDrawHeadingStrip(force int32)  {}
-func MsgboxLoadBorders()               {}
 func TextRSCOpen()                     {}
 func FlatsCfgLoad()                    {}
 func MagicDefLoad()                    {}
@@ -66,7 +65,6 @@ func MapGotoLocation(region, env, mapID, flag int32) {}
 func MarkerCount(root *Record, kind int32) int32     { return 0 }
 func ModelHeapFreeAll()                              {}
 func MouseSetBounds(x0, y0, x1, y1 int32)            {}
-func MsgboxFreeBorders()                             {}
 func PaperdollDraw(x, y int32)                       {}
 func PlayerComputeJumpVelocity()                     {}
 func PlayerMovementUpdate()                          {}
@@ -88,27 +86,45 @@ func WeaponFreeSprites()                             {}
 func WeaponReloadHandSprites()                       {}
 
 var (
-	BigBuffer      []byte
-	MouseX, MouseY int16
+	BigBuffer []byte
 )
 
-func BuildingName(b *Building) string                                    { return "" }
-func CastSpellOn(spell, target *Record, flag int32)                      {}
-func DetectConsiderCreature(o *Record, distance int32)                   {}
-func HolidayAnnounce()                                                   {}
-func ItemAddToContainer(c *Record, group, index, flag int32) *Record     { return nil }
-func LocationContains(x, z int32) bool                                   { return false }
-func MarkerMakeClutter(o *Record, b *Building)                           {}
-func MarkerMakeLootPile(o *Record, b *Building)                          {}
-func MonsterDespawnToMarker(o *Record) bool                              { return false }
-func ObjectWeight(o *Record) int32                                       { return 0 }
-func PlaceSpawnFromMarker(o *Record)                                     {}
-func SpellMissileUpdate(o *Record, flag int32) bool                      { return false }
-func TavernRoomRented() bool                                             { return false }
-func TextDrawCentredColoured(s string, x, y int32, colour, shadow uint8) {}
-func TextDrawColoured(s string, x, y int32, colour, shadow uint8)        {}
-func TownNoteFactionBuildings(faction int32)                             {}
-func LinksTrigger(o *Record, kind int32)                                 {}
-func SkillAddUses(skill, uses int32)                                     {}
-func SoundPlay(sound int32, o *Record, volume int32) int32               { return 0 }
-func GuildCountCrime(crime, count int32)                                 {}
+func BuildingName(b *Building) string                                           { return "" }
+func CastSpellOn(spell, target *Record, flag int32)                             {}
+func DetectConsiderCreature(o *Record, distance int32)                          {}
+func HolidayAnnounce()                                                          {}
+func ItemAddToContainer(c *Record, group, index, flag int32) *Record            { return nil }
+func LocationContains(x, z int32) bool                                          { return false }
+func MarkerMakeClutter(o *Record, b *Building)                                  {}
+func MarkerMakeLootPile(o *Record, b *Building)                                 {}
+func MonsterDespawnToMarker(o *Record) bool                                     { return false }
+func ObjectWeight(o *Record) int32                                              { return 0 }
+func PlaceSpawnFromMarker(o *Record)                                            {}
+func SpellMissileUpdate(o *Record, flag int32) bool                             { return false }
+func TavernRoomRented() bool                                                    { return false }
+func TextDrawCentredColoured(s string, x, y int32, colour, shadow uint8)        {}
+func TextDrawColoured(s string, x, y int32, colour, shadow uint8)               {}
+func TownNoteFactionBuildings(faction int32)                                    {}
+func LinksTrigger(o *Record, kind int32)                                        {}
+func SkillAddUses(skill, uses int32)                                            {}
+func SoundPlay(sound int32, o *Record, volume int32) int32                      { return 0 }
+func GuildCountCrime(crime, count int32)                                        {}
+func AIAngleDiff(a, b int32, turn *int32) int32                                 { return 0 }
+func CollideCreatureNear(o *Record) bool                                        { return false }
+func CursorRestoreBackground()                                                  {}
+func FactionFindTypeInRegion(region, typ int16) *Faction                        { return &Faction{} }
+func GroundTileAt(x, z int32) uint8                                             { return 0 }
+func GuardsSummon(n int32)                                                      {}
+func InpstrUpdate() int32                                                       { return 0 }
+func MarqueeStart(text []byte)                                                  {}
+func MonsterInit(o *Record, mobile int32)                                       {}
+func MsgboxRender(text []byte, image *[]byte)                                   {}
+func MsgboxRenderQuestText(q *Quest, id int16, image *[]byte, flags int32) bool { return false }
+func MsgboxRenderRSC(id int16, image *[]byte, flags int32) bool                 { return false }
+func MsgboxSetBorderStyle(style int16)                                          {}
+func PedestrianPickSprite(o *Record)                                            {}
+func SoundApplyVolume()                                                         {}
+func SpawnFindPoint(o *Record, minD, maxD int32) bool                           { return false }
+func TextQRCLoadForQuest(q *Quest, id int16, a, b int16) []byte                 { return nil }
+func TextRSCLoad(id int16, a uint16, b int16) []byte                            { return nil }
+func TownMapAreaClear(x, z int32) bool                                          { return false }

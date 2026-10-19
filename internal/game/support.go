@@ -29,8 +29,7 @@ var (
 	GameModeUnderPop  uint8
 	InfoPopupSaved    int8
 	InfoPopupText     string
-	KeyDown           [256]uint8
-	KeyWasDown        [256]uint8
+	KeyWasDown        [128]uint8
 	DisplayFlags      uint8 // bit 4 Detect active
 	UIModeFlags       uint8
 	GameStateFlags    uint8
@@ -127,11 +126,11 @@ func InfoPopupOpen(text string) {
 
 // KeyPressedOnce is whether scancode went down since the last call.
 func KeyPressedOnce(scancode uint8) bool {
-	if KeyDown[scancode] != 0 && KeyWasDown[scancode] == 0 {
+	if xn.KeyDown[scancode] != 0 && KeyWasDown[scancode] == 0 {
 		KeyWasDown[scancode] = 1
 		return true
 	}
-	if KeyDown[scancode] == 0 {
+	if xn.KeyDown[scancode] == 0 {
 		KeyWasDown[scancode] = 0
 	}
 	return false
@@ -453,7 +452,7 @@ type Rect struct{ X0, Y0, X1, Y1 int16 }
 // ButtonsDrawHoverLabel draws the label of the button under the mouse.
 func ButtonsDrawHoverLabel(x, y int32, buttons []Rect, labels []string) {
 	for i, b := range buttons {
-		if MouseX > b.X0 && MouseX < b.X1 && MouseY > b.Y0 && MouseY < b.Y1 {
+		if xn.MouseX > b.X0 && xn.MouseX < b.X1 && xn.MouseY > b.Y0 && xn.MouseY < b.Y1 {
 			TextDrawColoured(labels[i], int32(int16(x)), int32(int16(y)), 145, 156)
 		}
 	}
