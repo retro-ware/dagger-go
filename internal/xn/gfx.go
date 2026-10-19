@@ -39,6 +39,7 @@ func init() {
 func Poll() {
 	pumpKeys()
 	pumpMouse()
+	runSoundCallbacks()
 	runTimers()
 	if PollHook != nil {
 		PollHook()
