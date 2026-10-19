@@ -44,7 +44,6 @@ func BooksScan()                       {}
 func IntrfaceInit()                    {}
 func IntrfaceSetRegions()              {}
 func ModelHeapInit(size int32)         {}
-func ColorInitRemapTables()            {}
 func RegionLoadTables()                {}
 func SkyInit()                         {}
 func WeatherRoll()                     {}
@@ -56,7 +55,6 @@ func AutomapButtonViewMode()           {}
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
 func IntrfaceFree()                                  {}
-func IntroPlayLogo()                                 {}
 func InvResetLeftList()                              {}
 func KeysWorldActions()                              {}
 func KludgePrintBuild(n int32)                       {}
@@ -128,3 +126,4 @@ func SpawnFindPoint(o *Record, minD, maxD int32) bool                           
 func TextQRCLoadForQuest(q *Quest, id int16, a, b int16) []byte                 { return nil }
 func TextRSCLoad(id int16, a uint16, b int16) []byte                            { return nil }
 func TownMapAreaClear(x, z int32) bool                                          { return false }
+func StartingEquipmentGive()                                                    {}
