@@ -793,7 +793,7 @@ func FactionPlayerRelated(f *Faction) int32 {
 		return 0
 	}
 	FoundFaction = f
-	var n int32
+	factionScratch = 0
 	ObjectForeach(PlayerEntity.Children, func(o *Record) {
 		if o.Type != 10 {
 			return
@@ -806,9 +806,9 @@ func FactionPlayerRelated(f *Faction) int32 {
 			return
 		}
 		GuildMembership = o.Membership
-		n++
+		factionScratch++
 	})
-	return n
+	return factionScratch
 }
 
 func FactionCountAllies(f *Faction) int32 {
@@ -986,11 +986,13 @@ func RumorFileClose() {
 
 // RumorAddFaction writes a politics rumor of the text with the two factions.
 func RumorAddFaction(f1, f2 *Faction, kind int32, region uint8, textID int32) {
+	saved := factionScratch
 	if PoliticsNewYear == 0 {
 		return
 	}
 	if textID != 455 && textID != 456 && kind == 100 && FactionPlayerRelated(f1) == 0 &&
 		FactionPlayerRelated(f2) == 0 {
+		factionScratch = saved
 		return
 	}
 	FoundFaction = f1
@@ -1025,6 +1027,7 @@ func RumorAddFaction(f1, f2 *Faction, kind int32, region uint8, textID int32) {
 	if RumorFile != nil {
 		RumorFile.Write(rumorBytes(&h, text))
 	}
+	factionScratch = saved
 }
 
 // RumorIsEligible is whether the rumor can be told: regional ones in their region, faction

@@ -19,11 +19,10 @@ var (
 	HazeTable1         []byte
 )
 
-func AutomapLoad()                     {}
-func FactionPoliticsUpdate(kind int32) {}
-func SpellbookOpen(mode int32)         {}
-func OptionsOpen(mode int32)           {}
-func FlatsCfgLoad()                    {}
+func AutomapLoad()             {}
+func SpellbookOpen(mode int32) {}
+func OptionsOpen(mode int32)   {}
+func FlatsCfgLoad()            {}
 
 // BuildingEnter is not ported; only the shop's item groups (building_type_odds) are set.
 func BuildingEnter(b *Building) {
@@ -105,7 +104,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 	return &npcRecordBuffer
 }
 
-
 func PotionDrink(recipe *Record)                         {}
 func PlayerMouseLook()                                   {}
 func CursorDraw(region int16)                            {}
@@ -123,16 +121,16 @@ func TransportMenu()                                     {}
 func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
-func AIUpdateCreatures()                               {}
-func BankFrame()                                       {}
-func BreathUpdate()                                    {}
-func MusicPlayCourt()                                  {}
-func GuildCheckInvitations()                           {}
-func HeadBobUpdate()                                   {}
-func InfoPopupUpdate()                                 {}
-func ItemmakerUpdate()                                 {}
-func LevelupCheck()                                    {}
-func AIAlertCreatures(o *Record)                       {}
+func AIUpdateCreatures()         {}
+func BankFrame()                 {}
+func BreathUpdate()              {}
+func MusicPlayCourt()            {}
+func GuildCheckInvitations()     {}
+func HeadBobUpdate()             {}
+func InfoPopupUpdate()           {}
+func ItemmakerUpdate()           {}
+func LevelupCheck()              {}
+func AIAlertCreatures(o *Record) {}
 
 var (
 	EnchantCasterLevel  int8
