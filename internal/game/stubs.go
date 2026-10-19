@@ -62,7 +62,6 @@ func QuestInitRecordSizes()                          {}
 func RegionEnter(flag, region int32)                 {}
 func RegionFreeTables()                              {}
 func RegionUnload()                                  {}
-func ScreenshotPoll()                                {}
 func SkyFree()                                       {}
 func SoundCacheFreeAll()                             {}
 func SoundShutdownMusic()                            {}
@@ -99,7 +98,6 @@ func FactionFindTypeInRegion(region, typ int16) *Faction                        
 func GroundTileAt(x, z int32) uint8                                             { return 0 }
 func GuardsSummon(n int32)                                                      {}
 func InpstrUpdate() int32                                                       { return 0 }
-func MarqueeStart(text []byte)                                                  {}
 func MonsterInit(o *Record, mobile int32)                                       {}
 func MsgboxRender(text []byte, image *[]byte)                                   {}
 func MsgboxRenderQuestText(q *Quest, id int16, image *[]byte, flags int32) bool { return false }
@@ -170,3 +168,4 @@ func OptionsToggleFullScreen()                                               {}
 func MagicItemsOpen()                                                        {}
 func TransportMenu()                                                         {}
 func MarkerFindNth(root *Record, kind, n int32) *Record                      { return root }
+func FactionRandomOfType(typ int32) *Faction                                 { return &Faction{} }
