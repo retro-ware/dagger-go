@@ -50,10 +50,25 @@ type Model struct {
 	Unknown38        int32
 	FaceOffset       int32
 
-	Faces    []*ModelFace
-	Points   []Vec3 // by index, after prepare
-	Normals  []Vec3 // by face, after prepare (8-bit fraction)
-	FaceData []ModelFaceData
+	Faces         []*ModelFace
+	Points        []Vec3 // by index, after prepare
+	Normals       []Vec3 // by face, after prepare (8-bit fraction)
+	FaceData      []ModelFaceData
+	Spheres       []ModelSphere // the collision spheres (parsed on first use)
+	spheresParsed bool
+}
+
+// ModelSphereFace is a collision sphere's face: its offset and its index * 4.
+type ModelSphereFace struct {
+	Face    int32
+	Normal4 uint16
+}
+
+// ModelSphere is a collision sphere: centre and radius in object space (24.8), the faces
+// near it, descending by offset.
+type ModelSphere struct {
+	X, Y, Z, Radius int32
+	Faces           []ModelSphereFace
 }
 
 // ModelHandle is a placement of a model.
