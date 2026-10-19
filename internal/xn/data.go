@@ -26,6 +26,13 @@ func LoadData(m *exe.Image) {
 	m.U8s(0x153A00, TerrainCornerTile[:])
 	m.U8s(0x153B00, TerrainCornerFlip[:])
 	m.I32s(0x15D400, AsinValues[:])
+	m.U8s(0x0C7B7A, SkyStarPalette[:])
+	m.U8s(0x0C7DF1, RainStreakColours[:])
+	var dirs [16]int32
+	m.I32s(0x12F49A, dirs[:])
+	for q := range WaterQuadrantDirs {
+		WaterQuadrantDirs[q] = WaterDirs{dirs[4*q], dirs[4*q+1], dirs[4*q+2], dirs[4*q+3]}
+	}
 	computeSqrtTable()
 }
 

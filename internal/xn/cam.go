@@ -19,7 +19,7 @@ var (
 	CamRotation                  Mat3 // the eye's rotation, 2.28
 	CamViewMatrix                Mat3 // the rotation with rows 0 and 1 scaled
 	CamX, CamY, CamZ             int32
-	CamPitch                     int32
+	CamPitch, CamYaw, CamRoll    int32       // 2048ths of a turn (the game sets them)
 	CamDirXTable                 [1024]int32 // (k << 18) / focal_x, k = -512..511
 	CamDirYTable                 [768]int32  // k = -384..383
 
