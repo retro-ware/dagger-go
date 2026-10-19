@@ -110,7 +110,7 @@ func KludgeFindCreatureCb(o *Record) {
 
 // KludgeMenuOpen opens the debug menu.
 func KludgeMenuOpen() {
-	ListPopupOpen(addrKludgeMenuItems)
+	ListPopupOpen(cStringList(addrKludgeMenuItems))
 	KludgeMenuActive = 1
 	GameMode = -56 // 200
 	ScreenActive = 1

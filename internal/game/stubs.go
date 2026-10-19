@@ -9,7 +9,6 @@ import (
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
 func UnequipObject(o *Record)                        {}
-func SpellAreaEffect(o *Record)                      {}
 func FlatAnimalSound(x, y, z, archive, record int32) {}
 func SkyApplySunlight()                              {}
 
@@ -56,14 +55,12 @@ var (
 	BigBuffer []byte
 )
 
-func CastSpellOn(spell, target *Record, flag int32)               {}
 func DetectConsiderCreature(o *Record, distance int32)            {}
 func LocationContains(x, z int32) bool                            { return false }
 func MarkerMakeClutter(o *Record, b *Building)                    {}
 func MarkerMakeLootPile(o *Record, b *Building)                   {}
 func MonsterDespawnToMarker(o *Record) bool                       { return false }
 func PlaceSpawnFromMarker(o *Record)                              {}
-func SpellMissileUpdate(o *Record, flag int32) bool               { return false }
 func TavernRoomRented() bool                                      { return false }
 func TownNoteFactionBuildings(faction int32)                      {}
 func SkillAddUses(skill, uses int32)                              {}
@@ -75,11 +72,7 @@ func MonsterInit(o *Record, mobile int32)                         {}
 func PedestrianPickSprite(o *Record)                              {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
-func SpellCost(s *Spell, c *Character) int32                      { return 5 }
 func QuestRaiseEvent(event int16, o, other *Record)               {}
-func SpellFindOnEntity(o *Record, id, icon int32) *Record         { return nil }
-func SpellEnd(s *Record)                                          {}
-func CastItemSpellAt(s *Record)                                   {}
 func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func GuildJoinDarkBrotherhood()                                   {}
@@ -93,7 +86,7 @@ func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func RumorShowLocal()                                             {}
-func ListPopupOpen(items uint32)                                  {}
+func ListPopupOpen(items []string)                                {}
 func ListPopupPoll() int32                                        { return -1 }
 func SheetOpen(mode int16) int32                                  { return 0 }
 func DiseaseBecomeVampire()                                       {}
@@ -104,30 +97,24 @@ func TavernOpen()                                                 {}
 
 var Factions []Faction
 
-func PotionDrink(recipe *Record)                             {}
-func CastPlayerSpell(spell *Record) bool                     { return true }
-func SpfxEffectEnd(spell *Spell, slot int32, target *Record) {}
-func SpfxEffectTick(spellObject, target *Record, slot int32) {}
-func EnginePickObject(x, y int32, pick *PickResult)          {}
-func CastFireMissile(o *Record)                              {}
-func PlayerMouseLook()                                       {}
-func CursorDraw(region int16)                                {}
-func FatigueAdd(n int32)                                     {}
-func QuestsUnlinkAll(root *Record)                           {}
-func QuestsRelinkAll(root *Record)                           {}
-func QuestFacesAfterLoad()                                   {}
-func MonsterReloadAnims()                                    {}
-func CheatReturnToLastPosition()                             {}
-func CastRecastLast()                                        {}
-func TravelMapOpen(mode int32)                               {}
-func AutomapOpen()                                           {}
-func SpellAddSkillUses(s *Spell, n int32)                    {}
-func RestOpen()                                              {}
-func OptionsToggleFullScreen()                               {}
-func MagicItemsOpen()                                        {}
-func TransportMenu()                                         {}
-func FactionRandomOfType(typ int32) *Faction                 { return &Faction{} }
-func QuestLoadText(q *Quest, id int32, a int16, b int32)     { TextRSCBuffer = "" }
+func PotionDrink(recipe *Record)                         {}
+func EnginePickObject(x, y int32, pick *PickResult)      {}
+func PlayerMouseLook()                                   {}
+func CursorDraw(region int16)                            {}
+func FatigueAdd(n int32)                                 {}
+func QuestsUnlinkAll(root *Record)                       {}
+func QuestsRelinkAll(root *Record)                       {}
+func QuestFacesAfterLoad()                               {}
+func MonsterReloadAnims()                                {}
+func CheatReturnToLastPosition()                         {}
+func TravelMapOpen(mode int32)                           {}
+func AutomapOpen()                                       {}
+func RestOpen()                                          {}
+func OptionsToggleFullScreen()                           {}
+func MagicItemsOpen()                                    {}
+func TransportMenu()                                     {}
+func FactionRandomOfType(typ int32) *Faction             { return &Faction{} }
+func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()                                            {}
@@ -135,7 +122,6 @@ func AmbientDungeonSounds()                                         {}
 func AmbientOutdoorSounds()                                         {}
 func BankFrame()                                                    {}
 func BreathUpdate()                                                 {}
-func CastAnimUpdate()                                               {}
 func FactionChangeReputation(f *Faction, amount int32)              {}
 func MusicPlayCourt()                                               {}
 func CovenMenuFrame()                                               {}
@@ -146,8 +132,6 @@ func HeadBobUpdate()                                                {}
 func InfoPopupUpdate()                                              {}
 func ItemmakerUpdate()                                              {}
 func LevelupCheck()                                                 {}
-func CastCreatureSpell(caster, target *Record, spell int32)         {}
-func SpfxDamage(spell *Record, slot int32, target *Record)          {}
 func PoisonApply(o *Record, poison, flag int32)                     {}
 func DiseaseInfect(target *Record, list uint32, id, noResist int32) {}
 func AIAlertCreatures(o *Record)                                    {}
@@ -158,70 +142,65 @@ var (
 	QuestGlobalStates   [256]uint8
 )
 
-func LoanCollectorsUpdate()                         {}
-func LogbookUpdate()                                {}
-func MagicItemsFrame()                              {}
-func MusicChooseSong()                              {}
-func MusicUpdate()                                  {}
-func OptionsFrame()                                 {}
-func InteriorRestrictionAtPlayer(kind int32) int32  { return 0 }
-func BuildingAccessLevel(kind int32) int32          { return 0 }
-func SpellRemoveEffectType(o *Record, effect int32) {}
-func PotionmakerUpdate()                            {}
-func QuestFacesDraw()                               {}
-func QuestPromptAnswer()                            {}
-func QuestStartPending()                            {}
-func RepairMenuFrame()                              {}
-func RestUpdate()                                   {}
-func ServiceMenuFrame()                             {}
-func SheetUpdate()                                  {}
-func ShelfBookListUpdate()                          {}
-func SkyUpdate()                                    {}
-func SpellbookFrame()                               {}
-func SpellHudDrawIcons()                            {}
-func SpellmakerUpdate()                             {}
-func SpfxPopupUpdate()                              {}
-func StatusShow(mode int16)                         {}
-func TalkUpdate()                                   {}
-func TavernFrame()                                  {}
-func TradeHaggleFrame()                             {}
-func TrainingUpdate()                               {}
-func TravelMapUpdate()                              {}
-func WeatherDrawPrecipitation()                     {}
+func LoanCollectorsUpdate()                        {}
+func LogbookUpdate()                               {}
+func MagicItemsFrame()                             {}
+func MusicChooseSong()                             {}
+func MusicUpdate()                                 {}
+func OptionsFrame()                                {}
+func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
+func BuildingAccessLevel(kind int32) int32         { return 0 }
+func PotionmakerUpdate()                           {}
+func QuestFacesDraw()                              {}
+func QuestPromptAnswer()                           {}
+func QuestStartPending()                           {}
+func RepairMenuFrame()                             {}
+func RestUpdate()                                  {}
+func ServiceMenuFrame()                            {}
+func SheetUpdate()                                 {}
+func ShelfBookListUpdate()                         {}
+func SkyUpdate()                                   {}
+func SpellbookFrame()                              {}
+func SpellmakerUpdate()                            {}
+func StatusShow(mode int16)                        {}
+func TalkUpdate()                                  {}
+func TavernFrame()                                 {}
+func TradeHaggleFrame()                            {}
+func TrainingUpdate()                              {}
+func TravelMapUpdate()                             {}
+func WeatherDrawPrecipitation()                    {}
 
 // click.c and the damage code, not ported yet.
-func ClickItem(pick *PickResult, o *Record)                                     {}
-func ClickDungeonModel(pick *PickResult, o *Record)                             {}
-func ClickNPC(pick *PickResult, o *Record)                                      {}
-func ClickCreature(pick *PickResult, o *Record)                                 {}
-func ClickDoor(pick *PickResult, o *Record)                                     {}
-func ClickMarker(pick *PickResult, o *Record)                                   {}
-func ClickInteriorModel(pick *PickResult, o *Record)                            {}
-func ClickCorpse(pick *PickResult, o *Record)                                   {}
-func ClickPedestrian(pick *PickResult, o *Record)                               {}
-func ClickLootContainer(pick *PickResult, o *Record)                            {}
-func ClickTownScenery(pick *PickResult, o *Record)                              {}
-func ClickWorldFace(pick *PickResult) bool                                      { return false }
-func MonsterWabbajack(weapon, target *Record)                                   {}
-func SpfxResistRoll(a, b int32, c *Character, career *Career, d, e int32) int32 { return 0 }
-func ItemArtifactEquipped(id int32) bool                                        { return false }
-func CastItemStrikeSpell(spell int32, target *Record)                           {}
-func SpellFindActiveEffect(o *Record, effect int32) *Record                     { return nil }
+func ClickItem(pick *PickResult, o *Record)          {}
+func ClickDungeonModel(pick *PickResult, o *Record)  {}
+func ClickNPC(pick *PickResult, o *Record)           {}
+func ClickCreature(pick *PickResult, o *Record)      {}
+func ClickDoor(pick *PickResult, o *Record)          {}
+func ClickMarker(pick *PickResult, o *Record)        {}
+func ClickInteriorModel(pick *PickResult, o *Record) {}
+func ClickCorpse(pick *PickResult, o *Record)        {}
+func ClickPedestrian(pick *PickResult, o *Record)    {}
+func ClickLootContainer(pick *PickResult, o *Record) {}
+func ClickTownScenery(pick *PickResult, o *Record)   {}
+func ClickWorldFace(pick *PickResult) bool           { return false }
+func MonsterWabbajack(weapon, target *Record)        {}
+func ItemArtifactEquipped(id int32) bool             { return false }
 
 // tamriel.c's callees, not ported yet.
-func SpfxWalkEffectRecords(o *Record, fn func(*Record) int32) {}
-func SpfxDiseaseDaily(o *Record) int32                        { return 0 }
-func SpfxDiseaseRecover(o *Record) int32                      { return 0 }
-func PoisonTick(o *Record) int32                              { return 0 }
-func AutomapExpireRecords()                                   {}
-func AutomapPurgeOldFiles()                                   {}
-func TravelShowDaysLeft(minutes int32)                        {}
-func DiseaseStartCureQuest(kind int32)                        {}
-func FatigueUpdate()                                          {}
-func SkyUpdateMoons()                                         {}
-func GuildExpireBlessings()                                   {}
-func EncounterTick(minute, flag int32)                        {}
-func DiseaseLycanthropeTick()                                 {}
-func DiseaseSpecialInfectionTick()                            {}
-func SpfxExpireCreatedItems()                                 {}
-func QuestRunOpcodes(q *Quest)                                {}
+func PoisonTick(d *Disease) int32      { return 1 }
+func TransportChoose(button int32)     {}
+func AutomapExpireRecords()            {}
+func AutomapPurgeOldFiles()            {}
+func TravelShowDaysLeft(minutes int32) {}
+func DiseaseStartCureQuest(kind int32) {}
+func FatigueUpdate()                   {}
+func SkyUpdateMoons()                  {}
+func GuildExpireBlessings()            {}
+func EncounterTick(minute, flag int32) {}
+func DiseaseLycanthropeTick()          {}
+func DiseaseSpecialInfectionTick()     {}
+func QuestRunOpcodes(q *Quest)         {}
+
+// runspell.c's callees, not ported yet.
+func DiseaseLycanthropeShapechange(forced int32) {}
+func QuestsRaiseEventAll(event int32, o *Record) {}

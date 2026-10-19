@@ -248,7 +248,7 @@ title:
 			loadPalette8("map.pal")
 			background := DiskReadFile("map100i0.img")
 			copy(xn.Screen[:64000], background)
-			ListPopupOpen(addrClassNameList)
+			ListPopupOpen(cStringList(addrClassNameList))
 			for {
 				KeysWorldActions()
 				xn.MousePollClamped()
@@ -267,7 +267,7 @@ title:
 					}
 					background = DiskReadFile("map100i0.img")
 					copy(xn.Screen[:64000], background)
-					ListPopupOpen(addrClassNameList)
+					ListPopupOpen(cStringList(addrClassNameList))
 				}
 				xn.CursorDrawn &^= 1
 				xn.CursorMove(int16(xn.MouseX), int16(xn.MouseY))

@@ -49,37 +49,37 @@ const (
 
 // SAVEVARS.DAT's globals of modules not ported yet, kept so a save round-trips.
 var (
-	QuestFaces          [10]QuestFace
-	Savevars0e1         [20]byte
-	TravelOptions       [2]byte
-	Savevars0f7         [512]byte
-	SavevarsByte        uint8
-	StrengthBonus       int32
-	SpellPointsBonusEnd int32
-	StrengthBonusEnd    int32
-	PendingQuestFile    [13]byte
-	QuestObjectSerial   int32
-	BreathRemaining     int32
-	Savevars4Bytes      [4]byte
-	SavevarsVersion     uint16
-	BankHousePrice      int32
-	BankShipPrice       int32
-	InKnightlyOrderHall uint8
-	LastSkillCheck      uint32
-	RecallAnchorEnv     int32
-	RecallAnchorLoc     int32
-	RecallAnchorRegion  int32
-	RecallAnchorBldg    int32
-	ReturnRegion        int32
-	ReturnEnvironment   int32
-	ReturnLocation      int32
-	SaveVersion         int32
-	LoadRequeueFlagA    uint8 // quest_global_states[2], [23] and [33]
-	ShopItemGroups      uint32
-	saveloadThumbs      [saveSlots][]byte
-	saveloadNames       [saveSlots]string
-	saveloadWindow      []byte
-	saveloadSaveImg     []byte
+	QuestFaces              [10]QuestFace
+	Savevars0e1             [20]byte
+	TravelOptions           [2]byte
+	Savevars0f7             [512]byte
+	SavevarsByte            uint8
+	StrengthBonus           int32
+	SpellPointsBonusEnd     int32
+	StrengthBonusEnd        int32
+	PendingQuestFile        [13]byte
+	QuestObjectSerial       int32
+	BreathRemaining         int32
+	Savevars4Bytes          [4]byte
+	SavevarsVersion         uint16
+	BankHousePrice          int32
+	BankShipPrice           int32
+	InKnightlyOrderHall     uint8
+	LastSkillCheck          uint32
+	RecallAnchorEnvironment int32
+	RecallAnchorLocation    int32
+	RecallAnchorRegion      int32
+	RecallAnchorBuilding    int32
+	ReturnRegion            int32
+	ReturnEnvironment       int32
+	ReturnLocation          int32
+	SaveVersion             int32
+	LoadRequeueFlagA        uint8 // quest_global_states[2], [23] and [33]
+	ShopItemGroups          uint32
+	saveloadThumbs          [saveSlots][]byte
+	saveloadNames           [saveSlots]string
+	saveloadWindow          []byte
+	saveloadSaveImg         []byte
 )
 
 // QuestFace is an escort's face at the top left of the screen (struct quest_face).
@@ -217,10 +217,10 @@ func (s savevarsIO) all() {
 	s.v(ClimateWeathers[:6])
 	s.v(&DungeonWaterLevel)
 	s.v(&LastUnloadedLocation)
-	s.v(&RecallAnchorEnv)
-	s.v(&RecallAnchorLoc)
+	s.v(&RecallAnchorEnvironment)
+	s.v(&RecallAnchorLocation)
 	s.v(&RecallAnchorRegion)
-	s.v(&RecallAnchorBldg)
+	s.v(&RecallAnchorBuilding)
 	if s.w != nil || SaveVersion >= 294 {
 		s.v(&ReturnRegion)
 		s.v(&ReturnEnvironment)

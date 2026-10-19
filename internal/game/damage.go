@@ -579,7 +579,7 @@ func SpellBreakConcealment(entity *Record) {
 	for i := uint32(0); i < 3; i++ {
 		id := int32(U32At(addrSpellConcealment + i*8))
 		mask := U32At(addrSpellConcealment + i*8 + 4)
-		spell := SpellFindActiveEffect(entity, id)
+		spell := SpellFindActiveEffect(entity, id, nil, nil)
 		if spell == nil {
 			c.Conditions &^= mask
 			continue

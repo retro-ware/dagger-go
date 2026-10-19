@@ -222,7 +222,9 @@ func ItemApplyEquipEffects(o *Record, slot int32) {
 					spell.Durations[k] = SpellRange{-1, 0, 0}
 				}
 			}
-			CastItemSpellAt(so)
+			// the original passes no target (a touch or ranged item spell gets whatever the
+			// register held); the port gives it the player
+			CastItemSpellAt(so, PlayerEntity)
 		case 5:
 			EffectsLastMinute = GameMinutes
 		case 9:
