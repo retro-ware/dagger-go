@@ -13,11 +13,8 @@ func UnequipObject(o *Record)                           {}
 func ClimateCategory() int32                            { return 0 }
 func ObjectDrawCb(o *Record)                            {}
 func PlayerLightDraw()                                  {}
-func TownGridVisitNear(o *Record, fn func(*Record))     {}
 func DungeonGridVisitNear(o *Record, fn func(*Record))  {}
 func SkyApplySunlight()                                 {}
-func SpellCastQueuedRun()                               {}
-func ObjectFreePending()                                {}
 func ModelGet(id, variant, climate int32) *xn.Model     { return nil }
 func WeaponArrowUpdate(o *Record) bool                  { return true }
 func WeaponMissileOrient(o *Record)                     {}
@@ -51,12 +48,10 @@ func IntrfaceSetRegions()                                    {}
 func ArchiveOpen(name string, buf []byte, flags int32) int32 { return 0 }
 func ModelHeapInit(size int32)                               {}
 func ColorInitRemapTables()                                  {}
-func SwiftInit()                                             {}
 func RegionLoadTables()                                      {}
 func SkyInit()                                               {}
 func WeatherRoll()                                           {}
 func SoundInitMusic() int32                                  { return 1 }
-func FrameTimerInit()                                        {}
 func MusicSelectTables()                                     {}
 func AutomapDeleteFiles()                                    {}
 func AutomapButtonViewMode()                                 {}
@@ -80,7 +75,6 @@ func PlayerMovementUpdate()                          {}
 func PlayerToNearestMarker(root *Record, kind int32) {}
 func QuestDebugOverlay()                             {}
 func QuestInitRecordSizes()                          {}
-func RandRange(lo, hi int32) int32                   { return lo }
 func RegionEnter(flag, region int32)                 {}
 func RegionFreeTables()                              {}
 func RegionUnload()                                  {}
@@ -88,10 +82,31 @@ func ScreenshotPoll()                                {}
 func SkyFree()                                       {}
 func SoundCacheFreeAll()                             {}
 func SoundShutdownMusic()                            {}
-func SwiftClose()                                    {}
 func TextDraw(s string, x, y int32)                  {}
 func TextRSCClose()                                  {}
 func TimePass(n int32)                               {}
 func TitleMenu()                                     {}
 func WeaponFreeSprites()                             {}
 func WeaponReloadHandSprites()                       {}
+
+var (
+	BigBuffer      []byte
+	MouseX, MouseY int16
+)
+
+func BuildingName(b *Building) string                                    { return "" }
+func CastSpellOn(spell, target *Record, flag int32)                      {}
+func DetectConsiderCreature(o *Record, distance int32)                   {}
+func HolidayAnnounce()                                                   {}
+func ItemAddToContainer(c *Record, group, index, flag int32) *Record     { return nil }
+func LocationContains(x, z int32) bool                                   { return false }
+func MarkerMakeClutter(o *Record, b *Building)                           {}
+func MarkerMakeLootPile(o *Record, b *Building)                          {}
+func MonsterDespawnToMarker(o *Record) bool                              { return false }
+func ObjectWeight(o *Record) int32                                       { return 0 }
+func PlaceSpawnFromMarker(o *Record)                                     {}
+func SpellMissileUpdate(o *Record, flag int32) bool                      { return false }
+func TavernRoomRented() bool                                             { return false }
+func TextDrawCentredColoured(s string, x, y int32, colour, shadow uint8) {}
+func TextDrawColoured(s string, x, y int32, colour, shadow uint8)        {}
+func TownNoteFactionBuildings(faction int32)                             {}
