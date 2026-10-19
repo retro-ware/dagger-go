@@ -20,6 +20,8 @@ func main() {
 	data := flag.String("data", ".", "the Daggerfall install directory (holds ARENA2)")
 	overlay := flag.String("saves", "", "where written files go (default: the user config directory)")
 	shots := flag.String("shot", "", "write the game's frame to PNGs: SECONDS:FILE[,SECONDS:FILE...]")
+	input := flag.String("input", "", "replace the keyboard and mouse with a script: SECONDS:ACTION[,...], "+
+		"ACTION kHEX (tap a scan code), mDX/DY (move the mouse), bN (click button N)")
 	flag.Parse()
 	if _, err := os.Stat(filepath.Join(*data, "ARENA2")); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
@@ -55,8 +57,42 @@ func main() {
 		}
 		time.AfterFunc(d, func() { host.Screenshot(path) })
 	}
+	if *input != "" {
+		host.Scripted = true
+	}
+	for _, s := range strings.Split(*input, ",") {
+		secs, act, ok := strings.Cut(s, ":")
+		d, err := time.ParseDuration(secs + "s")
+		if !ok || err != nil || act == "" {
+			continue
+		}
+		time.AfterFunc(d, func() { scriptAction(act) })
+	}
 	if err := host.Run("Daggerfall", func() { game.Main("Z.CFG") }); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger:", err)
 		os.Exit(1)
+	}
+}
+
+// scriptAction performs one -input action.
+func scriptAction(act string) {
+	switch act[0] {
+	case 'k':
+		var code uint
+		if _, err := fmt.Sscanf(act[1:], "%x", &code); err == nil {
+			host.PushKey(byte(code))
+			host.PushKey(byte(code) | 0x80)
+		}
+	case 'm':
+		var dx, dy float64
+		if _, err := fmt.Sscanf(act[1:], "%g/%g", &dx, &dy); err == nil {
+			host.MouseMove(dx, dy)
+		}
+	case 'b':
+		var b int
+		if _, err := fmt.Sscanf(act[1:], "%d", &b); err == nil {
+			host.MouseButton(b, true)
+			time.AfterFunc(100*time.Millisecond, func() { host.MouseButton(b, false) })
+		}
 	}
 }

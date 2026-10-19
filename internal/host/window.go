@@ -78,6 +78,9 @@ func (g *window) Update() error {
 	if quit {
 		return gpu.ErrTermination
 	}
+	if Scripted {
+		return nil
+	}
 	if g.held == nil {
 		g.held = map[gpu.Key]bool{}
 	}

@@ -37,6 +37,9 @@ var st struct {
 }
 
 func init() { st.w, st.h, st.start = 320, 200, time.Now() }
+// Scripted makes the window ignore the real keyboard and mouse: only PushKey, MouseMove and
+// MouseButton reach the game, so a scripted run can't pick up the user's keystrokes.
+var Scripted bool
 
 // Present shows a frame of w x h palette indices.
 func Present(px []byte, w, h int) {
