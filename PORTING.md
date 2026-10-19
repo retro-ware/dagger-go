@@ -20,6 +20,11 @@ tables at runtime. The player points it at an installed Daggerfall directory wit
 - `dagger-re/port/` is the native C port (SDL3), the behavioural reference.
 - `dagger-re/tools/port_compare.py` and `fallplay.py` run lockstep comparisons.
 
+## References
+
+- https://github.com/Lattymoy/daggerfall-js-source is a JavaScript Daggerfall source, used
+  as a cross-check. dagger-re's C stays the source of truth.
+
 ## Phases
 
 1. Prep, in dagger-re:
