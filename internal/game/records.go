@@ -668,4 +668,100 @@ type Record struct {
 	MissileAngles [3]int32
 	// Raw is a record whose data the game keeps as bytes (the types without a struct).
 	Raw []byte
+	// DataSize is the data's size in the original's object heap (its accounting).
+	DataSize int32
+	// DrawHandle is the engine's handle of a drawn flat (C's draw_handle at +0x2F).
+	DrawHandle any
+}
+
+// copyRecord is a copy of the record with its data (the links are copied as they are).
+func (r *Record) copyRecord() *Record {
+	c := *r
+	if r.Character != nil {
+		v := *r.Character
+		c.Character = &v
+	}
+	if r.Anim != nil {
+		v := *r.Anim
+		c.Anim = &v
+	}
+	if r.Item != nil {
+		v := *r.Item
+		c.Item = &v
+	}
+	if r.Spell != nil {
+		v := *r.Spell
+		c.Spell = &v
+	}
+	if r.Membership != nil {
+		v := *r.Membership
+		c.Membership = &v
+	}
+	if r.Disease != nil {
+		v := *r.Disease
+		c.Disease = &v
+	}
+	if r.Career != nil {
+		v := *r.Career
+		c.Career = &v
+	}
+	if r.PotionRecipe != nil {
+		v := *r.PotionRecipe
+		c.PotionRecipe = &v
+	}
+	if r.Location != nil {
+		v := *r.Location
+		c.Location = &v
+	}
+	if r.Quest != nil {
+		v := *r.Quest
+		c.Quest = &v
+	}
+	if r.Settings != nil {
+		v := *r.Settings
+		c.Settings = &v
+	}
+	if r.Logbook != nil {
+		v := *r.Logbook
+		c.Logbook = &v
+	}
+	if r.BankAccounts != nil {
+		v := *r.BankAccounts
+		c.BankAccounts = &v
+	}
+	if r.Person != nil {
+		v := *r.Person
+		c.Person = &v
+	}
+	if r.Blessing != nil {
+		v := *r.Blessing
+		c.Blessing = &v
+	}
+	if r.Building != nil {
+		v := *r.Building
+		c.Building = &v
+	}
+	if r.QuestNPC != nil {
+		v := *r.QuestNPC
+		c.QuestNPC = &v
+	}
+	if r.Block != nil {
+		v := *r.Block
+		v.Models = append([]BlockModel(nil), v.Models...)
+		v.Flats = append([]BlockFlat(nil), v.Flats...)
+		v.Section3 = append([]BlockSection3(nil), v.Section3...)
+		c.Block = &v
+	}
+	if r.Automap != nil {
+		v := *r.Automap
+		c.Automap = &v
+	}
+	if r.Instance != nil {
+		v := *r.Instance
+		c.Instance = &v
+	}
+	if r.Raw != nil {
+		c.Raw = append([]byte(nil), r.Raw...)
+	}
+	return &c
 }
