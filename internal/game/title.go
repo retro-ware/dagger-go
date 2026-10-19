@@ -272,7 +272,7 @@ title:
 		xn.DrawImage(int32(le16(img)), int32(le16(img[2:])), int32(le16(img[4:])), int32(le16(img[6:])), img[12:])
 		background := waitButtonClick([4]int16{76, 58, 243, 111}, [4]int16{76, 130, 243, 176})
 		PlayerCharacter.Gold = 100
-		CareerBackgroundSummary(ChosenClass, int32(background))
+		CareerBackgroundSummary(ChosenClass, background != 0)
 		PaletteRestore()
 		if !ChargenNameCharacter() {
 			break
