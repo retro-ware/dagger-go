@@ -6,6 +6,10 @@ import "github.com/memmaker/dagger-go/internal/xn"
 // and character creation: a fixed character starts a new game in Privateer's Hold.
 var QuickStart bool
 
+// QuickLoad (the -load flag, a testing aid) loads the save slot instead of showing the title
+// menu; -1 none.
+var QuickLoad int32 = -1
+
 // quickStartCharacter makes the fixed test character, the steps of character creation
 // without its screens.
 func quickStartCharacter() {

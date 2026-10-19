@@ -142,6 +142,14 @@ func waitButtonClick(a, b [4]int16) int {
 // TitleMenu is the title screen: load a game, start a new one (character creation, the
 // intro movie, the new world) or exit.
 func TitleMenu() {
+	if QuickLoad >= 0 {
+		slot := QuickLoad
+		QuickLoad = -1
+		PaletteRestore()
+		if LoadGame(slot) {
+			return
+		}
+	}
 	if QuickStart {
 		QuickStart = false
 		quickStartCharacter()

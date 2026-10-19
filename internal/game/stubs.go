@@ -22,15 +22,19 @@ var (
 	HazeTable1         []byte
 )
 
-func AutomapLoad()                               {}
-func CalendarUpdate()                            {}
-func FactionFree()                               {}
-func FactionLoadFile()                           {}
-func FactionPoliticsUpdate(kind int32)           {}
-func SpellbookOpen(mode int32)                   {}
-func OptionsOpen(mode int32)                     {}
-func FlatsCfgLoad()                              {}
-func BuildingEnter(b *Building)                  {}
+func AutomapLoad()                     {}
+func CalendarUpdate()                  {}
+func FactionFree()                     {}
+func FactionLoadFile()                 {}
+func FactionPoliticsUpdate(kind int32) {}
+func SpellbookOpen(mode int32)         {}
+func OptionsOpen(mode int32)           {}
+func FlatsCfgLoad()                    {}
+
+// BuildingEnter is not ported; only the shop's item groups (building_type_odds) are set.
+func BuildingEnter(b *Building) {
+	ShopItemGroups = PtrAt(addrBuildingTypeOdds + uint32(b.Type)*4)
+}
 func TownMapNoteBuilding(o *Record, b *Building) {}
 func SkyInit()                                   {}
 func WeatherRoll()                               {}
@@ -119,7 +123,11 @@ func PlayerMouseLook()                                            {}
 func CursorDraw(region int16)                                     {}
 func FatigueAdd(n int32)                                          {}
 func DamageApply(o *Record, damage int32, attacker *Record) int32 { return 0 }
-func SaveloadMenu(mode int32)                                     {}
+func QuestsUnlinkAll(root *Record)                                {}
+func QuestsRelinkAll(root *Record)                                {}
+func QuestFacesAfterLoad()                                        {}
+func MonsterReloadAnims()                                         {}
+func BuildingUpdateOpenState()                                    {}
 func CheatReturnToLastPosition()                                  {}
 func CastRecastLast()                                             {}
 func TravelMapOpen(mode int32)                                    {}

@@ -14,7 +14,6 @@ const (
 	addrInvArmorValueYs     = 0x18824D
 	addrLootPileImages      = 0x187DAC
 	addrWeaponSwingDelays   = 0x17887F
-	addrShopItemGroups      = 0x195D84
 	addrTextFoundGoldFmt    = 0x1832A4
 	addrTextCannotUseThis   = 0x184221
 	addrKeyNames            = 0x1846FC
@@ -1931,8 +1930,11 @@ func ShopQualityMessage(b *Building) {
 
 // TradeShopTakesGroup is whether the shop buys items of the group.
 func TradeShopTakesGroup(group uint16) bool {
+	if ShopItemGroups == 0 {
+		return false
+	}
 	for i := uint32(0); ; i += 2 {
-		g := U8At(addrShopItemGroups + i)
+		g := U8At(ShopItemGroups + i)
 		if g == 255 {
 			return false
 		}

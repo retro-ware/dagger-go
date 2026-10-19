@@ -19,6 +19,7 @@
 - [ ] game: done init, support, archive, object, args, config, disk, color, intro, kludge,
       book, intrface, keys, camera, rumor, picklist, people, steal, region, trade haggling,
       song, parse (macros, TEXT.RSC, wrapping), names, msgbox, title menu, chargen, HUD,
-      items (equip.c), paperdoll, inventory screen and shop trades (inven.c); next spells,
-      save/load, monsters/AI, combat, automap, talk, quests
+      items (equip.c), paperdoll, inventory screen and shop trades (inven.c), save/load
+      (loadsave.c; -load N for testing); next spells, monsters/AI, combat, automap, talk,
+      quests, factions
 - [ ] parity traces
