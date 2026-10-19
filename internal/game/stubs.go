@@ -21,7 +21,6 @@ var (
 )
 
 func AutomapLoad()                     {}
-func CalendarUpdate()                  {}
 func FactionFree()                     {}
 func FactionLoadFile()                 {}
 func FactionPoliticsUpdate(kind int32) {}
@@ -50,7 +49,6 @@ func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
 func RegionUnload()         {}
 func SkyFree()              {}
-func TimePass(n int32)      {}
 func ClassmakerRun()        {}
 func QuestsStartInitial()   {}
 
@@ -60,7 +58,6 @@ var (
 
 func CastSpellOn(spell, target *Record, flag int32)               {}
 func DetectConsiderCreature(o *Record, distance int32)            {}
-func HolidayAnnounce()                                            {}
 func LocationContains(x, z int32) bool                            { return false }
 func MarkerMakeClutter(o *Record, b *Building)                    {}
 func MarkerMakeLootPile(o *Record, b *Building)                   {}
@@ -92,7 +89,6 @@ func GuildFindMembershipByBits(bits uint8) *Membership            { return nil }
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
 func QuestFindSiteForBuilding(b *Building) *Record                { return nil }
 func EnchantPowersText(item *Item) string                         { return "" }
-func CalendarFormatDate(minutes uint32) string                    { return "" }
 func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
@@ -121,7 +117,6 @@ func QuestsUnlinkAll(root *Record)                           {}
 func QuestsRelinkAll(root *Record)                           {}
 func QuestFacesAfterLoad()                                   {}
 func MonsterReloadAnims()                                    {}
-func BuildingUpdateOpenState()                               {}
 func CheatReturnToLastPosition()                             {}
 func CastRecastLast()                                        {}
 func TravelMapOpen(mode int32)                               {}
@@ -175,7 +170,6 @@ func SpellRemoveEffectType(o *Record, effect int32) {}
 func PotionmakerUpdate()                            {}
 func QuestFacesDraw()                               {}
 func QuestPromptAnswer()                            {}
-func QuestsRunAll()                                 {}
 func QuestStartPending()                            {}
 func RepairMenuFrame()                              {}
 func RestUpdate()                                   {}
@@ -190,7 +184,6 @@ func SpfxPopupUpdate()                              {}
 func StatusShow(mode int16)                         {}
 func TalkUpdate()                                   {}
 func TavernFrame()                                  {}
-func TimeUpdateRealtime()                           {}
 func TradeHaggleFrame()                             {}
 func TrainingUpdate()                               {}
 func TravelMapUpdate()                              {}
@@ -214,3 +207,21 @@ func SpfxResistRoll(a, b int32, c *Character, career *Career, d, e int32) int32 
 func ItemArtifactEquipped(id int32) bool                                        { return false }
 func CastItemStrikeSpell(spell int32, target *Record)                           {}
 func SpellFindActiveEffect(o *Record, effect int32) *Record                     { return nil }
+
+// tamriel.c's callees, not ported yet.
+func SpfxWalkEffectRecords(o *Record, fn func(*Record) int32) {}
+func SpfxDiseaseDaily(o *Record) int32                        { return 0 }
+func SpfxDiseaseRecover(o *Record) int32                      { return 0 }
+func PoisonTick(o *Record) int32                              { return 0 }
+func AutomapExpireRecords()                                   {}
+func AutomapPurgeOldFiles()                                   {}
+func TravelShowDaysLeft(minutes int32)                        {}
+func DiseaseStartCureQuest(kind int32)                        {}
+func FatigueUpdate()                                          {}
+func SkyUpdateMoons()                                         {}
+func GuildExpireBlessings()                                   {}
+func EncounterTick(minute, flag int32)                        {}
+func DiseaseLycanthropeTick()                                 {}
+func DiseaseSpecialInfectionTick()                            {}
+func SpfxExpireCreatedItems()                                 {}
+func QuestRunOpcodes(q *Quest)                                {}
