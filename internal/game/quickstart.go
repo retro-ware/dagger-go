@@ -1,0 +1,46 @@
+package game
+
+import "github.com/memmaker/dagger-go/internal/xn"
+
+// QuickStart (the -quickstart flag, a testing aid not in the original) skips the title menu
+// and character creation: a fixed character starts a new game in Privateer's Hold.
+var QuickStart bool
+
+// quickStartCharacter makes the fixed test character, the steps of character creation
+// without its screens.
+func quickStartCharacter() {
+	Srand(1)
+	resetNewCharacter()
+	AutomapDeleteFiles()
+	pc := PlayerCharacter
+	pc.Race = 0
+	pc.Flags &^= 1
+	ChosenClass = 0
+	*PlayerClass = decodeCareer(DiskReadFile(Sprintf("class%02d.cfg", ChosenClass)))
+	pc.Gold = 100
+	for i := range 35 {
+		pc.Skills[i].Value = int16(RandRange(3, 6))
+	}
+	for i := range 12 {
+		pc.Skills[PlayerClass.Skills[i]].Value += int16(U8At(addrChargenCareerSkillBonus + uint32(i)))
+	}
+	pc.Level = 1
+	pc.Name = [32]byte{}
+	copy(pc.Name[:], "Tester")
+	for i := range 8 {
+		v := int16(PlayerClass.Attributes[i]) + 10
+		pc.Attributes[i] = min(v, 100)
+	}
+	pc.BaseAttributes = pc.Attributes
+	pc.LevelSkillSumStart = LevelSkillSum()
+	clear(xn.VGA[:64000])
+	clear(xn.Screen[:64000])
+	PaletteRestore()
+	ChargenGiveStartingEquipment()
+	NewgameInitPlayer()
+	xn.Clear(0)
+	PaletteRestore()
+	NewgamePlacePlayer()
+	RealtimeClockTick = xn.BIOSTicks()
+	QuestsStartInitial()
+}

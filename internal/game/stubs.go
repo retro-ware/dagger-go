@@ -30,8 +30,6 @@ func FactionPoliticsUpdate(kind int32)           {}
 func SpellbookOpen(mode int32)                   {}
 func OptionsOpen(mode int32)                     {}
 func FlatsCfgLoad()                              {}
-func MagicDefLoad()                              {}
-func BooksScan()                                 {}
 func BuildingEnter(b *Building)                  {}
 func TownMapNoteBuilding(o *Record, b *Building) {}
 func SkyInit()                                   {}
@@ -79,14 +77,11 @@ func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func FactionFindTypeInRegion(region, typ int16) *Faction          { return &Faction{} }
 func GuardsSummon(n int32)                                        {}
 func MonsterInit(o *Record, mobile int32)                         {}
-func PaintingDraw()                                               {}
 func PedestrianPickSprite(o *Record)                              {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
-func ItemMakeRandom(group uint16, item *Item)                     {}
-func ItemMake(group uint16, index int32, item *Item)              {}
-func ItemMakeInRange(group uint16, lo, hi int32, it *Item)        {}
-func ItemMakeArtifact(item *Item, artifact int32)                 {}
+func SpellCost(s *Spell, c *Character) int32                      { return 5 }
+func ItemBreak(o *Record)                                         {}
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func InvEquipItem(o *Record)                                      {}
 func InvStoreItem(o *Record)                                      {}
@@ -104,7 +99,6 @@ func CalendarFormatDate(minutes uint32) string                    { return "" }
 func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
-func ObjectFindItem(o *Record, group, index int16) *Record        { return nil }
 func RumorShowLocal()                                             {}
 func ListPopupOpen(items uint32)                                  {}
 func ListPopupPoll() int32                                        { return -1 }

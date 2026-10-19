@@ -142,6 +142,11 @@ func waitButtonClick(a, b [4]int16) int {
 // TitleMenu is the title screen: load a game, start a new one (character creation, the
 // intro movie, the new world) or exit.
 func TitleMenu() {
+	if QuickStart {
+		QuickStart = false
+		quickStartCharacter()
+		return
+	}
 title:
 	waitMouseRelease()
 	pick := DiskReadFile("pick03i0.img")
