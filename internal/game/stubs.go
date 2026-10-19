@@ -78,7 +78,6 @@ func PlaceSpawnFromMarker(o *Record)                              {}
 func SpellMissileUpdate(o *Record, flag int32) bool               { return false }
 func TavernRoomRented() bool                                      { return false }
 func TownNoteFactionBuildings(faction int32)                      {}
-func LinksTrigger(o *Record, kind int32)                          {}
 func SkillAddUses(skill, uses int32)                              {}
 func GuildCountCrime(crime, count int32)                          {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
@@ -135,7 +134,6 @@ func HudUpdate() bool                                                        { r
 func CursorDraw(region int16)                                                {}
 func PlayerTryMove(step int32) bool                                          { return false }
 func PlayerTryMoveVertical(dy int32) bool                                    { return false }
-func LinksObjectMotion(o *Record) bool                                       { return false }
 func FatigueAdd(n int32)                                                     {}
 func DamageApply(o *Record, damage int32, attacker *Record) int32            { return 0 }
 func CollideMovePlayer(o *Record, a int32, r *MoveRequest, mode int32) int32 { return 0 }
@@ -154,30 +152,41 @@ func MarkerFindNth(root *Record, kind, n int32) *Record                      { r
 func FactionRandomOfType(typ int32) *Faction                                 { return &Faction{} }
 func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
 func MonsterWakeAll()                                                        {}
-func MaploadsEnterRegion(region int32)                                       {}
 func QuestLoadText(q *Quest, id int32, a int16, b int32)                     { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
-func AIUpdateCreatures()        {}
-func AmbientDungeonSounds()     {}
-func AmbientOutdoorSounds()     {}
-func BankFrame()                {}
-func BreathUpdate()             {}
-func CastAnimUpdate()           {}
-func CourtFrame()               {}
-func CovenMenuFrame()           {}
-func CreaturesFindNearest()     {}
-func DamageExpireDrainBonuses() {}
-func EffectsTick()              {}
-func FootstepSounds()           {}
-func GuildCheckInvitations()    {}
-func HeadBobUpdate()            {}
-func HudDraw()                  {}
-func InfoPopupUpdate()          {}
-func InventoryFrame()           {}
-func ItemmakerUpdate()          {}
-func LevelupCheck()             {}
-func LinksUpdate()              {}
+func AIUpdateCreatures()                                    {}
+func AmbientDungeonSounds()                                 {}
+func AmbientOutdoorSounds()                                 {}
+func BankFrame()                                            {}
+func BreathUpdate()                                         {}
+func CastAnimUpdate()                                       {}
+func CourtFrame()                                           {}
+func CovenMenuFrame()                                       {}
+func CreaturesFindNearest()                                 {}
+func DamageExpireDrainBonuses()                             {}
+func EffectsTick()                                          {}
+func FootstepSounds()                                       {}
+func GuildCheckInvitations()                                {}
+func HeadBobUpdate()                                        {}
+func HudDraw()                                              {}
+func InfoPopupUpdate()                                      {}
+func InventoryFrame()                                       {}
+func ItemmakerUpdate()                                      {}
+func LevelupCheck()                                         {}
+func CastCreatureSpell(caster, target *Record, spell int32) {}
+func SpfxDamage(spell *Record, slot int32, target *Record)  {}
+func PoisonApply(o *Record, poison, flag int32)             {}
+func DiseaseInfect(o, from *Record, disease, flag int32)    {}
+func AIAlertCreatures(n int32)                              {}
+
+var (
+	EnchantCasterLevel  int8
+	EnchantEffectParams [3][2]int16
+	QuestGlobalStates   [256]uint8
+	CollideStepped      int32
+)
+
 func LoanCollectorsUpdate()     {}
 func LogbookUpdate()            {}
 func MagicItemsFrame()          {}

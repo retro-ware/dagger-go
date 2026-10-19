@@ -528,7 +528,7 @@ func PlayerMovementUpdate() {
 			LinksTrigger(MovingModel, 3)
 		}
 	}
-	if distance == 0 && FloorObject != nil && LinksObjectMotion(FloorObject) {
+	if distance == 0 && FloorObject != nil && LinksObjectMotion(FloorObject) != nil {
 		PlayerTryMove(0)
 	}
 	dy = 0
