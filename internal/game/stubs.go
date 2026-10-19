@@ -29,32 +29,30 @@ var (
 	TextColour         uint8
 )
 
-func ArchiveCloseAll()                                       {}
-func AutomapLoad()                                           {}
-func CalendarUpdate()                                        {}
-func DungeonLoad(n int32)                                    {}
-func FactionFree()                                           {}
-func FactionLoadFile()                                       {}
-func FactionPoliticsUpdate(kind int32)                       {}
-func GameFrame()                                             {}
-func HudDrawHeadingStrip(force int32)                        {}
-func MsgboxLoadBorders()                                     {}
-func TextRSCOpen()                                           {}
-func FlatsCfgLoad()                                          {}
-func MagicDefLoad()                                          {}
-func BooksScan()                                             {}
-func IntrfaceInit()                                          {}
-func IntrfaceSetRegions()                                    {}
-func ArchiveOpen(name string, buf []byte, flags int32) int32 { return 0 }
-func ModelHeapInit(size int32)                               {}
-func ColorInitRemapTables()                                  {}
-func RegionLoadTables()                                      {}
-func SkyInit()                                               {}
-func WeatherRoll()                                           {}
-func SoundInitMusic() int32                                  { return 1 }
-func MusicSelectTables()                                     {}
-func AutomapDeleteFiles()                                    {}
-func AutomapButtonViewMode()                                 {}
+func AutomapLoad()                     {}
+func CalendarUpdate()                  {}
+func DungeonLoad(n int32)              {}
+func FactionFree()                     {}
+func FactionLoadFile()                 {}
+func FactionPoliticsUpdate(kind int32) {}
+func GameFrame()                       {}
+func HudDrawHeadingStrip(force int32)  {}
+func MsgboxLoadBorders()               {}
+func TextRSCOpen()                     {}
+func FlatsCfgLoad()                    {}
+func MagicDefLoad()                    {}
+func BooksScan()                       {}
+func IntrfaceInit()                    {}
+func IntrfaceSetRegions()              {}
+func ModelHeapInit(size int32)         {}
+func ColorInitRemapTables()            {}
+func RegionLoadTables()                {}
+func SkyInit()                         {}
+func WeatherRoll()                     {}
+func SoundInitMusic() int32            { return 1 }
+func MusicSelectTables()               {}
+func AutomapDeleteFiles()              {}
+func AutomapButtonViewMode()           {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
@@ -110,3 +108,7 @@ func TavernRoomRented() bool                                             { retur
 func TextDrawCentredColoured(s string, x, y int32, colour, shadow uint8) {}
 func TextDrawColoured(s string, x, y int32, colour, shadow uint8)        {}
 func TownNoteFactionBuildings(faction int32)                             {}
+func LinksTrigger(o *Record, kind int32)                                 {}
+func SkillAddUses(skill, uses int32)                                     {}
+func SoundPlay(sound int32, o *Record, volume int32) int32               { return 0 }
+func GuildCountCrime(crime, count int32)                                 {}
