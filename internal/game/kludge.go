@@ -360,7 +360,7 @@ func KludgeRemoveAllItems() {
 // KludgeShowMemory lists the texture cache's archives (the port's cache keeps no sizes: it
 // shows the total only).
 func KludgeShowMemory() {
-	TextColour = 245
+	xn.TextColour = 245
 	TextDraw(Sprintf(S(strTotalMemory), int32(0)), 0, 0)
 }
 

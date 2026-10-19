@@ -105,7 +105,7 @@ func init() {
 
 // DebugShowMemUsed draws the memory in use (the original's DPMI figure; here the Go heap's).
 func DebugShowMemUsed() {
-	TextColour = 146
+	xn.TextColour = 146
 	TextDraw(Sprintf(S(strMemUsedK), int32(0)), 246, 23)
 }
 

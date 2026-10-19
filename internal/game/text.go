@@ -109,7 +109,7 @@ func MsgboxShowMorePages(image *[]byte) {
 			xn.PresentInclusive(false)
 		}
 		if MsgboxNextPage != nil {
-			TextColour = 146
+			xn.TextColour = 146
 			MsgboxRender(MsgboxNextPage, image)
 			waitMouseUp()
 			xn.MouseButtonsPrev = 0
@@ -223,7 +223,7 @@ func MsgboxUpdate() {
 	if MsgboxKind != 4 && uint8(GameMode) != 8 {
 		return
 	}
-	TextColour = 146
+	xn.TextColour = 146
 	if UIModeFlags&0x40 != 0 {
 		xn.DrawImageTransparent(160-int32(MsgboxW)>>1, int32(MsgboxButtonsY)-int32(MsgboxH), int32(MsgboxW), int32(MsgboxH), MsgboxImage)
 	} else {

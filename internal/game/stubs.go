@@ -25,7 +25,6 @@ var (
 	MonsterAnimRecords [127]*MonsterAnim
 	HazeTable0         []byte
 	HazeTable1         []byte
-	TextColour         uint8
 )
 
 func AutomapLoad()                     {}
@@ -60,7 +59,6 @@ func LocationUnload(index int32)                     {}
 func MapGotoLocation(region, env, mapID, flag int32) {}
 func MarkerCount(root *Record, kind int32) int32     { return 0 }
 func ModelHeapFreeAll()                              {}
-func MouseSetBounds(x0, y0, x1, y1 int32)            {}
 func PaperdollDraw(x, y int32)                       {}
 func PlayerComputeJumpVelocity()                     {}
 func PlayerMovementUpdate()                          {}
@@ -74,7 +72,6 @@ func ScreenshotPoll()                                {}
 func SkyFree()                                       {}
 func SoundCacheFreeAll()                             {}
 func SoundShutdownMusic()                            {}
-func TextDraw(s string, x, y int32)                  {}
 func TextRSCClose()                                  {}
 func TimePass(n int32)                               {}
 func TitleMenu()                                     {}
@@ -97,8 +94,6 @@ func ObjectWeight(o *Record) int32                                              
 func PlaceSpawnFromMarker(o *Record)                                            {}
 func SpellMissileUpdate(o *Record, flag int32) bool                             { return false }
 func TavernRoomRented() bool                                                    { return false }
-func TextDrawCentredColoured(s string, x, y int32, colour, shadow uint8)        {}
-func TextDrawColoured(s string, x, y int32, colour, shadow uint8)               {}
 func TownNoteFactionBuildings(faction int32)                                    {}
 func LinksTrigger(o *Record, kind int32)                                        {}
 func SkillAddUses(skill, uses int32)                                            {}
@@ -148,3 +143,10 @@ func DiseaseCureLycanthropy()                                                   
 func TavernOpen()                                                               {}
 
 var Factions []Faction
+var MsgboxWrapWidth int16
+
+func InventoryOpen(mode, trade, icon int32) int32            { return 0 }
+func InpstrBeginNumber(n int32)                              {}
+func TextExpandWrap(flags, width int32, text []byte) []byte  { return text }
+func SpfxEffectEnd(spell *Spell, slot int32, target *Record) {}
+func SpfxEffectTick(spellObject, target *Record, slot int32) {}
