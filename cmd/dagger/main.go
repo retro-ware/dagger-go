@@ -6,6 +6,9 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+
+	"github.com/memmaker/dagger-go/internal/exe"
+	"github.com/memmaker/dagger-go/internal/xn"
 )
 
 func main() {
@@ -15,5 +18,18 @@ func main() {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
 		os.Exit(1)
 	}
-	fmt.Println("dagger: engine not ported yet")
+	// the engine's tables come from the player's own FALL.EXE
+	raw, err := os.ReadFile(filepath.Join(*data, "FALL.EXE"))
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "dagger: no FALL.EXE in", *data)
+		os.Exit(1)
+	}
+	img, err := exe.Object2(raw)
+	if err != nil {
+		fmt.Fprintln(os.Stderr, "dagger:", err)
+		os.Exit(1)
+	}
+	xn.LoadData(img)
+	xn.SoundUseHost()
+	fmt.Println("dagger: engine data loaded; game not ported yet")
 }
