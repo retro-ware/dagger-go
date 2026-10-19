@@ -53,12 +53,16 @@ var (
 		KludgeShowRumor, KludgeAdvanceLevel, KludgeJumpMonth, KludgeGoodMerchantRep,
 		DiseaseBecomeVampire, DiseaseCureVampirism, diseaseBecomeWerewolf,
 		DiseaseCureLycanthropy, KludgeToggleWorldPosition, KludgeToggleSecondCompass,
-		KludgePickPockets, TavernOpen, KludgeToggleQuestDebug,
+		KludgePickPockets, kludgeTavernOpen, KludgeToggleQuestDebug,
 	}
 )
 
 // monsterName is the creature type's name.
 func monsterName(id int32) string { return SP(addrMonsterNames + uint32(id)*4) }
+
+// kludgeTavernOpen is the menu's tavern row: the original calls tavern_open with
+// whatever its register holds; 1 opens the tavern menu.
+func kludgeTavernOpen() { TavernOpen(1) }
 
 // newItemChild makes an empty item record as the container's first child.
 func newItemChild(container *Record) *Record {

@@ -72,7 +72,7 @@ func MonsterInit(o *Record, mobile int32)                         {}
 func PedestrianPickSprite(o *Record)                              {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
-func QuestRaiseEvent(event int16, o, other *Record)               {}
+func QuestRaiseEvent(event int16, o, other *Record) bool          { return false }
 func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func GuildJoinDarkBrotherhood()                                   {}
@@ -87,7 +87,29 @@ func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func RumorShowLocal()                                             {}
 func SheetOpen(mode int16) int32                                  { return 0 }
-func TavernOpen()                                                 {}
+func TavernOpen(mode int16)                                       {}
+
+// click.c's callees, not ported yet.
+func FurnitureIsContainer(id int32) bool                         { return false }
+func QuestEventClickedFaction(faction uint16) bool               { return false }
+func QuestEventIndividualNPC(event int16, o, other *Record) bool { return false }
+func PedestrianSpawnSpotOk(o *Record, x, z int32) bool           { return false }
+func QuestStartTestQuest(p *Person) bool                         { return false }
+func BankOpen(mode int32)                                        {}
+func TalkStart(npc *Record)                                      {}
+func DaedraSummon(npc *Record)                                   {}
+func QuestPickForNPC(npc *Record)                                {}
+func GuildServiceDispatch(npc *Record)                           {}
+func BuildingExit()                                              {}
+
+var npcRecordBuffer Character
+
+// NPCTalkRecordBuild is not ported; only the NPC's name is set.
+func NPCTalkRecordBuild(npc *Record) *Character {
+	npcRecordBuffer = Character{}
+	copy(npcRecordBuffer.Name[:31], NPCDisplayName(npc))
+	return &npcRecordBuffer
+}
 
 var Factions []Faction
 
@@ -100,7 +122,6 @@ func QuestsUnlinkAll(root *Record)                       {}
 func QuestsRelinkAll(root *Record)                       {}
 func QuestFacesAfterLoad()                               {}
 func MonsterReloadAnims()                                {}
-func CheatReturnToLastPosition()                         {}
 func TravelMapOpen(mode int32)                           {}
 func AutomapOpen()                                       {}
 func RestOpen()                                          {}
@@ -112,14 +133,10 @@ func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()                               {}
-func AmbientDungeonSounds()                            {}
-func AmbientOutdoorSounds()                            {}
 func BankFrame()                                       {}
 func BreathUpdate()                                    {}
 func FactionChangeReputation(f *Faction, amount int32) {}
 func MusicPlayCourt()                                  {}
-func CovenMenuFrame()                                  {}
-func FootstepSounds()                                  {}
 func GuildCheckInvitations()                           {}
 func HeadBobUpdate()                                   {}
 func InfoPopupUpdate()                                 {}
@@ -145,11 +162,8 @@ func PotionmakerUpdate()                           {}
 func QuestFacesDraw()                              {}
 func QuestPromptAnswer()                           {}
 func QuestStartPending()                           {}
-func RepairMenuFrame()                             {}
 func RestUpdate()                                  {}
-func ServiceMenuFrame()                            {}
 func SheetUpdate()                                 {}
-func ShelfBookListUpdate()                         {}
 func SkyUpdate()                                   {}
 func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
@@ -160,20 +174,8 @@ func TrainingUpdate()                              {}
 func TravelMapUpdate()                             {}
 func WeatherDrawPrecipitation()                    {}
 
-// click.c and the damage code, not ported yet.
-func ClickItem(pick *PickResult, o *Record)          {}
-func ClickDungeonModel(pick *PickResult, o *Record)  {}
-func ClickNPC(pick *PickResult, o *Record)           {}
-func ClickCreature(pick *PickResult, o *Record)      {}
-func ClickDoor(pick *PickResult, o *Record)          {}
-func ClickMarker(pick *PickResult, o *Record)        {}
-func ClickInteriorModel(pick *PickResult, o *Record) {}
-func ClickCorpse(pick *PickResult, o *Record)        {}
-func ClickPedestrian(pick *PickResult, o *Record)    {}
-func ClickLootContainer(pick *PickResult, o *Record) {}
-func ClickTownScenery(pick *PickResult, o *Record)   {}
-func ClickWorldFace(pick *PickResult) bool           { return false }
-func MonsterWabbajack(weapon, target *Record)        {}
+// damage.c's callees, not ported yet.
+func MonsterWabbajack(weapon, target *Record) {}
 
 // tamriel.c's callees, not ported yet.
 func TransportChoose(button int32)     {}

@@ -64,7 +64,7 @@ func init() {
 		kludgeEffect(DiseaseBecomeVampire), kludgeEffect(DiseaseCureVampirism),
 		kludgeEffect(diseaseBecomeWerewolf), kludgeEffect(DiseaseCureLycanthropy),
 		kludgeEffect(KludgeToggleWorldPosition), kludgeEffect(KludgeToggleSecondCompass),
-		kludgeEffect(KludgePickPockets), kludgeEffect(TavernOpen),
+		kludgeEffect(KludgePickPockets), kludgeEffect(kludgeTavernOpen),
 		kludgeEffect(KludgeToggleQuestDebug),
 	}
 }

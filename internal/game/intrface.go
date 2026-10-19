@@ -80,12 +80,17 @@ var (
 	PlayerProbeCrouched    xn.CollideProbe
 	PlayerProbeClimb       xn.CollideProbe
 
-	// steerRegionHandlers are the nine view regions' steering (0xCAF00).
+	// steerRegionHandlers are the nine view regions' steering (0xCAF00), set by init
+	// (a literal would make an initialization cycle through SteerCenter's click).
+	steerRegionHandlers [9]func()
+)
+
+func init() {
 	steerRegionHandlers = [9]func(){
 		SteerForwardLeft, SteerForward, SteerForwardRight, SteerTurnLeft, SteerCenter,
 		SteerTurnRight, SteerSlideLeft, SteerBackward, SteerSlideRight,
 	}
-)
+}
 
 const textClimbingMode = 0x1845C8 // a pointer to "Climbing mode."
 
