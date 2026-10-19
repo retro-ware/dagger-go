@@ -37,6 +37,12 @@ var (
 	bookLine           []byte
 )
 
+const addrWorldRunning = 0x187CA8
+
+func init() {
+	tableLoaders = append(tableLoaders, func() { WorldRunning = int8(U8At(addrWorldRunning)) })
+}
+
 func bookButton(i int) Rect {
 	b := Bytes(addrBookButtons+uint32(i)*12, 8)
 	return Rect{int16(le16(b)), int16(le16(b[2:])), int16(le16(b[4:])), int16(le16(b[6:]))}

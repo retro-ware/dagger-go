@@ -265,7 +265,7 @@ func PakLookup(column, row int32, pak []byte) uint8 {
 	p := le32(pak[row*4:])
 	column -= int32(int16(le16(pak[p:])))
 	for column > 0 {
-		p += 4
+		p += 3
 		column -= int32(int16(le16(pak[p:])))
 	}
 	return pak[p+2]

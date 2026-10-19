@@ -8,16 +8,12 @@ import (
 
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
-func UnequipObject(o *Record)                           {}
-func ObjectDrawCb(o *Record)                            {}
-func PlayerLightDraw()                                  {}
-func DungeonGridVisitNear(o *Record, fn func(*Record))  {}
-func SkyApplySunlight()                                 {}
-func ModelGet(id, variant, climate int32) *xn.Model     { return nil }
-func WeaponArrowUpdate(o *Record) bool                  { return true }
-func WeaponMissileOrient(o *Record)                     {}
-func RMBMakeDoor(parent *Record, a, b, c int32) *Record { return nil }
-func RMBMakeFlat(parent *Record, a, b, c int32) *Record { return nil }
+func UnequipObject(o *Record)                        {}
+func SpellAreaEffect(o *Record)                      {}
+func FlatAnimalSound(x, y, z, archive, record int32) {}
+func SkyApplySunlight()                              {}
+func WeaponArrowUpdate(o *Record) bool               { return true }
+func WeaponMissileOrient(o *Record)                  {}
 
 // Globals owned by unported modules.
 var (
@@ -26,42 +22,40 @@ var (
 	HazeTable1         []byte
 )
 
-func AutomapLoad()                     {}
-func CalendarUpdate()                  {}
-func DungeonLoad(n int32)              {}
-func FactionFree()                     {}
-func FactionLoadFile()                 {}
-func FactionPoliticsUpdate(kind int32) {}
-func HudDrawHeadingStrip(force int32)  {}
-func FlatsCfgLoad()                    {}
-func MagicDefLoad()                    {}
-func BooksScan()                       {}
-func ModelHeapInit(size int32)         {}
-func RegionLoadTables()                {}
-func SkyInit()                         {}
-func WeatherRoll()                     {}
-func MusicSelectTables()               {}
-func AutomapDeleteFiles()              {}
-func AutomapButtonViewMode()           {}
+func AutomapLoad()                               {}
+func CalendarUpdate()                            {}
+func FactionFree()                               {}
+func FactionLoadFile()                           {}
+func FactionPoliticsUpdate(kind int32)           {}
+func HudDrawHeadingStrip(force int32)            {}
+func FlatsCfgLoad()                              {}
+func MagicDefLoad()                              {}
+func BooksScan()                                 {}
+func BuildingEnter(b *Building)                  {}
+func TownMapNoteBuilding(o *Record, b *Building) {}
+func SkyInit()                                   {}
+func WeatherRoll()                               {}
+func MusicSelectTables()                         {}
+func AutomapDeleteFiles()                        {}
+func AutomapButtonViewMode()                     {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
-func InvResetLeftList()                              {}
-func LocationUnload(index int32)                     {}
-func MapGotoLocation(region, env, mapID, flag int32) {}
-func MarkerCount(root *Record, kind int32) int32     { return 0 }
-func ModelHeapFreeAll()                              {}
-func PaperdollDraw(x, y int32)                       {}
-func PlayerToNearestMarker(root *Record, kind int32) {}
-func QuestDebugOverlay()                             {}
-func QuestInitRecordSizes()                          {}
-func RegionUnload()                                  {}
-func SkyFree()                                       {}
-func TimePass(n int32)                               {}
-func ClassmakerRun()                                 {}
-func QuestsStartInitial()                            {}
-func WeaponFreeSprites()                             {}
-func WeaponReloadHandSprites()                       {}
+func InvResetLeftList()                      {}
+func PaperdollDraw(x, y int32)               {}
+func QuestObjectInstantiate(o, twin *Record) {}
+
+const strInvalidPersonSelected = 0x174F71
+
+func QuestDebugOverlay()       {}
+func QuestInitRecordSizes()    {}
+func RegionUnload()            {}
+func SkyFree()                 {}
+func TimePass(n int32)         {}
+func ClassmakerRun()           {}
+func QuestsStartInitial()      {}
+func WeaponFreeSprites()       {}
+func WeaponReloadHandSprites() {}
 
 var (
 	BigBuffer []byte
@@ -148,7 +142,6 @@ func RestOpen()                                                              {}
 func OptionsToggleFullScreen()                                               {}
 func MagicItemsOpen()                                                        {}
 func TransportMenu()                                                         {}
-func MarkerFindNth(root *Record, kind, n int32) *Record                      { return root }
 func FactionRandomOfType(typ int32) *Faction                                 { return &Faction{} }
 func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
 func MonsterWakeAll()                                                        {}
@@ -218,4 +211,3 @@ func TrainingUpdate()           {}
 func TravelMapUpdate()          {}
 func WeaponPlayerUpdate()       {}
 func WeatherDrawPrecipitation() {}
-func WorldUpdateLocation()      {}

@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/memmaker/dagger-go/internal/dosfs"
+	"github.com/memmaker/dagger-go/internal/xn"
 )
 
 // Z.CFG, the configuration DAGGER.EXE passes to FALL.EXE (args.c): `key value` pairs.
@@ -56,10 +57,12 @@ func ConfigRead(path string) {
 			case Stricmp(key, "path"):
 				Arena2Path = withBackslash(value)
 				CfgLastPath = value
+				xn.TexPath = []byte(value) // the engine reads cfg_last_path
 				cfgFlags |= 1
 			case Stricmp(key, "pathcd"):
 				Arena2CDPath = withBackslash(value)
 				CfgLastPath = value
+				xn.TexPath = []byte(value)
 				cfgFlags |= 1
 			case Stricmp(key, "controls"):
 				ControlsFile = value
