@@ -30,9 +30,15 @@ var (
 
 const addrClimateWeathers = 0x195E2A
 
+// tableLoaders read each module's initialised tables from FALL.EXE (registered in init).
+var tableLoaders []func()
+
 // loadTables reads the game's initialised tables from FALL.EXE.
 func loadTables() {
 	for i, b := range Bytes(addrClimateWeathers, uint32(len(ClimateWeathers))) {
 		ClimateWeathers[i] = int8(b)
+	}
+	for _, f := range tableLoaders {
+		f()
 	}
 }
