@@ -10,22 +10,22 @@ import (
 // the back buffer Screen; Present copies the clip window's rows to VGA, the screen's memory,
 // which the window shows (and which the game reads now and then).
 var (
-	Screen       []byte
-	VGA          [0x10000]byte
-	Width        int32 = 320
-	Height       int32 = 200
-	ScreenSize   int32 = 64000
-	ClipLeft     int32
-	ClipTop      int32
-	ClipRight    int32 = 320
-	ClipBottom   int32 = 200
-	RowOffset    [768]int32 // y * Width
-	PresentMode  int8       // <= 0: present does nothing; 1: copy
-	ClearColour  uint8      // present clears the back buffer to this (the game's text_shadow_colour)
-	TextColour   uint8      // text, lines and filled rectangles (the game's text_colour)
-	ColourFill   [256]uint32
-	savedMode    int32
-	currentMode  int32
+	Screen      []byte
+	VGA         [0x10000]byte
+	Width       int32 = 320
+	Height      int32 = 200
+	ScreenSize  int32 = 64000
+	ClipLeft    int32
+	ClipTop     int32
+	ClipRight   int32      = 320
+	ClipBottom  int32      = 200
+	RowOffset   [768]int32 // y * Width
+	PresentMode int8       // <= 0: present does nothing; 1: copy
+	ClearColour uint8      // present clears the back buffer to this (the game's text_shadow_colour)
+	TextColour  uint8      // text, lines and filled rectangles (the game's text_colour)
+	ColourFill  [256]uint32
+	savedMode   int32
+	currentMode int32
 )
 
 func init() {

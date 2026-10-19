@@ -24,16 +24,16 @@ const (
 type Color struct{ R, G, B uint8 }
 
 var st struct {
-	mu      sync.Mutex
-	w, h    int                        // the presented frame's size
-	frame   [MaxWidth * MaxHeight]byte // the presented frame, palette indices
-	pal     [256]Color
-	rgba    []byte
-	keys    []byte // scan codes not yet read: make codes, and break codes with bit 7 set
-	mouse   []MouseEvent // mouse events not yet read
-	quit    bool
-	start   time.Time
-	shot    string // a PNG to write of the next frame shown
+	mu    sync.Mutex
+	w, h  int                        // the presented frame's size
+	frame [MaxWidth * MaxHeight]byte // the presented frame, palette indices
+	pal   [256]Color
+	rgba  []byte
+	keys  []byte       // scan codes not yet read: make codes, and break codes with bit 7 set
+	mouse []MouseEvent // mouse events not yet read
+	quit  bool
+	start time.Time
+	shot  string // a PNG to write of the next frame shown
 }
 
 func init() { st.w, st.h, st.start = 320, 200, time.Now() }

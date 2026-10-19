@@ -3,9 +3,9 @@ package xn
 // Random numbers and value noise (rand.c).
 
 var (
-	RandSeed         uint32
-	NoiseValues      [513]int32 // 256 values, the same again, the first once more
-	NoiseFadeTable   [512]int32 // smoothstep weights, [t+256] for t = -256..255
+	RandSeed       uint32
+	NoiseValues    [513]int32 // 256 values, the same again, the first once more
+	NoiseFadeTable [512]int32 // smoothstep weights, [t+256] for t = -256..255
 )
 
 func RandNoiseInit() {
@@ -25,7 +25,7 @@ func RandNoiseFadeInit() {
 	}
 }
 
-func lerp8(a, b, w int32) int32 { return ((b-a)*w >> 8) + a }
+func lerp8(a, b, w int32) int32 { return ((b - a) * w >> 8) + a }
 
 // RandNoise2D is the value noise at (x, y), 8.8 fixed point lattice coordinates.
 func RandNoise2D(x, y uint32) int32 {

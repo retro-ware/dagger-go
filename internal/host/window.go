@@ -59,10 +59,10 @@ const (
 const aspect = 1.2
 
 type window struct {
-	done   <-chan struct{}
-	held   map[gpu.Key]bool
-	screen *gpu.Image
-	dw, dh int
+	done    <-chan struct{}
+	held    map[gpu.Key]bool
+	screen  *gpu.Image
+	dw, dh  int
 	buttons [3]bool
 }
 
