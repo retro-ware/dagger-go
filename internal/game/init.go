@@ -138,7 +138,7 @@ func NewgamePlacePlayer() {
 	}
 	CurrentRegion = uint8(CfgRegion)
 	CurrentRegionData = &Regions[CurrentRegion]
-	RegionEnter(0, int32(CurrentRegion))
+	RegionEnter(0, CurrentRegion)
 	DungeonWaterLevel = 10000
 	if PlayerEnvironment == 1 {
 		MapGotoLocation(int32(uint8(CfgRegion)), int32(PlayerEnvironment), CfgStartMap, 0)

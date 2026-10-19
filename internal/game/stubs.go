@@ -9,7 +9,6 @@ import (
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
 func UnequipObject(o *Record)                           {}
-func ClimateCategory() int32                            { return 0 }
 func ObjectDrawCb(o *Record)                            {}
 func PlayerLightDraw()                                  {}
 func DungeonGridVisitNear(o *Record, fn func(*Record))  {}
@@ -59,8 +58,6 @@ func PaperdollDraw(x, y int32)                       {}
 func PlayerToNearestMarker(root *Record, kind int32) {}
 func QuestDebugOverlay()                             {}
 func QuestInitRecordSizes()                          {}
-func RegionEnter(flag, region int32)                 {}
-func RegionFreeTables()                              {}
 func RegionUnload()                                  {}
 func SkyFree()                                       {}
 func SoundCacheFreeAll()                             {}
@@ -95,7 +92,6 @@ func GuildCountCrime(crime, count int32)                                        
 func AIAngleDiff(a, b int32, turn *int32) int32                                 { return 0 }
 func CollideCreatureNear(o *Record) bool                                        { return false }
 func FactionFindTypeInRegion(region, typ int16) *Faction                        { return &Faction{} }
-func GroundTileAt(x, z int32) uint8                                             { return 0 }
 func GuardsSummon(n int32)                                                      {}
 func InpstrUpdate() int32                                                       { return 0 }
 func MonsterInit(o *Record, mobile int32)                                       {}
@@ -122,7 +118,6 @@ func GuildJoinDarkBrotherhood()                                                 
 func FactionFind(id int16) *Faction                                             { return &Faction{} }
 func GuildFindMembershipByKind(kind uint8) *Membership                          { return &Membership{} }
 func ObjectFindItem(o *Record, group, index int16) *Record                      { return nil }
-func PickpocketAttempt(o *Record)                                               {}
 func RumorShowLocal()                                                           {}
 func ListPopupOpen(items uint32)                                                {}
 func ListPopupPoll() int32                                                      { return -1 }
@@ -169,3 +164,7 @@ func MagicItemsOpen()                                                        {}
 func TransportMenu()                                                         {}
 func MarkerFindNth(root *Record, kind, n int32) *Record                      { return root }
 func FactionRandomOfType(typ int32) *Faction                                 { return &Faction{} }
+func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
+func MonsterWakeAll()                                                        {}
+func MaploadsEnterRegion(region int32)                                       {}
+func ParseRSCText(id, a, b int32) []byte                                     { return nil }
