@@ -24,7 +24,7 @@ func main() {
 		fmt.Fprintln(os.Stderr, "dagger: no FALL.EXE in", *data)
 		os.Exit(1)
 	}
-	img, err := exe.Object2(raw)
+	img, err := exe.Load(raw)
 	if err != nil {
 		fmt.Fprintln(os.Stderr, "dagger:", err)
 		os.Exit(1)
