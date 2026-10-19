@@ -86,8 +86,6 @@ func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func RumorShowLocal()                                             {}
-func ListPopupOpen(items []string)                                {}
-func ListPopupPoll() int32                                        { return -1 }
 func SheetOpen(mode int16) int32                                  { return 0 }
 func DiseaseBecomeVampire()                                       {}
 func DiseaseCureVampirism()                                       {}
