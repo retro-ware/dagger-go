@@ -41,8 +41,7 @@ var (
 	SpellCastBusy        int32
 	SpellReadyTouch      *Record
 	SpellReadyCost       int16
-	WeaponSwingState     int32
-	WeaponSwingState2    int32
+	WeaponSwingState     [2]int32 // per hand: the swing's frames left
 	WeaponActiveHand     int32
 	PlayerSwimming       int8
 	PlayerSpeedBonus     int32
@@ -209,7 +208,7 @@ func KeysWorldActions() {
 	if KeyActionPressed(12) {
 		RestOpen()
 	}
-	if KeyActionPressed(34) && DisplayFlags&0x40 != 0 && WeaponSwingState|WeaponSwingState2 == 0 {
+	if KeyActionPressed(34) && DisplayFlags&0x40 != 0 && WeaponSwingState[0]|WeaponSwingState[1] == 0 {
 		slot := 19
 		if WeaponActiveHand^1 != 0 {
 			slot = 21

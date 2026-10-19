@@ -396,11 +396,11 @@ func InventoryClose() {
 	WeaponReloadHandSprites()
 	InvTrackHandWeapons(true)
 	pc := PlayerCharacter
-	if RightHandReadyDelay > 0 && pc.Equipped[19] != nil {
+	if HandReadyDelay[0] > 0 && pc.Equipped[19] != nil {
 		TextMacroItem = pc.Equipped[19].Item
 		HudMessageAdd(ParseExpand(append([]byte(S(strEquippingIt)), 0)))
 	}
-	if LeftHandReadyDelay > 0 && pc.Equipped[21] != nil {
+	if HandReadyDelay[1] > 0 && pc.Equipped[21] != nil {
 		TextMacroItem = pc.Equipped[21].Item
 		HudMessageAdd(ParseExpand(append([]byte(S(strEquippingIt)), 0)))
 	}
@@ -1571,8 +1571,8 @@ func InvTrackHandWeapons(closing bool) {
 			}
 		}
 	}
-	RightHandReadyDelay += right
-	LeftHandReadyDelay += left
+	HandReadyDelay[0] += right
+	HandReadyDelay[1] += left
 }
 
 // InvRefreshMagicValues reprices the enchanted items the player carries.

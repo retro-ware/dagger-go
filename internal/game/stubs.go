@@ -12,8 +12,6 @@ func UnequipObject(o *Record)                        {}
 func SpellAreaEffect(o *Record)                      {}
 func FlatAnimalSound(x, y, z, archive, record int32) {}
 func SkyApplySunlight()                              {}
-func WeaponArrowUpdate(o *Record) bool               { return true }
-func WeaponMissileOrient(o *Record)                  {}
 
 // Globals owned by unported modules.
 var (
@@ -48,15 +46,13 @@ func QuestObjectInstantiate(o, twin *Record) {}
 
 const strInvalidPersonSelected = 0x174F71
 
-func QuestDebugOverlay()       {}
-func QuestInitRecordSizes()    {}
-func RegionUnload()            {}
-func SkyFree()                 {}
-func TimePass(n int32)         {}
-func ClassmakerRun()           {}
-func QuestsStartInitial()      {}
-func WeaponFreeSprites()       {}
-func WeaponReloadHandSprites() {}
+func QuestDebugOverlay()    {}
+func QuestInitRecordSizes() {}
+func RegionUnload()         {}
+func SkyFree()              {}
+func TimePass(n int32)      {}
+func ClassmakerRun()        {}
+func QuestsStartInitial()   {}
 
 var (
 	BigBuffer []byte
@@ -117,7 +113,6 @@ func CastPlayerSpell(spell *Record) bool                          { return true 
 func SpfxEffectEnd(spell *Spell, slot int32, target *Record)      {}
 func SpfxEffectTick(spellObject, target *Record, slot int32)      {}
 func EnginePickObject(x, y int32, pick *PickResult)               {}
-func ClickWorldObject(pick *PickResult, o *Record)                {}
 func CastFireMissile(o *Record)                                   {}
 func PlayerMouseLook()                                            {}
 func CursorDraw(region int16)                                     {}
@@ -162,7 +157,7 @@ func CastCreatureSpell(caster, target *Record, spell int32) {}
 func SpfxDamage(spell *Record, slot int32, target *Record)  {}
 func PoisonApply(o *Record, poison, flag int32)             {}
 func DiseaseInfect(o, from *Record, disease, flag int32)    {}
-func AIAlertCreatures(n int32)                              {}
+func AIAlertCreatures(o *Record)                            {}
 
 var (
 	EnchantCasterLevel  int8
@@ -202,5 +197,21 @@ func TimeUpdateRealtime()                           {}
 func TradeHaggleFrame()                             {}
 func TrainingUpdate()                               {}
 func TravelMapUpdate()                              {}
-func WeaponPlayerUpdate()                           {}
 func WeatherDrawPrecipitation()                     {}
+
+// click.c and the damage code, not ported yet.
+func ClickItem(pick *PickResult, o *Record)                    {}
+func ClickDungeonModel(pick *PickResult, o *Record)            {}
+func ClickNPC(pick *PickResult, o *Record)                     {}
+func ClickCreature(pick *PickResult, o *Record)                {}
+func ClickDoor(pick *PickResult, o *Record)                    {}
+func ClickMarker(pick *PickResult, o *Record)                  {}
+func ClickInteriorModel(pick *PickResult, o *Record)           {}
+func ClickCorpse(pick *PickResult, o *Record)                  {}
+func ClickPedestrian(pick *PickResult, o *Record)              {}
+func ClickLootContainer(pick *PickResult, o *Record)           {}
+func ClickTownScenery(pick *PickResult, o *Record)             {}
+func ClickWorldFace(pick *PickResult) bool                     { return false }
+func DamageResolveAttack(attacker, target *Record, slot int32) {}
+func DamageMissSound(weapon *Item, target int32) int32         { return 0 }
+func DamageSpawnSplash(target *Record, image, altImage int32)  {}

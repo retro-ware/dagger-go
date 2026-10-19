@@ -13,8 +13,7 @@ var (
 	Trespassing          int32
 	ClothingGenderOffset int32
 	PlayerAttackDelay    int32
-	RightHandReadyDelay  int32
-	LeftHandReadyDelay   int32
+	HandReadyDelay       [2]int32 // right, left: until the newly equipped weapon is ready
 	PlayerHurtTimer      int32
 	GuardsAlerted        uint8
 	MagickaMaxModifier   int32
@@ -98,17 +97,17 @@ func PlayerFrameUpdate() {
 			SpellCastBusy = 0
 		}
 	}
-	if RightHandReadyDelay > 0 {
-		RightHandReadyDelay -= FrameTicks
-		if RightHandReadyDelay <= 0 {
-			RightHandReadyDelay = 0
+	if HandReadyDelay[0] > 0 {
+		HandReadyDelay[0] -= FrameTicks
+		if HandReadyDelay[0] <= 0 {
+			HandReadyDelay[0] = 0
 			HudMessageAdd(S(strRightHandEquipped))
 		}
 	}
-	if LeftHandReadyDelay > 0 {
-		LeftHandReadyDelay -= FrameTicks
-		if LeftHandReadyDelay <= 0 {
-			LeftHandReadyDelay = 0
+	if HandReadyDelay[1] > 0 {
+		HandReadyDelay[1] -= FrameTicks
+		if HandReadyDelay[1] <= 0 {
+			HandReadyDelay[1] = 0
 			HudMessageAdd(S(strLeftHandEquipped))
 		}
 	}

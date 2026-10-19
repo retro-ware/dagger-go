@@ -560,7 +560,7 @@ func DoorStartSwing(door *Record, close bool) bool {
 		}
 		SoundPlay(snd, door, 100)
 	}
-	AIAlertCreatures(0)
+	AIAlertCreatures(nil)
 	if CollideStepped != 0 {
 		LinksTrigger(door, 10)
 	}
