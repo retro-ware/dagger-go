@@ -103,6 +103,17 @@ func ReadMouse() (MouseEvent, bool) {
 	return e, true
 }
 
+// MouseAbsolute is the Button of a MouseEvent that puts the mouse at (DX, DY) in mode 13h
+// pixels: a script's move.
+const MouseAbsolute = -2
+
+// MouseTo queues putting the mouse at (x, y).
+func MouseTo(x, y float64) {
+	st.mu.Lock()
+	st.mouse = append(st.mouse, MouseEvent{DX: x, DY: y, Button: MouseAbsolute})
+	st.mu.Unlock()
+}
+
 // MouseMove queues motion, as a script or the window sends it.
 func MouseMove(dx, dy float64) {
 	st.mu.Lock()

@@ -47,6 +47,11 @@ func pumpMouse() {
 		if !ok {
 			return
 		}
+		if e.Button == host.MouseAbsolute {
+			drv.x = clampF(e.DX*unitsX(), drv.minX, drv.maxX)
+			drv.y = clampF(e.DY, drv.minY, drv.maxY)
+			continue
+		}
 		if e.Button < 0 {
 			MouseDrvMove(e.DX, e.DY)
 		} else if e.Down {

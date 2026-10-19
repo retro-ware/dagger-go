@@ -21,7 +21,7 @@ func main() {
 	overlay := flag.String("saves", "", "where written files go (default: the user config directory)")
 	shots := flag.String("shot", "", "write the game's frame to PNGs: SECONDS:FILE[,SECONDS:FILE...]")
 	input := flag.String("input", "", "replace the keyboard and mouse with a script: SECONDS:ACTION[,...], "+
-		"ACTION kHEX (tap a scan code), mDX/DY (move the mouse), bN (click button N)")
+		"ACTION kHEX (tap a scan code), aX/Y (put the mouse at X, Y), mDX/DY (move the mouse), bN (click button N)")
 	flag.Parse()
 	if _, err := os.Stat(filepath.Join(*data, "ARENA2")); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
@@ -81,7 +81,12 @@ func scriptAction(act string) {
 		var code uint
 		if _, err := fmt.Sscanf(act[1:], "%x", &code); err == nil {
 			host.PushKey(byte(code))
-			host.PushKey(byte(code) | 0x80)
+			time.AfterFunc(100*time.Millisecond, func() { host.PushKey(byte(code) | 0x80) })
+		}
+	case 'a':
+		var x, y float64
+		if _, err := fmt.Sscanf(act[1:], "%g/%g", &x, &y); err == nil {
+			host.MouseTo(x, y)
 		}
 	case 'm':
 		var dx, dy float64

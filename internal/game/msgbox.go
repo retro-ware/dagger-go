@@ -14,7 +14,7 @@ const (
 )
 
 var (
-	MsgboxWrapWidth   int16
+	MsgboxWrapWidth   int16 = 310 // initialised data at 0x178A08
 	MsgboxBorderTiles []byte
 	MsgboxTileW       int16
 	MsgboxTileH       int16

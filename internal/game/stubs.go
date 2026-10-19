@@ -60,7 +60,6 @@ func RegionUnload()                                   {}
 func SkyFree()                                        {}
 func TimePass(n int32)                                {}
 func ClassmakerRun()                                  {}
-func ClassQuestionsRun() int32                        { return 0 }
 func CareerBackgroundSummary(class, background int32) {}
 func ChargenNameCharacter() bool                      { return false }
 func QuestsStartInitial()                             {}
