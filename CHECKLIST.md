@@ -18,5 +18,7 @@
       Q-VID-03/04, D-VID-01, world river/path passes, hardware layer)
 - [ ] game: done init, support, archive, object, args, config, disk, color, intro, kludge,
       book, intrface, keys, camera, rumor, picklist, people, steal, region, trade haggling,
-      song, parse (macros, TEXT.RSC, wrapping), names; next msgbox_render, QRC, title menu
+      song, parse (macros, TEXT.RSC, wrapping), names, msgbox, title menu, chargen, HUD,
+      items (equip.c), paperdoll, inventory screen and shop trades (inven.c); next spells,
+      save/load, monsters/AI, combat, automap, talk, quests
 - [ ] parity traces

@@ -24,6 +24,11 @@ var (
 	// hudButtonHandlers are hud_buttons' handlers in the table's order: the portrait, the
 	// spellbook, the interaction mode, the inventory, the weapon, the magic items, transport,
 	// the map, rest, the options and status.
+	hudButtonHandlers [11]func(buttons uint8)
+)
+
+// init fills hudButtonHandlers (as a var initializer it would be an initialization cycle).
+func init() {
 	hudButtonHandlers = [11]func(buttons uint8){
 		func(uint8) { SheetOpen(1) },
 		func(uint8) { SpellbookOpen(1) },
@@ -37,7 +42,7 @@ var (
 		func(uint8) { OptionsOpen(1) },
 		func(uint8) { StatusShow(1) },
 	}
-)
+}
 
 func hudButton(i int) Rect {
 	b := Bytes(addrHudButtons+uint32(i)*12, 8)

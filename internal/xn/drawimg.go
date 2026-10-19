@@ -312,6 +312,17 @@ func TexImageScaled(img *TexImage, x, y, flags int32) {
 	ImageScaled(x, y, w, h, w, h, flags, img.Pixels, 0)
 }
 
+// TexImageScaledTo draws a cached texture record scaled to w x h at (x, y) through
+// ImageScaled with flags.
+func TexImageScaledTo(img *TexImage, x, y, w, h, flags int32) {
+	sw, sh := int32(img.Width), int32(img.Height)
+	if flags&8 != 0 {
+		ImageScaled(x, y, w, h, sw, sh, flags, img.raw, int(img.DataOffset))
+		return
+	}
+	ImageScaled(x, y, w, h, sw, sh, flags, img.Pixels, 0)
+}
+
 // PaperdollMaskFromScratch marks the paperdoll mask where the last unpacked image (in the
 // scratch buffer) has pixels.
 func PaperdollMaskFromScratch(dst []byte, w, h int32, colour byte) {

@@ -40,7 +40,6 @@ func AutomapButtonViewMode()                     {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
-func InvResetLeftList()                      {}
 func QuestObjectInstantiate(o, twin *Record) {}
 
 const strInvalidPersonSelected = 0x174F71
@@ -109,7 +108,8 @@ func TavernOpen()                                                 {}
 
 var Factions []Faction
 
-func InventoryOpen(mode, trade, icon int32) int32                 { return 0 }
+func PotionDrink(recipe *Record)                                  {}
+func CastPlayerSpell(spell *Record) bool                          { return true }
 func SpfxEffectEnd(spell *Spell, slot int32, target *Record)      {}
 func SpfxEffectTick(spellObject, target *Record, slot int32)      {}
 func EnginePickObject(x, y int32, pick *PickResult)               {}
@@ -148,7 +148,6 @@ func FootstepSounds()                                       {}
 func GuildCheckInvitations()                                {}
 func HeadBobUpdate()                                        {}
 func InfoPopupUpdate()                                      {}
-func InventoryFrame()                                       {}
 func ItemmakerUpdate()                                      {}
 func LevelupCheck()                                         {}
 func CastCreatureSpell(caster, target *Record, spell int32) {}
