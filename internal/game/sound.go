@@ -25,6 +25,8 @@ type soundCacheEntry struct {
 	Data      []byte
 }
 
+var musicTimerHandle int
+
 var (
 	SoundEnabled           bool
 	SoundChannels          [4]SoundChannel
@@ -44,6 +46,7 @@ var (
 // SoundInitMusic readies the sound channels. The MIDI music is not played (no synth): the
 // port keeps the digital channels only.
 func SoundInitMusic() int32 {
+	musicTimerHandle = xn.TimerRegister(140, xn.TimerTickCallback)
 	for i := range SoundChannels {
 		SoundChannels[i].Handle = soundNoHandle
 	}
@@ -55,6 +58,7 @@ func SoundShutdownMusic() {
 	if !SoundEnabled {
 		return
 	}
+	xn.TimerRemove(musicTimerHandle)
 	for ch := int32(0); ch < 4; ch++ {
 		SoundStopChannel(ch)
 	}

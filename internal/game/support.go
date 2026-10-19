@@ -58,7 +58,6 @@ var (
 
 	FrameTicks         int32
 	FrameTicksFraction int16
-	TimerTickCount     int32
 	FrameTimerMS       int32
 	FrameTimerStart    int32
 	FrameTimerLast     int32
@@ -354,13 +353,13 @@ func FrameTimerInit() {
 
 // FrameTicksUpdate turns the timer ticks since the last frame into animation ticks.
 func FrameTicksUpdate() {
-	FrameTicks = TimerTickCount * 1828 / 256
+	FrameTicks = int32(xn.TimerTickCount) * 1828 / 256
 	if FrameTicks > 100 {
 		FrameTicks = 100
 	}
 	xn.AnimTicks += uint32(FrameTicks)
 	FrameTicksFraction &= 7
-	TimerTickCount = 0
+	xn.TimerTickCount = 0
 }
 
 // PlayerPositionSave saves the player's position in slot.

@@ -21,7 +21,7 @@ func main() {
 	overlay := flag.String("saves", "", "where written files go (default: the user config directory)")
 	shots := flag.String("shot", "", "write the game's frame to PNGs: SECONDS:FILE[,SECONDS:FILE...]")
 	input := flag.String("input", "", "replace the keyboard and mouse with a script: SECONDS:ACTION[,...], "+
-		"ACTION kHEX (tap a scan code), aX/Y (put the mouse at X, Y), mDX/DY (move the mouse), bN (click button N), dN/uN (button N down/up)")
+		"ACTION kHEX (tap a scan code), pHEX/rHEX (press/release a scan code), aX/Y (put the mouse at X, Y), mDX/DY (move the mouse), bN (click button N), dN/uN (button N down/up)")
 	skipIntro := flag.Bool("skipintro", false, "skip the logo and the new game's movies (a testing aid, not in the original)")
 	flag.Parse()
 	game.SkipIntro = *skipIntro
@@ -84,6 +84,14 @@ func scriptAction(act string) {
 		if _, err := fmt.Sscanf(act[1:], "%x", &code); err == nil {
 			host.PushKey(byte(code))
 			time.AfterFunc(100*time.Millisecond, func() { host.PushKey(byte(code) | 0x80) })
+		}
+	case 'p', 'r':
+		var code uint
+		if _, err := fmt.Sscanf(act[1:], "%x", &code); err == nil {
+			if act[0] == 'r' {
+				code |= 0x80
+			}
+			host.PushKey(byte(code))
 		}
 	case 'a':
 		var x, y float64

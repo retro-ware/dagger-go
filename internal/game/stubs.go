@@ -75,7 +75,6 @@ func TownNoteFactionBuildings(faction int32)                      {}
 func SkillAddUses(skill, uses int32)                              {}
 func GuildCountCrime(crime, count int32)                          {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
-func CollideCreatureNear(o *Record) bool                          { return false }
 func FactionFindTypeInRegion(region, typ int16) *Faction          { return &Faction{} }
 func GuardsSummon(n int32)                                        {}
 func MonsterInit(o *Record, mobile int32)                         {}
@@ -117,35 +116,31 @@ func TavernOpen()                                                 {}
 
 var Factions []Faction
 
-func InventoryOpen(mode, trade, icon int32) int32                            { return 0 }
-func SpfxEffectEnd(spell *Spell, slot int32, target *Record)                 {}
-func SpfxEffectTick(spellObject, target *Record, slot int32)                 {}
-func EnginePickObject(x, y int32, pick *PickResult)                          {}
-func ClickWorldObject(pick *PickResult, o *Record)                           {}
-func CastFireMissile(o *Record)                                              {}
-func PlayerMouseLook()                                                       {}
-func HudUpdate() bool                                                        { return false }
-func CursorDraw(region int16)                                                {}
-func PlayerTryMove(step int32) bool                                          { return false }
-func PlayerTryMoveVertical(dy int32) bool                                    { return false }
-func FatigueAdd(n int32)                                                     {}
-func DamageApply(o *Record, damage int32, attacker *Record) int32            { return 0 }
-func CollideMovePlayer(o *Record, a int32, r *MoveRequest, mode int32) int32 { return 0 }
-func SaveloadMenu(mode int32)                                                {}
-func CheatReturnToLastPosition()                                             {}
-func CastRecastLast()                                                        {}
-func TravelMapOpen(mode int32)                                               {}
-func AutomapOpen()                                                           {}
-func SpellAddSkillUses(s *Spell, n int32)                                    {}
-func HudToggleWeapon()                                                       {}
-func RestOpen()                                                              {}
-func OptionsToggleFullScreen()                                               {}
-func MagicItemsOpen()                                                        {}
-func TransportMenu()                                                         {}
-func FactionRandomOfType(typ int32) *Faction                                 { return &Faction{} }
-func CollideLineOfSight(a, b *Record) uint8                                  { return 0 }
-func MonsterWakeAll()                                                        {}
-func QuestLoadText(q *Quest, id int32, a int16, b int32)                     { TextRSCBuffer = "" }
+func InventoryOpen(mode, trade, icon int32) int32                 { return 0 }
+func SpfxEffectEnd(spell *Spell, slot int32, target *Record)      {}
+func SpfxEffectTick(spellObject, target *Record, slot int32)      {}
+func EnginePickObject(x, y int32, pick *PickResult)               {}
+func ClickWorldObject(pick *PickResult, o *Record)                {}
+func CastFireMissile(o *Record)                                   {}
+func PlayerMouseLook()                                            {}
+func HudUpdate() bool                                             { return false }
+func CursorDraw(region int16)                                     {}
+func FatigueAdd(n int32)                                          {}
+func DamageApply(o *Record, damage int32, attacker *Record) int32 { return 0 }
+func SaveloadMenu(mode int32)                                     {}
+func CheatReturnToLastPosition()                                  {}
+func CastRecastLast()                                             {}
+func TravelMapOpen(mode int32)                                    {}
+func AutomapOpen()                                                {}
+func SpellAddSkillUses(s *Spell, n int32)                         {}
+func HudToggleWeapon()                                            {}
+func RestOpen()                                                   {}
+func OptionsToggleFullScreen()                                    {}
+func MagicItemsOpen()                                             {}
+func TransportMenu()                                              {}
+func FactionRandomOfType(typ int32) *Faction                      { return &Faction{} }
+func MonsterWakeAll()                                             {}
+func QuestLoadText(q *Quest, id int32, a int16, b int32)          { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()                                    {}
@@ -156,7 +151,6 @@ func BreathUpdate()                                         {}
 func CastAnimUpdate()                                       {}
 func CourtFrame()                                           {}
 func CovenMenuFrame()                                       {}
-func CreaturesFindNearest()                                 {}
 func DamageExpireDrainBonuses()                             {}
 func EffectsTick()                                          {}
 func FootstepSounds()                                       {}
@@ -177,37 +171,39 @@ var (
 	EnchantCasterLevel  int8
 	EnchantEffectParams [3][2]int16
 	QuestGlobalStates   [256]uint8
-	CollideStepped      int32
 )
 
-func LoanCollectorsUpdate()     {}
-func LogbookUpdate()            {}
-func MagicItemsFrame()          {}
-func MusicChooseSong()          {}
-func MusicUpdate()              {}
-func OptionsFrame()             {}
-func PlayerFrameUpdate()        {}
-func PotionmakerUpdate()        {}
-func QuestFacesDraw()           {}
-func QuestPromptAnswer()        {}
-func QuestsRunAll()             {}
-func QuestStartPending()        {}
-func RepairMenuFrame()          {}
-func RestUpdate()               {}
-func ServiceMenuFrame()         {}
-func SheetUpdate()              {}
-func ShelfBookListUpdate()      {}
-func SkyUpdate()                {}
-func SpellbookFrame()           {}
-func SpellHudDrawIcons()        {}
-func SpellmakerUpdate()         {}
-func SpfxPopupUpdate()          {}
-func StatusShow(mode int16)     {}
-func TalkUpdate()               {}
-func TavernFrame()              {}
-func TimeUpdateRealtime()       {}
-func TradeHaggleFrame()         {}
-func TrainingUpdate()           {}
-func TravelMapUpdate()          {}
-func WeaponPlayerUpdate()       {}
-func WeatherDrawPrecipitation() {}
+func LoanCollectorsUpdate()                         {}
+func LogbookUpdate()                                {}
+func MagicItemsFrame()                              {}
+func MusicChooseSong()                              {}
+func MusicUpdate()                                  {}
+func OptionsFrame()                                 {}
+func InteriorRestrictionAtPlayer(kind int32) int32  { return 0 }
+func BuildingAccessLevel(kind int32) int32          { return 0 }
+func PlayDeathVideo()                               {}
+func SpellRemoveEffectType(o *Record, effect int32) {}
+func PotionmakerUpdate()                            {}
+func QuestFacesDraw()                               {}
+func QuestPromptAnswer()                            {}
+func QuestsRunAll()                                 {}
+func QuestStartPending()                            {}
+func RepairMenuFrame()                              {}
+func RestUpdate()                                   {}
+func ServiceMenuFrame()                             {}
+func SheetUpdate()                                  {}
+func ShelfBookListUpdate()                          {}
+func SkyUpdate()                                    {}
+func SpellbookFrame()                               {}
+func SpellHudDrawIcons()                            {}
+func SpellmakerUpdate()                             {}
+func SpfxPopupUpdate()                              {}
+func StatusShow(mode int16)                         {}
+func TalkUpdate()                                   {}
+func TavernFrame()                                  {}
+func TimeUpdateRealtime()                           {}
+func TradeHaggleFrame()                             {}
+func TrainingUpdate()                               {}
+func TravelMapUpdate()                              {}
+func WeaponPlayerUpdate()                           {}
+func WeatherDrawPrecipitation()                     {}

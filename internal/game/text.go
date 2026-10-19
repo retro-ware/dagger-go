@@ -607,7 +607,7 @@ func PedestrianSpawnSpotOK(p *Record, x, z int32) bool {
 	if !TownMapAreaClear(x, z) || !PedestrianClearOfOthers(p, 64) {
 		return false
 	}
-	if CollideCreatureNear(p) {
+	if CollideCreatureNear(p, p.X, p.Y, p.Z) {
 		return false
 	}
 	toP := xn.AngleToPoint(PlayerObject.X, PlayerObject.Z, p.X, p.Z)

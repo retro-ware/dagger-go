@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"github.com/memmaker/dagger-go/internal/dosfs"
+	"github.com/memmaker/dagger-go/internal/host"
 	"github.com/memmaker/dagger-go/internal/xn"
 )
 
@@ -54,6 +55,12 @@ func Main(cfgPath string) {
 		xn.RenderSetMode(8)
 		EngineRunning = 1
 		for {
+			// port: the DOS game never outran its 140 Hz timer; frames wait for two of its
+			// ticks (about 70 a second) so the per-frame steps keep their speed
+			for xn.TimerTickCount < 2 {
+				xn.Poll()
+				host.Sleep()
+			}
 			FrameCheckpoint = 0
 			GameFrame()
 			FrameCheckpoint = 1
