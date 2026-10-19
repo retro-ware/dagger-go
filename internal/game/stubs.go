@@ -32,16 +32,37 @@ var (
 	TextColour         uint8
 )
 
-func ArchiveCloseAll()                               {}
-func AutomapLoad()                                   {}
-func CalendarUpdate()                                {}
-func DungeonLoad(n int32)                            {}
-func FactionFree()                                   {}
-func FactionLoadFile()                               {}
-func FactionPoliticsUpdate(kind int32)               {}
-func GameFrame()                                     {}
-func HudDrawHeadingStrip(force int32)                {}
-func InitGameData()                                  {}
+func ArchiveCloseAll()                                       {}
+func AutomapLoad()                                           {}
+func CalendarUpdate()                                        {}
+func DungeonLoad(n int32)                                    {}
+func FactionFree()                                           {}
+func FactionLoadFile()                                       {}
+func FactionPoliticsUpdate(kind int32)                       {}
+func GameFrame()                                             {}
+func HudDrawHeadingStrip(force int32)                        {}
+func MsgboxLoadBorders()                                     {}
+func TextRSCOpen()                                           {}
+func FlatsCfgLoad()                                          {}
+func MagicDefLoad()                                          {}
+func BooksScan()                                             {}
+func IntrfaceInit()                                          {}
+func IntrfaceSetRegions()                                    {}
+func ArchiveOpen(name string, buf []byte, flags int32) int32 { return 0 }
+func ModelHeapInit(size int32)                               {}
+func ColorInitRemapTables()                                  {}
+func SwiftInit()                                             {}
+func RegionLoadTables()                                      {}
+func SkyInit()                                               {}
+func WeatherRoll()                                           {}
+func SoundInitMusic() int32                                  { return 1 }
+func FrameTimerInit()                                        {}
+func MusicSelectTables()                                     {}
+func AutomapDeleteFiles()                                    {}
+func AutomapButtonViewMode()                                 {}
+
+var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
+
 func IntrfaceFree()                                  {}
 func IntroPlayLogo()                                 {}
 func InvResetLeftList()                              {}
