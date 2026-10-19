@@ -51,7 +51,7 @@ var (
 	// kludgeMenuHandlers are the debug menu's rows (0xCB00C).
 	kludgeMenuHandlers = [13]func(){
 		KludgeShowRumor, KludgeAdvanceLevel, KludgeJumpMonth, KludgeGoodMerchantRep,
-		DiseaseBecomeVampire, DiseaseCureVampirism, DiseaseBecomeLycanthrope,
+		DiseaseBecomeVampire, DiseaseCureVampirism, diseaseBecomeWerewolf,
 		DiseaseCureLycanthropy, KludgeToggleWorldPosition, KludgeToggleSecondCompass,
 		KludgePickPockets, TavernOpen, KludgeToggleQuestDebug,
 	}

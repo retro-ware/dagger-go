@@ -87,10 +87,6 @@ func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func RumorShowLocal()                                             {}
 func SheetOpen(mode int16) int32                                  { return 0 }
-func DiseaseBecomeVampire()                                       {}
-func DiseaseCureVampirism()                                       {}
-func DiseaseBecomeLycanthrope()                                   {}
-func DiseaseCureLycanthropy()                                     {}
 func TavernOpen()                                                 {}
 
 var Factions []Faction
@@ -115,24 +111,21 @@ func FactionRandomOfType(typ int32) *Faction             { return &Faction{} }
 func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
-func AIUpdateCreatures()                                            {}
-func AmbientDungeonSounds()                                         {}
-func AmbientOutdoorSounds()                                         {}
-func BankFrame()                                                    {}
-func BreathUpdate()                                                 {}
-func FactionChangeReputation(f *Faction, amount int32)              {}
-func MusicPlayCourt()                                               {}
-func CovenMenuFrame()                                               {}
-func EffectsTick()                                                  {}
-func FootstepSounds()                                               {}
-func GuildCheckInvitations()                                        {}
-func HeadBobUpdate()                                                {}
-func InfoPopupUpdate()                                              {}
-func ItemmakerUpdate()                                              {}
-func LevelupCheck()                                                 {}
-func PoisonApply(o *Record, poison, flag int32)                     {}
-func DiseaseInfect(target *Record, list uint32, id, noResist int32) {}
-func AIAlertCreatures(o *Record)                                    {}
+func AIUpdateCreatures()                               {}
+func AmbientDungeonSounds()                            {}
+func AmbientOutdoorSounds()                            {}
+func BankFrame()                                       {}
+func BreathUpdate()                                    {}
+func FactionChangeReputation(f *Faction, amount int32) {}
+func MusicPlayCourt()                                  {}
+func CovenMenuFrame()                                  {}
+func FootstepSounds()                                  {}
+func GuildCheckInvitations()                           {}
+func HeadBobUpdate()                                   {}
+func InfoPopupUpdate()                                 {}
+func ItemmakerUpdate()                                 {}
+func LevelupCheck()                                    {}
+func AIAlertCreatures(o *Record)                       {}
 
 var (
 	EnchantCasterLevel  int8
@@ -163,7 +156,6 @@ func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
 func TalkUpdate()                                  {}
 func TavernFrame()                                 {}
-func TradeHaggleFrame()                            {}
 func TrainingUpdate()                              {}
 func TravelMapUpdate()                             {}
 func WeatherDrawPrecipitation()                    {}
@@ -182,23 +174,16 @@ func ClickLootContainer(pick *PickResult, o *Record) {}
 func ClickTownScenery(pick *PickResult, o *Record)   {}
 func ClickWorldFace(pick *PickResult) bool           { return false }
 func MonsterWabbajack(weapon, target *Record)        {}
-func ItemArtifactEquipped(id int32) bool             { return false }
 
 // tamriel.c's callees, not ported yet.
-func PoisonTick(d *Disease) int32      { return 1 }
 func TransportChoose(button int32)     {}
 func AutomapExpireRecords()            {}
 func AutomapPurgeOldFiles()            {}
 func TravelShowDaysLeft(minutes int32) {}
-func DiseaseStartCureQuest(kind int32) {}
 func FatigueUpdate()                   {}
 func SkyUpdateMoons()                  {}
 func GuildExpireBlessings()            {}
 func EncounterTick(minute, flag int32) {}
-func DiseaseLycanthropeTick()          {}
-func DiseaseSpecialInfectionTick()     {}
 func QuestRunOpcodes(q *Quest)         {}
 
-// runspell.c's callees, not ported yet.
-func DiseaseLycanthropeShapechange(forced int32) {}
 func QuestsRaiseEventAll(event int32, o *Record) {}
