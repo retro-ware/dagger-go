@@ -41,7 +41,6 @@ func AutomapButtonViewMode()                     {}
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
 func InvResetLeftList()                      {}
-func PaperdollDraw(x, y int32)               {}
 func QuestObjectInstantiate(o, twin *Record) {}
 
 const strInvalidPersonSelected = 0x174F71
@@ -81,19 +80,18 @@ func PedestrianPickSprite(o *Record)                              {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
 func SpellCost(s *Spell, c *Character) int32                      { return 5 }
-func ItemBreak(o *Record)                                         {}
+func QuestRaiseEvent(event int16, o, other *Record)               {}
+func SpellFindOnEntity(o *Record, id, icon int32) *Record         { return nil }
+func SpellEnd(s *Record)                                          {}
+func CastItemSpellAt(s *Record)                                   {}
+func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
-func InvEquipItem(o *Record)                                      {}
-func InvStoreItem(o *Record)                                      {}
-func InvCreateWagon()                                             {}
-func InvAddArrows(o *Record, n int32)                             {}
 func GuildJoinDarkBrotherhood()                                   {}
 func FactionFind(id int16) *Faction                               { return &Faction{} }
 func GuildFindMembershipByKind(kind uint8) *Membership            { return nil }
 func GuildFindMembershipByBits(bits uint8) *Membership            { return nil }
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
 func QuestFindSiteForBuilding(b *Building) *Record                { return nil }
-func ItemArmorValue(item *Item) int32                             { return 0 }
 func EnchantPowersText(item *Item) string                         { return "" }
 func CalendarFormatDate(minutes uint32) string                    { return "" }
 func TalkMacroHint(which int32) string                            { return "" }

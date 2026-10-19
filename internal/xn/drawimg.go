@@ -294,3 +294,26 @@ func MarkMatching(src, dst []byte, value byte, count int32) {
 		}
 	}
 }
+
+// TexPaperdollItem draws a cached texture record as a paperdoll item at (x, y)
+// (xn_draw_paperdoll_item on the record's row data).
+func TexPaperdollItem(img *TexImage, x, y int32) {
+	PaperdollItem(x, y, int32(img.Width), int32(img.Height), img.raw, int(img.DataOffset))
+}
+
+// TexImageScaled draws a cached texture record at its own size through ImageScaled with
+// flags.
+func TexImageScaled(img *TexImage, x, y, flags int32) {
+	w, h := int32(img.Width), int32(img.Height)
+	if flags&8 != 0 {
+		ImageScaled(x, y, w, h, w, h, flags, img.raw, int(img.DataOffset))
+		return
+	}
+	ImageScaled(x, y, w, h, w, h, flags, img.Pixels, 0)
+}
+
+// PaperdollMaskFromScratch marks the paperdoll mask where the last unpacked image (in the
+// scratch buffer) has pixels.
+func PaperdollMaskFromScratch(dst []byte, w, h int32, colour byte) {
+	PaperdollMask(dst, scratch, w, h, colour)
+}
