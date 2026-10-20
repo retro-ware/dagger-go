@@ -89,12 +89,18 @@ func WeaponReloadSprites() { WeaponReloadHandSprites() }
 func WeaponFreeSprites() { WeaponHandCIF = [2][]byte{} }
 
 // WeaponStartSwing starts a swing when the attack key is held and the mouse moved far
-// enough: the motion's direction picks the swing.
+// enough: the motion's direction picks the swing. (The click and hold enhancements swing on
+// the key alone, in a random direction: EnhSwingStart.)
 func WeaponStartSwing(hand int32) bool {
-	if !KeyActionHeld(33) {
+	dx, dy := int32(MouseMotionX), int32(MouseMotionY)
+	if Enh.Swing != SwingDrag {
+		var ok bool
+		if dx, dy, ok = EnhSwingStart(); !ok {
+			return false
+		}
+	} else if !KeyActionHeld(33) {
 		return false
 	}
-	dx, dy := int32(MouseMotionX), int32(MouseMotionY)
 	if xn.ApproxDist2D(0, 0, dx, dy) < 45 {
 		return false
 	}

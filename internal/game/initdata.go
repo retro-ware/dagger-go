@@ -163,6 +163,8 @@ func InitGameData() {
 		Controls.MouseSensitivityX /= 6
 		Controls.MouseSensitivityY /= 6
 	}
+	EnhLoad() // port: the enhancements (enhance.go)
+	EnhControlsLoaded()
 	InitWorldObjects()
 	RegionLoadTables()
 	SkyInit()

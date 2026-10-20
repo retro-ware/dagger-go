@@ -163,6 +163,7 @@ title:
 	waitMouseRelease()
 	pick := DiskReadFile("pick03i0.img")
 	copy(xn.Screen[:64000], pick)
+	enhTitleDraw(pick[64000:min(len(pick), 64768)]) // port: the Enhancements line
 	copy(xn.VGA[:64000], xn.Screen[:64000])
 	pal := pick[64000:min(len(pick), 64768)]
 	for i := range pal {
@@ -189,6 +190,13 @@ title:
 		}
 		if p == 1 || p == -2 && mouseIn(74, 100, 217, 112) {
 			break
+		}
+		// port: the Enhancements screen (enhance.go), over a black screen in the game's palette
+		if p == -2 && enhTitleClicked() {
+			clear(xn.Screen[:64000])
+			PaletteRestore()
+			EnhancementsScreen(true)
+			goto title
 		}
 	}
 	TitleMenuActive = 1

@@ -648,7 +648,9 @@ func PlayerMovementUpdate() {
 		if ViewCursorActive != 0 && xn.MouseButtons&1 != 0 && xn.MouseButtonsPrev&1 == 0 {
 			ClickActivate(false)
 		}
-		if KeyActionPressed(18) {
+		// Enh.ClickActivate: the left button uses what the crosshair is on
+		if KeyActionPressed(18) || Enh.ClickActivate && ViewCursorActive == 0 &&
+			xn.MouseButtons&1 != 0 && xn.MouseButtonsPrev&1 == 0 {
 			ClickActivate(true)
 		}
 	} else if ScreenActive == 0 {
@@ -770,6 +772,8 @@ func CursorDraw(region int16) {
 	if Controls.MouseControlMode == 1 {
 		if ViewCursorActive != 0 {
 			CursorDrawArrow()
+		} else if Enh.Crosshair {
+			EnhDrawCrosshair()
 		}
 		return
 	}
@@ -788,11 +792,12 @@ func PlayerMouseLook() {
 		return
 	}
 	if Controls.MouseControlMode == 1 {
-		if ViewCursorActive != 0 || KeyActionHeld(33) {
+		if ViewCursorActive != 0 || KeyActionHeld(33) && Enh.Swing == SwingDrag {
 			return
 		}
 		SwiftPoll()
-		if GameMode != 0 || !(PlayerOnGround != 0 || InDungeonWater != 0 || PlayerMotionFlags&0x20 != 0 || PlayerCharacter.Conditions&8 != 0) {
+		// Enh.MouseLook: the mouse looks around in the air too
+		if GameMode != 0 || !Enh.MouseLook && !(PlayerOnGround != 0 || InDungeonWater != 0 || PlayerMotionFlags&0x20 != 0 || PlayerCharacter.Conditions&8 != 0) {
 			return
 		}
 		dy, dx := MouseMotionX, MouseMotionY

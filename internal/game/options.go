@@ -104,6 +104,10 @@ func OptionsFrame() {
 			return
 		}
 	}
+	if mouseInInclusive(enhOptionsButton()) {
+		SoundPlay(203, PlayerObject, 100)
+		EnhancementsScreen(false)
+	}
 }
 
 func optionsClose() {
@@ -118,6 +122,7 @@ func optionsClose() {
 func optionsDraw() {
 	copy(xn.Screen, optionsSavedScreen)
 	drawParsedImg(optionsImage)
+	enhOptionsButtonDraw() // port: the Enhancements button (enhance.go)
 	xn.TextColour = 246
 	for i := 0; i < 2; i++ {
 		if GameSettings.ViewFlags&(1<<i) != 0 {

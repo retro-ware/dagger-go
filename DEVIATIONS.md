@@ -87,6 +87,23 @@ The full list is the `port:` comments.
 - talk_translate and talk_garble_word: never reached.
 - potion_have_ingredients: no callers.
 
+## Enhancements (opt-in, after Daggerfall Unity)
+
+All off by default; the Enhancements screen (a line under Exit on the title menu, a button
+under the options' panel) turns them on, and ENHANCE.CFG next to the saves keeps them
+(internal/game/enhance.go):
+
+- Mouse look: the CONTROLS screen's VIEW mode, and the mouse looks around in the air too.
+  Enter (ACTIVATE CURSOR) still brings back a cursor for the HUD.
+- Activate: the left button uses what the crosshair is on (as ACTIVATE CENTER OBJECT).
+- Weapon swing: Drag (the original's), Click (each press of SWING WEAPON swings once) or
+  Hold (it swings while held); Click and Hold pick a random swing, as Daggerfall Unity, and
+  the view keeps turning during them. The bow is unchanged.
+- Keys: the WASD preset. W/S/A/D move, Space jumps, C crouches, Ctrl slides, Shift runs, E
+  uses, V the travel map, G aborts a spell, Z readies the weapon, H switches hands; the rest
+  keep their keys. At start it replaces keys still at the defaults only.
+- Crosshair: a small plus at the view's centre while the mouse looks around.
+
 ## Testing aids (not in the original)
 
 `-skipintro`, `-quickstart`, `-load N`, `-town`, `-quest`, `-talk`, `-screen` and the
