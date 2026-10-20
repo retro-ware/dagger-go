@@ -474,15 +474,10 @@ func IconCycleAnimFrame() int32 {
 	return IconCycleFrame
 }
 
-// SaveThumbnailCapture samples the screen at 80x50 into BigBuffer at 24000.
+// SaveThumbnailCapture keeps the view at 80x50 for the save menu (the original samples it
+// into big_buffer at 24000) before a screen covers it.
 func SaveThumbnailCapture() {
-	out := 24000
-	for y := 0; y < 200; y += 4 {
-		for x := 0; x < 320; x += 4 {
-			BigBuffer[out] = xn.Screen[y*320+x]
-			out++
-		}
-	}
+	SavedThumbnail = saveloadThumbnail()
 }
 
 // SwiftInit: no SWIFT device (the original's probe also always reports none).

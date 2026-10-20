@@ -20,7 +20,6 @@ var (
 func AutomapLoad()             {}
 func SpellbookOpen(mode int32) {}
 func SpellbookClose()          {}
-func OptionsOpen(mode int32)   {}
 func FlatsCfgLoad()            {}
 
 func TownMapNoteBuilding(o *Record, b *Building) {}
@@ -36,9 +35,7 @@ func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
 func ClassmakerRun()        {}
 
-var (
-	BigBuffer []byte
-)
+var ()
 
 func DetectConsiderCreature(o *Record, distance int32) {}
 func MarkerMakeClutter(o *Record, b *Building)         {}
@@ -63,7 +60,6 @@ func DaedraSummon(npc *Record)                         {}
 
 func PotionDrink(recipe *Record) {}
 func AutomapOpen()               {}
-func OptionsToggleFullScreen()   {}
 func MagicItemsOpen()            {}
 func TransportMenu()             {}
 
@@ -82,7 +78,6 @@ var (
 func MagicItemsFrame()                             {}
 func MusicChooseSong()                             {}
 func MusicUpdate()                                 {}
-func OptionsFrame()                                {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
 func PotionmakerUpdate()                           {}

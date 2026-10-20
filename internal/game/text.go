@@ -94,6 +94,9 @@ func msgboxModalLoop() {
 	ScreenActive = 1
 }
 
+// BigBuffer keeps the screen under a paged message box (the original's big_buffer).
+var BigBuffer = make([]byte, 64000)
+
 // MsgboxShowMorePages shows the rest of a long message box, page by page.
 func MsgboxShowMorePages(image *[]byte) {
 	for MsgboxNextPage != nil {

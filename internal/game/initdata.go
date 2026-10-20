@@ -17,11 +17,11 @@ const (
 // ControlSettings is the controls file's first 54 bytes (mouse_control_mode at 0x195E7A).
 type ControlSettings struct {
 	MouseControlMode    int8
-	Pad01               uint8
+	MouseTurnRate       uint8
 	MouseSensitivityX   uint8
 	MouseSensitivityY   uint8
 	JoystickSetting     uint8
-	Pad05               [3]byte
+	JoystickPad         [3]byte
 	JoyCalibrationSaved [46]byte
 }
 
@@ -74,11 +74,11 @@ func init() {
 
 func (c *ControlSettings) decode(b []byte) {
 	c.MouseControlMode = int8(b[0])
-	c.Pad01 = b[1]
+	c.MouseTurnRate = b[1]
 	c.MouseSensitivityX = b[2]
 	c.MouseSensitivityY = b[3]
 	c.JoystickSetting = b[4]
-	copy(c.Pad05[:], b[5:8])
+	copy(c.JoystickPad[:], b[5:8])
 	copy(c.JoyCalibrationSaved[:], b[8:54])
 }
 

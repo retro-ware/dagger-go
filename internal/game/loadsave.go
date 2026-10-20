@@ -811,7 +811,11 @@ func saveloadThumbnail() []byte {
 func SaveloadMenu(saving int32) {
 	var current []byte
 	if saving != 0 {
-		current = saveloadThumbnail()
+		current = SavedThumbnail
+		if current == nil {
+			current = saveloadThumbnail()
+		}
+		SavedThumbnail = nil
 	}
 	saveloadWindow = DiskReadFile(S(strLoadWindowImg))
 	saveloadSaveImg = DiskReadFile(S(strSaveWindowImg))

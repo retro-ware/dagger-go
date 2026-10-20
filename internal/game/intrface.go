@@ -64,7 +64,6 @@ var (
 	InDungeonWater         int8
 	CameraRollDisabled     int8
 	CollideLanded          int8
-	MouseTurnRate          uint8
 	RidingSound            int32 = -1
 	RidingSoundID          int32
 	FloorObject            *Record
@@ -460,7 +459,7 @@ func PlayerMovementUpdate() {
 		return
 	}
 	WorldStateFlags &= 223
-	SteerTurnSpeedMax = int32(MouseTurnRate&127)*2 + 4
+	SteerTurnSpeedMax = int32(Controls.MouseTurnRate&127)*2 + 4
 	PlayerMouseLook()
 	IntrfacePollControls()
 	PlayerMoving = 0
@@ -797,7 +796,7 @@ func PlayerMouseLook() {
 			return
 		}
 		dy, dx := MouseMotionX, MouseMotionY
-		if MouseTurnRate&0x80 != 0 {
+		if Controls.MouseTurnRate&0x80 != 0 {
 			dx = -dx
 		}
 		PlayerObject.AngleX += dx
