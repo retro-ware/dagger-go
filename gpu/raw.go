@@ -45,4 +45,7 @@ func Discard() {
 
 // Texture is the image's texture and its view (the whole texture, not just the image's
 // rectangle).
-func (i *Image) Texture() (*wgpu.Texture, *wgpu.TextureView) { return i.t.tex, i.t.view }
+func (i *Image) Texture() (*wgpu.Texture, *wgpu.TextureView) {
+	i.t.ensure()
+	return i.t.tex, i.t.view
+}

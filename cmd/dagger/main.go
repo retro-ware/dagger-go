@@ -18,8 +18,9 @@ import (
 )
 
 func main() {
-	data := flag.String("data", ".", "the Daggerfall install directory (holds ARENA2)")
-	overlay := flag.String("saves", "", "where written files go (default: the user config directory)")
+	data := flag.String("data", "", "the Daggerfall install directory (holds ARENA2; default: ./data in a goplay folder, else .)")
+	overlay := flag.String("saves", "", "where written files go (default: ./save in a goplay folder, else the user config directory)")
+	imp := flag.String("import", "", "find Daggerfall in this folder, zip, CD image or GOG installer, copy it into -data and exit")
 	shots := flag.String("shot", "", "write the game's frame to PNGs: SECONDS:FILE[,SECONDS:FILE...]")
 	input := flag.String("input", "", "replace the keyboard and mouse with a script: SECONDS:ACTION[,...], "+
 		"ACTION kHEX (tap a scan code), pHEX/rHEX (press/release a scan code), aX/Y (put the mouse at X, Y), mDX/DY (move the mouse), bN (click button N), dN/uN (button N down/up)")
@@ -31,6 +32,26 @@ func main() {
 	talk := flag.Bool("talk", false, "with -load -town: talk to a stand-in pedestrian (a testing aid)")
 	screen := flag.String("screen", "", "with -load: open a guild screen: spellmaker, potionmaker, itemmaker (a testing aid)")
 	flag.Parse()
+	if *imp != "" {
+		if *data == "" {
+			*data = "data"
+		}
+		if err := importGame(*imp, *data); err != nil {
+			fmt.Fprintln(os.Stderr, "dagger: import:", err)
+			os.Exit(1)
+		}
+		return
+	}
+	// a goplay folder: the game in ./data, saves in ./save, SoundFonts in ../../system/sf2
+	if _, err := os.Stat(filepath.Join("data", "ARENA2")); err == nil && *data == "" {
+		*data = "data"
+		if *overlay == "" {
+			*overlay = "save"
+		}
+	}
+	if *data == "" {
+		*data = "."
+	}
 	game.SkipIntro = *skipIntro
 	game.QuickStart = *quickStart
 	game.QuickLoad = int32(*load)

@@ -7,7 +7,7 @@ file lists where it does something else, and why. Small guards are marked in the
 ## Hardware and DOS: replaced by host code
 
 - DPMI and CauseWay memory (int.c), jmem, the profiler, the VR helmet, the serial link and
-  the PC/system interrupt vectors have no port. The host (internal/host: GLFW + WebGPU
+  the PC/system interrupt vectors have no port. The host (internal/host: gogpu + WebGPU
   window, oto audio) takes their place.
 - The SOS digital driver is internal/xn/sound.go, mixed by internal/host/audio.go. A
   sample's done callback runs from Poll on the game's goroutine, and the mixer stops a chunk
@@ -108,9 +108,11 @@ under the options' panel) turns them on, and ENHANCE.CFG next to the saves keeps
   models, the ground and the flats go to the GPU as triangles, which it transforms, clips
   and rasterises with the game's own 8-bit textures, shade, fog and translucency tables,
   so the colours stay the palette's. One pass draws it; its colour indices, what each
-  pixel shows and its depth are read back, and picking, water and the back buffer take the
+  pixel shows and its depth are read back, and picking and the back buffer take the
   pixel at each screen pixel's centre. The window shows the sharp view wherever the frame still
-  shows the 3D view. Only the textured mode at 320 x 200 uses it; when the GPU fails the
+  shows the 3D view. The dungeon water is drawn over it at the window's resolution by the
+  composite, with the original's ripple (per-row jitter, phase and tint, in screen pixels);
+  the 320 x 200 screen is tinted too, as the original does, for the game's own uses. Only the textured mode at 320 x 200 uses it; when the GPU fails the
   game falls back to the software renderer.
 
 ## Testing aids (not in the original)

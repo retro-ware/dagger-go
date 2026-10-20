@@ -8,8 +8,12 @@ tables at runtime. The player points it at an installed Daggerfall directory wit
 
 ## Stack (as in ../por-go)
 
-- `gpu` (WebGPU + GLFW), used through a replace to ../por-go/gpu, for the window,
-  input and presenting the 320x200 framebuffer.
+- `gpu` (gogpu + WebGPU, pure Go: `CGO_ENABLED=0 go build -tags nofakecgo ./cmd/dagger`),
+  the module in ./gpu, for the window, input and presenting the 320x200 framebuffer.
+- `-import SRC` finds the game (folders, zips, CD images, GOG installers, loose files,
+  through ../gameimport) and copies FALL.EXE, Z.CFG and ARENA2 into -data. Run with no
+  flags in a goplay folder, it reads ./data, writes ./save and plays the SoundFont in
+  ../../system/sf2.
 - `github.com/ebitengine/oto/v3` for audio.
 - The engine runs on its own goroutine and writes into a framebuffer. Presenters show it.
 

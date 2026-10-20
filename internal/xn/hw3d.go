@@ -540,27 +540,35 @@ func hwPick(x, y int32) any {
 	return &Poly{Owner: 1} // the ground
 }
 
-// hwWater is WaterDraw's tint from the read-back: a pixel shows the water where what it
-// shows is farther than the water plane on its row.
+// hwWater is WaterDraw from the read-back: a pixel shows the water where what it shows is
+// farther than the water plane on its row. The game's screen gets the tint as the engine
+// draws it; the ripple goes to the composite too, which draws it over the window-sized view.
 func hwWater(top, rows, invTop, step int32) {
 	s := hw.scene
-	inv := invTop
-	for r := top; rows != 0; rows, r, inv = rows-1, r+1, inv+step {
+	w := &host.Water3D{Top: top, Bottom: top + rows,
+		X0: max(CamCentreX-CamHalfWidth, ClipLeft), X1: min(CamCentreX+CamHalfWidth, ClipRight),
+		InvTop: f32(invTop), Step: f32(step), Jitter: WaterJitter}
+	for c := range w.Tint {
+		w.Tint[c] = WaterTintTable.Map(byte(c))
+	}
+	for r := top; r < top+rows; r++ {
 		phase := WaterRowPhase[r] + WaterRowVelocity[r]
 		if phase > 4 || phase < -4 {
 			WaterRowVelocity[r] = -WaterRowVelocity[r]
 		}
 		WaterRowPhase[r] = phase
+		w.Base[r] = max(phase+WaterRowBase[r], 0)
 		line := Screen[RowOffset[r]:]
-		jitter := WaterJitter[max(phase+WaterRowBase[r], 0):]
-		zw := float32(int64(1<<40) / int64(max(inv, 1)))
-		x0, x1 := max(CamCentreX-CamHalfWidth, ClipLeft), min(CamCentreX+CamHalfWidth, ClipRight)
-		for x := x0; x < x1; x++ {
+		jitter := WaterJitter[w.Base[r]:]
+		zw := float32(int64(1<<40) / int64(max(invTop+(r-top)*step, 1)))
+		for x := w.X0; x < w.X1; x++ {
 			if p := s.At(x, r); s.Idx[p] == host.None || s.Z[p] > zw {
 				WaterSpan(line, jitter, x, x+1)
 			}
 		}
 	}
+	s.Water = w
+	copy(s.After, Screen[:64000]) // the water is the view's: the window still shows it sharp
 }
 
 // hwPresent hands a fresh scene to the window with the frame it is in.

@@ -19,11 +19,11 @@ type renderer struct {
 	dev *wgpu.Device
 	q   *wgpu.Queue
 
-	layout, compLayout            *wgpu.BindGroupLayout
-	geo, flat, comp               *wgpu.RenderPipeline
-	uni, insts, mats, lights      gbuf
-	layers, falloff, dyn, compUni gbuf
-	read                          gbuf // the targets, read back
+	layout, compLayout, gathLayout *wgpu.BindGroupLayout
+	geo, flat, comp, gather        *wgpu.RenderPipeline
+	uni, insts, mats, lights       gbuf
+	layers, falloff, dyn, compUni  gbuf
+	read                           gbuf // the targets, read back
 
 	// the models' triangles: one buffer, a CPU copy for growing it
 	verts  gbuf
@@ -44,6 +44,8 @@ type renderer struct {
 	tableBytes []byte
 	bg         tex2
 
+	low tex2s // the gather's targets: the window-sized view at the screen's pixels
+
 	hi    [3]targets
 	hiGen [3]uint64
 	gen   uint64
@@ -59,6 +61,8 @@ type gbuf struct {
 	usage gputypes.BufferUsage
 }
 
+type tex2s struct{ idx, id, z tex2 }
+
 type tex2 struct {
 	t    *wgpu.Texture
 	v    *wgpu.TextureView
@@ -72,7 +76,7 @@ type targets struct {
 	idx, id, z, d tex2
 	dest          tex2
 	group         *wgpu.BindGroup // stale when nil
-	comp          *wgpu.BindGroup
+	comp, gather  *wgpu.BindGroup
 }
 
 const r3dLayers = 256
@@ -117,7 +121,15 @@ func newRenderer() (r *renderer, err error) {
 		return nil, err
 	}
 	if r.compLayout, err = r.dev.CreateBindGroupLayout(&wgpu.BindGroupLayoutDescriptor{Label: "r3d composite",
-		Entries: []gputypes.BindGroupLayoutEntry{utex(0, d2), utex(1, d2), ubuf(2)}}); err != nil {
+		Entries: []gputypes.BindGroupLayoutEntry{utex(0, d2), utex(1, d2), ubuf(2),
+			{Binding: 3, Visibility: gputypes.ShaderStageFragment, Texture: &gputypes.TextureBindingLayout{
+				SampleType: gputypes.TextureSampleTypeUnfilterableFloat, ViewDimension: d2}}}}); err != nil {
+		return nil, err
+	}
+	ztex := gputypes.BindGroupLayoutEntry{Binding: 2, Visibility: gputypes.ShaderStageFragment, Texture: &gputypes.TextureBindingLayout{
+		SampleType: gputypes.TextureSampleTypeUnfilterableFloat, ViewDimension: d2}}
+	if r.gathLayout, err = r.dev.CreateBindGroupLayout(&wgpu.BindGroupLayoutDescriptor{Label: "r3d gather",
+		Entries: []gputypes.BindGroupLayoutEntry{utex(0, d2), utex(1, d2), ztex}}); err != nil {
 		return nil, err
 	}
 	mod, err := r.dev.CreateShaderModule(&wgpu.ShaderModuleDescriptor{Label: "r3d", WGSL: r3dWGSL})
@@ -174,6 +186,23 @@ func newRenderer() (r *renderer, err error) {
 			{Format: gputypes.TextureFormatRGBA8Unorm, WriteMask: gputypes.ColorWriteMaskAll}}}}); err != nil {
 		return nil, fmt.Errorf("r3d composite pipeline: %w", err)
 	}
+	gmod, err := r.dev.CreateShaderModule(&wgpu.ShaderModuleDescriptor{Label: "r3d gather", WGSL: r3dGatherWGSL})
+	if err != nil {
+		return nil, fmt.Errorf("r3d gather shader: %w", err)
+	}
+	gpl, err := r.dev.CreatePipelineLayout(&wgpu.PipelineLayoutDescriptor{Label: "r3d gather", BindGroupLayouts: []*wgpu.BindGroupLayout{r.gathLayout}})
+	if err != nil {
+		return nil, err
+	}
+	if r.gather, err = r.dev.CreateRenderPipeline(&wgpu.RenderPipelineDescriptor{Label: "r3d gather", Layout: gpl,
+		Vertex:      wgpu.VertexState{Module: gmod, EntryPoint: "vs"},
+		Primitive:   gputypes.PrimitiveState{Topology: gputypes.PrimitiveTopologyTriangleList, CullMode: gputypes.CullModeNone},
+		Multisample: gputypes.MultisampleState{Count: 1, Mask: 0xFFFFFFFF},
+		Fragment:    &wgpu.FragmentState{Module: gmod, EntryPoint: "fs", Targets: ts}}); err != nil {
+		return nil, fmt.Errorf("r3d gather pipeline: %w", err)
+	}
+	att := gputypes.TextureUsageRenderAttachment | gputypes.TextureUsageCopySrc
+	r.low = tex2s{r.newTex(320, 200, 1, u32, att), r.newTex(320, 200, 1, u32, att), r.newTex(320, 200, 1, f32, att)}
 	sampled := gputypes.TextureUsageTextureBinding | gputypes.TextureUsageCopyDst
 	r.tex = r.newTex(256, 256, r3dLayers, gputypes.TextureFormatR8Uint, sampled)
 	r.bg = r.newTex(320, 200, 1, gputypes.TextureFormatR8Uint, sampled)
@@ -221,9 +250,11 @@ func (r *renderer) newTargets(w, h int) targets {
 
 func (t *targets) release() {
 	t.dropGroup()
-	if t.comp != nil {
-		t.comp.Release()
-		t.comp = nil
+	for _, g := range []**wgpu.BindGroup{&t.comp, &t.gather} {
+		if *g != nil {
+			(*g).Release()
+			*g = nil
+		}
 	}
 	for _, x := range []*tex2{&t.idx, &t.id, &t.z, &t.d, &t.dest} {
 		x.release()
@@ -278,6 +309,26 @@ func raw[T any](s []T) []byte {
 	return unsafe.Slice((*byte)(unsafe.Pointer(&s[0])), len(s)*int(unsafe.Sizeof(s[0])))
 }
 
+// waterUniform appends the composite's water: its extent, its plane, each row's jitter base,
+// the jitter and the tint.
+func waterUniform(b []byte, w *Water3D) []byte {
+	on := float32(1)
+	if w == nil {
+		w, on = &Water3D{}, 0
+	}
+	b = f32s(b, float32(w.Top), float32(w.Bottom), float32(w.X0), float32(w.X1), w.InvTop, w.Step, on, 0)
+	for _, v := range w.Base {
+		b = binary.LittleEndian.AppendUint32(b, uint32(v))
+	}
+	for _, v := range w.Jitter {
+		b = binary.LittleEndian.AppendUint32(b, uint32(v))
+	}
+	for _, v := range w.Tint {
+		b = binary.LittleEndian.AppendUint32(b, uint32(v))
+	}
+	return b
+}
+
 func f32s(b []byte, vs ...float32) []byte {
 	for _, v := range vs {
 		b = binary.LittleEndian.AppendUint32(b, math.Float32bits(v))
@@ -314,8 +365,9 @@ func (r *renderer) render(s *Scene3D, dw, dh int) bool {
 	}
 	enc := gpu.Encoder()
 	r.pass(enc, s, h, insts, len(s.Ground))
-	row := (dw*4 + 255) &^ 255 // copies' rows are 256-byte aligned
-	plane := uint64(row * dh)
+	r.gatherPass(enc, h)
+	const row = 320 * 4 // a multiple of 256, as copies' rows must be
+	const plane = row * 200
 	if r.read.size < 3*plane {
 		if r.read.b != nil {
 			r.read.b.Release()
@@ -326,11 +378,11 @@ func (r *renderer) render(s *Scene3D, dw, dh int) bool {
 		}
 		r.read.size = 3 * plane
 	}
-	for i, t := range []*wgpu.Texture{h.idx.t, h.id.t, h.z.t} {
+	for i, t := range []*wgpu.Texture{r.low.idx.t, r.low.id.t, r.low.z.t} {
 		enc.CopyTextureToBuffer(t, r.read.b, []wgpu.BufferTextureCopy{{
-			BufferLayout: wgpu.ImageDataLayout{Offset: uint64(i) * plane, BytesPerRow: uint32(row), RowsPerImage: uint32(dh)},
+			BufferLayout: wgpu.ImageDataLayout{Offset: uint64(i) * plane, BytesPerRow: row, RowsPerImage: 200},
 			TextureBase:  wgpu.ImageCopyTexture{Texture: t},
-			Size:         wgpu.Extent3D{Width: uint32(dw), Height: uint32(dh), DepthOrArrayLayers: 1}}})
+			Size:         wgpu.Extent3D{Width: 320, Height: 200, DepthOrArrayLayers: 1}}})
 	}
 	gpu.Submit()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
@@ -343,20 +395,44 @@ func (r *renderer) render(s *Scene3D, dw, dh int) bool {
 		panic(err)
 	}
 	b := rng.Bytes()
-	n := dw * dh
-	s.W, s.H = dw, dh
-	s.Idx, s.ID, s.Z = make([]uint32, n), make([]uint32, n), make([]float32, n)
-	for y := range dh {
-		o := y * row
-		copy(raw(s.Idx[y*dw:(y+1)*dw]), b[o:])
-		copy(raw(s.ID[y*dw:(y+1)*dw]), b[int(plane)+o:])
-		copy(raw(s.Z[y*dw:(y+1)*dw]), b[2*int(plane)+o:])
-	}
+	s.W, s.H = 320, 200
+	s.Idx, s.ID, s.Z = make([]uint32, 64000), make([]uint32, 64000), make([]float32, 64000)
+	copy(raw(s.Idx), b[:plane])
+	copy(raw(s.ID), b[plane:2*plane])
+	copy(raw(s.Z), b[2*plane:])
 	r.read.b.Unmap()
 	r.gen++
 	r.hiGen[slot] = r.gen
 	s.hi, s.hiGen = slot, r.gen
 	return true
+}
+
+// gatherPass draws into the gather's targets the window-sized view's pixel at each screen
+// pixel's centre.
+func (r *renderer) gatherPass(enc *wgpu.CommandEncoder, h *targets) {
+	if h.gather == nil {
+		var err error
+		if h.gather, err = r.dev.CreateBindGroup(&wgpu.BindGroupDescriptor{Label: "r3d gather", Layout: r.gathLayout,
+			Entries: []wgpu.BindGroupEntry{{Binding: 0, TextureView: h.idx.v}, {Binding: 1, TextureView: h.id.v},
+				{Binding: 2, TextureView: h.z.v}}}); err != nil {
+			panic(err)
+		}
+	}
+	var cs []wgpu.RenderPassColorAttachment
+	for _, t := range []*tex2{&r.low.idx, &r.low.id, &r.low.z} {
+		cs = append(cs, wgpu.RenderPassColorAttachment{View: t.v, LoadOp: gputypes.LoadOpClear, StoreOp: gputypes.StoreOpStore})
+	}
+	p, err := enc.BeginRenderPass(&wgpu.RenderPassDescriptor{Label: "r3d gather", ColorAttachments: cs})
+	if err != nil {
+		panic(err)
+	}
+	p.SetPipeline(r.gather)
+	p.SetViewport(gputypes.Viewport{Width: 320, Height: 200, MaxDepth: 1})
+	p.SetBindGroup(0, h.gather, nil)
+	p.Draw(gputypes.DrawArgs{VertexCount: 3, InstanceCount: 1})
+	if err := p.End(); err != nil {
+		panic(err)
+	}
 }
 
 // camera is the pass's uniform block (Cam in r3dWGSL) for a w x h target.
@@ -562,6 +638,7 @@ func (r *renderer) composite(dst *gpu.Image, s *Scene3D, frame []byte, pal [256]
 	for _, c := range pal {
 		u = f32s(u, float32(c.R<<2|c.R>>4)/255, float32(c.G<<2|c.G>>4)/255, float32(c.B<<2|c.B>>4)/255, 1)
 	}
+	u = waterUniform(u, s.Water)
 	if r.compUni.b == nil {
 		r.put(&r.compUni, u)
 	} else if err := r.q.WriteBuffer(r.compUni.b, 0, u); err != nil {
@@ -571,7 +648,7 @@ func (r *renderer) composite(dst *gpu.Image, s *Scene3D, frame []byte, pal [256]
 		var err error
 		if h.comp, err = r.dev.CreateBindGroup(&wgpu.BindGroupDescriptor{Label: "r3d composite", Layout: r.compLayout,
 			Entries: []wgpu.BindGroupEntry{{Binding: 0, TextureView: r.compFrame.v}, {Binding: 1, TextureView: h.idx.v},
-				{Binding: 2, Buffer: r.compUni.b}}}); err != nil {
+				{Binding: 2, Buffer: r.compUni.b}, {Binding: 3, TextureView: h.z.v}}}); err != nil {
 			panic(err)
 		}
 	}

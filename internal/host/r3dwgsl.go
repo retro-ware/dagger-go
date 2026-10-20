@@ -160,15 +160,22 @@ fn fsFlat(i: VOut) -> Lo {
 `
 
 // The composite: the game's screen, and inside the 3D view, where the game has not drawn
-// over it since, the window-sized view (or the background behind it), through the palette.
+// over it since, the window-sized view (or the background behind it), through the palette;
+// over the view the dungeon water, its ripple in screen pixels as the engine draws it.
 const r3dCompositeWGSL = `
 struct U {
 	scale: vec4f, // window pixel -> screen pixel (x, y), -> window-sized view pixel (z, w)
 	pal: array<vec4f, 256>,
+	water: vec4f,  // screen rows top..bottom, columns x0..x1
+	water2: vec4f, // 1/z at row top, its step a row, on
+	base: array<vec4i, 50>,
+	jit: array<vec4i, 128>,
+	tint: array<vec4u, 64>,
 }
 @group(0) @binding(0) var frame: texture_2d<u32>; // screen, background, the view shows
 @group(0) @binding(1) var hi: texture_2d<u32>;
 @group(0) @binding(2) var<uniform> u: U;
+@group(0) @binding(3) var hiZ: texture_2d<f32>;
 
 struct VOut { @builtin(position) pos: vec4f }
 
@@ -180,14 +187,94 @@ fn vs(@builtin(vertex_index) id: u32) -> VOut {
 	return o;
 }
 
+fn hiPx(p: vec2f) -> vec2i {
+	return clamp(vec2i(floor(p * u.scale.zw)), vec2i(0), vec2i(textureDimensions(hi)) - 1);
+}
+
+// view is what the 3D view shows at window pixel p: the window-sized view or the background
+fn view(p: vec2f) -> u32 {
+	let h = textureLoad(hi, hiPx(p), 0).r;
+	if (h != 0xFFFFFFFFu) { return h; }
+	let s = clamp(vec2i(floor(p * u.scale.xy)), vec2i(0), vec2i(319, 199));
+	return textureLoad(frame, s, 0).g;
+}
+
+// under: the pixel shows something farther than the water plane at depth zw
+fn under(p: vec2f, zw: f32) -> bool {
+	let q = hiPx(p);
+	return textureLoad(hi, q, 0).r == 0xFFFFFFFFu || textureLoad(hiZ, q, 0).r > zw;
+}
+
+fn jitter(i: i32) -> i32 {
+	if (i < 0 || i >= 512) { return 0; }
+	return u.jit[i >> 2u][i & 3];
+}
+
+fn tint(c: u32) -> u32 { return u.tint[c >> 2u][c & 3u]; }
+
+// water is WaterSpan at window pixel p: the tint of the pixel a jitter beside it, a jitter of
+// -1 reading its neighbour as already tinted (the engine tints a row left to right in place)
+fn water(p: vec2f, c: u32) -> u32 {
+	let ys = p.y * u.scale.y;
+	let sx = p.x * u.scale.x;
+	if (u.water2.z == 0.0 || ys < u.water.x || ys >= u.water.y || sx < u.water.z || sx >= u.water.w) { return c; }
+	let zw = 1099511627776.0 / max(u.water2.x + (floor(ys) - u.water.x) * u.water2.y, 1.0);
+	if (!under(p, zw)) { return c; }
+	let r = i32(ys);
+	let base = u.base[r >> 2u][r & 3];
+	let k = i32(floor(sx));
+	let dx = 1.0 / u.scale.x; // window pixels a screen pixel
+	var m = k;
+	var n = 1u;
+	var src = 0;
+	for (var it = 0; it < 64; it++) {
+		let j = jitter(base + m);
+		src = m + j;
+		if (j != -1) { break; }
+		let q = vec2f(p.x + f32(m - 1 - k) * dx, p.y);
+		if (f32(m - 1) < u.water.z || !under(q, zw)) { break; }
+		m--;
+		n++;
+	}
+	var o = view(vec2f(p.x + f32(src - k) * dx, p.y));
+	for (var t = 0u; t < n; t++) { o = tint(o); }
+	return o;
+}
+
 @fragment
 fn fs(i: VOut) -> @location(0) vec4f {
 	let f = textureLoad(frame, vec2i(floor(i.pos.xy * u.scale.xy)), 0);
 	var c = f.r;
 	if (f.b != 0u) {
-		let h = textureLoad(hi, vec2i(floor(i.pos.xy * u.scale.zw)), 0).r;
-		c = select(f.g, h, h != 0xFFFFFFFFu);
+		c = water(i.pos.xy, view(i.pos.xy));
 	}
 	return u.pal[c];
+}
+`
+
+// The gather: the window-sized view's pixel at each 320 x 200 screen pixel's centre (what
+// Scene3D.At picks), so only the game's 320 x 200 is read back.
+const r3dGatherWGSL = `
+@group(0) @binding(0) var idx: texture_2d<u32>;
+@group(0) @binding(1) var id: texture_2d<u32>;
+@group(0) @binding(2) var z: texture_2d<f32>;
+
+struct VOut { @builtin(position) pos: vec4f }
+struct Lo { @location(0) idx: u32, @location(1) id: u32, @location(2) z: f32 }
+
+@vertex
+fn vs(@builtin(vertex_index) i: u32) -> VOut {
+	let p = vec2f(f32((i << 1u) & 2u), f32(i & 2u));
+	var o: VOut;
+	o.pos = vec4f(p * vec2f(2.0, -2.0) + vec2f(-1.0, 1.0), 0.0, 1.0);
+	return o;
+}
+
+@fragment
+fn fs(i: VOut) -> Lo {
+	let d = vec2u(textureDimensions(idx));
+	let s = vec2u(i.pos.xy);
+	let q = vec2i((s * d + d / 2u) / vec2u(320u, 200u));
+	return Lo(textureLoad(idx, q, 0).r, textureLoad(id, q, 0).r, textureLoad(z, q, 0).r);
 }
 `

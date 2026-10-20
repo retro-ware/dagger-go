@@ -7,9 +7,12 @@ import (
 )
 
 // soundFont is the SoundFont to play with: the file $DAGGER_SF2 names, else the first .sf2
-// file (in name order) in the working directory; nil when there is none.
+// file (in name order) in the working directory, else in goplay's ../../system/sf2; nil
+// when there is none.
 func soundFont() []byte {
 	names, _ := filepath.Glob("*.sf2")
+	shared, _ := filepath.Glob(filepath.Join("..", "..", "system", "sf2", "*.sf2"))
+	names = append(names, shared...)
 	if p := os.Getenv("DAGGER_SF2"); p != "" {
 		names = append([]string{p}, names...)
 	}

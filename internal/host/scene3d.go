@@ -87,7 +87,7 @@ type Scene3D struct {
 	Flats   []Vert3D // 4 corners a flat, from top left clockwise
 	FlatMat int      // the material index of flat 0
 
-	// read back for the game: per pixel of the window-sized view (W x H)
+	// read back for the game: the window-sized view at each screen pixel's centre (W x H)
 	W, H int
 	Idx  []uint32
 	ID   []uint32
@@ -97,9 +97,24 @@ type Scene3D struct {
 	// show the window-sized view.
 	After []byte
 
+	// Water is the dungeon water the composite draws over the window-sized view; nil for none.
+	Water *Water3D
+
 	hi    int       // the window-sized render's slot
 	hiGen uint64    // the slot's render (a later one reuses the slot)
 	reply chan bool // the window's answer
+}
+
+// Water3D is a frame's dungeon water (water.c's), in 320 x 200 screen units: rows Top up to
+// Bottom, columns X0 up to X1, the plane's 1/z (2^40 / view z) InvTop at row Top and Step
+// more each row. Each pixel x of row r is the tint of the pixel Jitter[Base[r] + x] beside it,
+// as the engine left it: a jitter of -1 reads its already tinted neighbour.
+type Water3D struct {
+	Top, Bottom, X0, X1 int32
+	InvTop, Step        float32
+	Base                [200]int32
+	Jitter              [512]int32
+	Tint                [256]byte
 }
 
 // At is the read-back's pixel at the centre of screen pixel (x, y).
