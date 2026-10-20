@@ -16,8 +16,6 @@ var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
 const strInvalidPersonSelected = 0x174F71
 
-func QuestDebugOverlay() {}
-
 // QuestInitRecordSizes set the QBN sections' record sizes; the port's QBN decoder knows them.
 func QuestInitRecordSizes() {}
 
