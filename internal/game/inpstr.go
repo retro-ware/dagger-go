@@ -173,3 +173,49 @@ func InpstrUpdate() int32 {
 		return 1
 	}
 }
+
+// InpstrEdit edits text in a box at x, y until Enter (the number typed) or Escape (0, the text's
+// first four bytes restored, as the original did).
+func InpstrEdit(text []byte, x, y, w, h, maxLength int16) int32 {
+	xn.CursorErase()
+	xn.KbdFlush()
+	InpstrText = text
+	s := xn.CStr(text)
+	InpstrSavedText = s[:min(len(s), inpstrSavedMax)]
+	InpstrCursor = int16(len(s))
+	InpstrMaxLength = maxLength
+	for {
+		key := InpstrReadKey()
+		if key == 0 {
+			old := xn.TextColour
+			xn.TextColour = 0
+			xn.FillRect(int32(x), int32(y), int32(w), int32(h))
+			xn.TextColour = 12
+			xn.PenX = int32(x) + InpstrTextWidth(InpstrText, InpstrCursor)
+			xn.PenY = int32(y)
+			if xn.BIOSTicks()&32 != 0 {
+				xn.DrawLine(xn.PenX, xn.PenY, xn.PenX, xn.PenY+int32(xn.FontHeight)-1)
+			}
+			xn.TextColour = old
+			TextDraw(xn.CStr(InpstrText), int32(x), int32(y))
+			xn.PresentInclusive(true)
+			xn.WaitVRetraceStart()
+			xn.WaitVRetraceEnd()
+			continue
+		}
+		switch r := InpstrHandleKey(key); r {
+		case inpstrNoResult:
+		case inpstrCancelled:
+			saved := []byte(InpstrSavedText)
+			for i := 0; i < 4 && i < len(text); i++ {
+				text[i] = 0
+				if i < len(saved) {
+					text[i] = saved[i]
+				}
+			}
+			return 0
+		default:
+			return r
+		}
+	}
+}
