@@ -19,14 +19,11 @@ type renderer struct {
 	dev *wgpu.Device
 	q   *wgpu.Queue
 
-	layout, compLayout           *wgpu.BindGroupLayout
-	geoLo, geoHi, flatLo, flatHi *wgpu.RenderPipeline
-	comp                         *wgpu.RenderPipeline
-	uniLo, uniHi, insts, mats    gbuf
-	lights, layers, falloff, dyn gbuf
-	ids                          gbuf // 0, 1, 2...: the geometry's instance numbers
-	compUni                      gbuf
-	read                         *wgpu.Buffer // the low-res targets, read back
+	layout, compLayout            *wgpu.BindGroupLayout
+	geo, flat, comp               *wgpu.RenderPipeline
+	uni, insts, mats, lights      gbuf
+	layers, falloff, dyn, compUni gbuf
+	read                          gbuf // the targets, read back
 
 	// the models' triangles: one buffer, a CPU copy for growing it
 	verts  gbuf
@@ -47,7 +44,6 @@ type renderer struct {
 	tableBytes []byte
 	bg         tex2
 
-	lo    targets
 	hi    [3]targets
 	hiGen [3]uint64
 	gen   uint64
@@ -69,8 +65,8 @@ type tex2 struct {
 	w, h int
 }
 
-// targets are a pass's: the colour indices, what each pixel shows and its depth (low res
-// only), the depth buffer, and the copy translucent flats read.
+// targets are a pass's: the colour indices, what each pixel shows and its depth, the depth
+// buffer, and the copy translucent flats read.
 type targets struct {
 	w, h          int
 	idx, id, z, d tex2
@@ -95,10 +91,10 @@ func newRenderer() (r *renderer, err error) {
 	}
 	st := gputypes.BufferUsageStorage | gputypes.BufferUsageCopyDst
 	uni := gputypes.BufferUsageUniform | gputypes.BufferUsageCopyDst
-	r.uniLo.usage, r.uniHi.usage, r.compUni.usage = uni, uni, uni
+	r.uni.usage, r.compUni.usage = uni, uni
 	r.insts.usage, r.mats.usage, r.lights.usage, r.layers.usage, r.falloff.usage = st, st, st, st, st
+	r.read.usage = gputypes.BufferUsageCopyDst | gputypes.BufferUsageMapRead
 	r.dyn.usage = gputypes.BufferUsageVertex | gputypes.BufferUsageCopyDst
-	r.ids.usage = r.dyn.usage
 	r.verts.usage = gputypes.BufferUsageVertex | gputypes.BufferUsageCopyDst | gputypes.BufferUsageCopySrc
 
 	vf := gputypes.ShaderStageVertex | gputypes.ShaderStageFragment
@@ -139,22 +135,17 @@ func newRenderer() (r *renderer, err error) {
 		Attributes: []gputypes.VertexAttribute{attr(0, gputypes.VertexFormatFloat32x3, 0),
 			attr(1, gputypes.VertexFormatFloat32x2, 12), attr(2, gputypes.VertexFormatUint32, 20)}}}
 	u32, f32 := gputypes.TextureFormatR32Uint, gputypes.TextureFormatR32Float
-	pipe := func(vs, fs string, write bool, formats ...gputypes.TextureFormat) *wgpu.RenderPipeline {
+	var ts []gputypes.ColorTargetState
+	for _, f := range []gputypes.TextureFormat{u32, u32, f32} {
+		ts = append(ts, gputypes.ColorTargetState{Format: f, WriteMask: gputypes.ColorWriteMaskAll})
+	}
+	pipe := func(vs, fs string, write bool) *wgpu.RenderPipeline {
 		if err != nil {
 			return nil
 		}
-		bufs := vl
-		if vs == "vsGeo" {
-			bufs = append(vl[:1:1], gputypes.VertexBufferLayout{ArrayStride: 4, StepMode: gputypes.VertexStepModeInstance,
-				Attributes: []gputypes.VertexAttribute{attr(3, gputypes.VertexFormatUint32, 0)}})
-		}
-		var ts []gputypes.ColorTargetState
-		for _, f := range formats {
-			ts = append(ts, gputypes.ColorTargetState{Format: f, WriteMask: gputypes.ColorWriteMaskAll})
-		}
 		var p *wgpu.RenderPipeline
 		p, err = r.dev.CreateRenderPipeline(&wgpu.RenderPipelineDescriptor{Label: "r3d " + fs, Layout: pl,
-			Vertex:    wgpu.VertexState{Module: mod, EntryPoint: vs, Buffers: bufs},
+			Vertex:    wgpu.VertexState{Module: mod, EntryPoint: vs, Buffers: vl},
 			Primitive: gputypes.PrimitiveState{Topology: gputypes.PrimitiveTopologyTriangleList, FrontFace: gputypes.FrontFaceCCW, CullMode: gputypes.CullModeNone},
 			DepthStencil: &wgpu.DepthStencilState{Format: gputypes.TextureFormatDepth32Float, DepthWriteEnabled: write,
 				DepthCompare: gputypes.CompareFunctionLessEqual},
@@ -162,10 +153,8 @@ func newRenderer() (r *renderer, err error) {
 			Fragment:    &wgpu.FragmentState{Module: mod, EntryPoint: fs, Targets: ts}})
 		return p
 	}
-	r.geoLo = pipe("vsGeo", "fsGeoLo", true, u32, u32, f32)
-	r.geoHi = pipe("vsGeo", "fsGeoHi", true, u32)
-	r.flatLo = pipe("vsFlat", "fsFlatLo", false, u32, u32, f32)
-	r.flatHi = pipe("vsFlat", "fsFlatHi", false, u32)
+	r.geo = pipe("vsGeo", "fsGeo", true)
+	r.flat = pipe("vsFlat", "fsFlat", false)
 	if err != nil {
 		return nil, fmt.Errorf("r3d pipeline: %w", err)
 	}
@@ -190,11 +179,6 @@ func newRenderer() (r *renderer, err error) {
 	r.bg = r.newTex(320, 200, 1, gputypes.TextureFormatR8Uint, sampled)
 	r.compFrame = r.newTex(320, 200, 1, gputypes.TextureFormatRGBA8Uint, sampled)
 	r.compPx = make([]byte, 320*200*4)
-	r.lo = r.newTargets(320, 200, true)
-	if r.read, err = r.dev.CreateBuffer(&wgpu.BufferDescriptor{Label: "r3d readback", Size: 3 * 320 * 200 * 4,
-		Usage: gputypes.BufferUsageCopyDst | gputypes.BufferUsageMapRead}); err != nil {
-		return nil, err
-	}
 	return r, nil
 }
 
@@ -224,14 +208,12 @@ func (t *tex2) release() {
 	}
 }
 
-func (r *renderer) newTargets(w, h int, lo bool) targets {
-	att := gputypes.TextureUsageRenderAttachment | gputypes.TextureUsageCopySrc
+func (r *renderer) newTargets(w, h int) targets {
+	att := gputypes.TextureUsageRenderAttachment | gputypes.TextureUsageCopySrc | gputypes.TextureUsageTextureBinding
 	t := targets{w: w, h: h}
 	t.idx = r.newTex(w, h, 1, gputypes.TextureFormatR32Uint, att)
-	if lo {
-		t.id = r.newTex(w, h, 1, gputypes.TextureFormatR32Uint, att)
-		t.z = r.newTex(w, h, 1, gputypes.TextureFormatR32Float, att)
-	}
+	t.id = r.newTex(w, h, 1, gputypes.TextureFormatR32Uint, att)
+	t.z = r.newTex(w, h, 1, gputypes.TextureFormatR32Float, att)
 	t.d = r.newTex(w, h, 1, gputypes.TextureFormatDepth32Float, gputypes.TextureUsageRenderAttachment)
 	t.dest = r.newTex(w, h, 1, gputypes.TextureFormatR32Uint, gputypes.TextureUsageTextureBinding|gputypes.TextureUsageCopyDst)
 	return t
@@ -277,7 +259,6 @@ func (r *renderer) put(g *gbuf, data []byte) {
 }
 
 func (r *renderer) stale() {
-	r.lo.dropGroup()
 	for i := range r.hi {
 		r.hi[i].dropGroup()
 	}
@@ -304,7 +285,7 @@ func f32s(b []byte, vs ...float32) []byte {
 	return b
 }
 
-// render draws s at 320 x 200, reads it back, and at dw x dh into the next window slot.
+// render draws s at dw x dh into the next window slot and reads it back for the game.
 func (r *renderer) render(s *Scene3D, dw, dh int) bool {
 	r.frame++
 	r.upload(s)
@@ -324,46 +305,54 @@ func (r *renderer) render(s *Scene3D, dw, dh int) bool {
 	if h := &r.hi[slot]; h.w != dw || h.h != dh {
 		gpu.Submit()
 		h.release()
-		*h = r.newTargets(dw, dh, false)
+		*h = r.newTargets(dw, dh)
 	}
-	r.put(&r.uniLo, r.camera(s, 320, 200))
-	r.put(&r.uniHi, r.camera(s, dw, dh))
-	if r.lo.group == nil {
-		r.lo.group = r.group(&r.uniLo, &r.lo)
-	}
+	r.put(&r.uni, r.camera(s, dw, dh))
 	h := &r.hi[slot]
 	if h.group == nil {
-		h.group = r.group(&r.uniHi, h)
+		h.group = r.group(&r.uni, h)
 	}
-	r.pass(s, &r.lo, r.geoLo, r.flatLo, insts, len(s.Ground))
-	r.pass(s, h, r.geoHi, r.flatHi, insts, len(s.Ground))
-	gpu.Submit() // the read-back copies the targets: an encoder of its own (see pass)
 	enc := gpu.Encoder()
-	for i, t := range []*wgpu.Texture{r.lo.idx.t, r.lo.id.t, r.lo.z.t} {
-		enc.CopyTextureToBuffer(t, r.read, []wgpu.BufferTextureCopy{{
-			BufferLayout: wgpu.ImageDataLayout{Offset: uint64(i) * 320 * 200 * 4, BytesPerRow: 320 * 4, RowsPerImage: 200},
+	r.pass(enc, s, h, insts, len(s.Ground))
+	row := (dw*4 + 255) &^ 255 // copies' rows are 256-byte aligned
+	plane := uint64(row * dh)
+	if r.read.size < 3*plane {
+		if r.read.b != nil {
+			r.read.b.Release()
+		}
+		var err error
+		if r.read.b, err = r.dev.CreateBuffer(&wgpu.BufferDescriptor{Label: "r3d readback", Size: 3 * plane, Usage: r.read.usage}); err != nil {
+			panic(err)
+		}
+		r.read.size = 3 * plane
+	}
+	for i, t := range []*wgpu.Texture{h.idx.t, h.id.t, h.z.t} {
+		enc.CopyTextureToBuffer(t, r.read.b, []wgpu.BufferTextureCopy{{
+			BufferLayout: wgpu.ImageDataLayout{Offset: uint64(i) * plane, BytesPerRow: uint32(row), RowsPerImage: uint32(dh)},
 			TextureBase:  wgpu.ImageCopyTexture{Texture: t},
-			Size:         wgpu.Extent3D{Width: 320, Height: 200, DepthOrArrayLayers: 1}}})
+			Size:         wgpu.Extent3D{Width: uint32(dw), Height: uint32(dh), DepthOrArrayLayers: 1}}})
 	}
 	gpu.Submit()
 	ctx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 	defer cancel()
-	const size = 3 * 320 * 200 * 4
-	if err := r.read.Map(ctx, wgpu.MapModeRead, 0, size); err != nil {
+	if err := r.read.b.Map(ctx, wgpu.MapModeRead, 0, 3*plane); err != nil {
 		panic(err)
 	}
-	rng, err := r.read.MappedRange(0, size)
+	rng, err := r.read.b.MappedRange(0, 3*plane)
 	if err != nil {
 		panic(err)
 	}
 	b := rng.Bytes()
-	if len(s.Idx) != 64000 {
-		s.Idx, s.ID, s.Z = make([]uint32, 64000), make([]uint32, 64000), make([]float32, 64000)
+	n := dw * dh
+	s.W, s.H = dw, dh
+	s.Idx, s.ID, s.Z = make([]uint32, n), make([]uint32, n), make([]float32, n)
+	for y := range dh {
+		o := y * row
+		copy(raw(s.Idx[y*dw:(y+1)*dw]), b[o:])
+		copy(raw(s.ID[y*dw:(y+1)*dw]), b[int(plane)+o:])
+		copy(raw(s.Z[y*dw:(y+1)*dw]), b[2*int(plane)+o:])
 	}
-	copy(raw(s.Idx), b[:256000])
-	copy(raw(s.ID), b[256000:512000])
-	copy(raw(s.Z), b[512000:])
-	r.read.Unmap()
+	r.read.b.Unmap()
 	r.gen++
 	r.hiGen[slot] = r.gen
 	s.hi, s.hiGen = slot, r.gen
@@ -438,11 +427,6 @@ func (r *renderer) upload(s *Scene3D) {
 	}
 	in = append(in, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0) // the ground's
 	r.put(&r.insts, raw(in))
-	ids := make([]uint32, len(s.Inst)+1)
-	for i := range ids {
-		ids[i] = uint32(i)
-	}
-	r.put(&r.ids, raw(ids))
 	r.put(&r.mats, raw(s.Mats))
 	r.put(&r.lights, raw(s.Lights))
 	r.put(&r.falloff, raw(s.Falloff))
@@ -493,19 +477,17 @@ func (r *renderer) writeTex(t *wgpu.Texture, layer, w, h int, px []byte) {
 }
 
 // pass draws the models, the ground and the flats (far to near) into t's targets.
-func (r *renderer) pass(s *Scene3D, t *targets, geo, flat *wgpu.RenderPipeline, insts, ground int) {
+func (r *renderer) pass(enc *wgpu.CommandEncoder, s *Scene3D, t *targets, insts, ground int) {
 	none := gputypes.Color{R: None}
 	begin := func(clear bool) *wgpu.RenderPassEncoder {
 		load := gputypes.LoadOpLoad
 		if clear {
 			load = gputypes.LoadOpClear
 		}
-		cs := []wgpu.RenderPassColorAttachment{{View: t.idx.v, LoadOp: load, StoreOp: gputypes.StoreOpStore, ClearValue: none}}
-		if t.id.t != nil {
-			cs = append(cs, wgpu.RenderPassColorAttachment{View: t.id.v, LoadOp: load, StoreOp: gputypes.StoreOpStore, ClearValue: none},
-				wgpu.RenderPassColorAttachment{View: t.z.v, LoadOp: load, StoreOp: gputypes.StoreOpStore})
-		}
-		p, err := gpu.Encoder().BeginRenderPass(&wgpu.RenderPassDescriptor{Label: "r3d", ColorAttachments: cs,
+		cs := []wgpu.RenderPassColorAttachment{{View: t.idx.v, LoadOp: load, StoreOp: gputypes.StoreOpStore, ClearValue: none},
+			{View: t.id.v, LoadOp: load, StoreOp: gputypes.StoreOpStore, ClearValue: none},
+			{View: t.z.v, LoadOp: load, StoreOp: gputypes.StoreOpStore}}
+		p, err := enc.BeginRenderPass(&wgpu.RenderPassDescriptor{Label: "r3d", ColorAttachments: cs,
 			DepthStencilAttachment: &wgpu.RenderPassDepthStencilAttachment{View: t.d.v, DepthLoadOp: load,
 				DepthStoreOp: gputypes.StoreOpStore, DepthClearValue: 1}})
 		if err != nil {
@@ -525,35 +507,29 @@ func (r *renderer) pass(s *Scene3D, t *targets, geo, flat *wgpu.RenderPipeline, 
 		}
 	}
 	p := begin(true)
-	p.SetPipeline(geo)
+	p.SetPipeline(r.geo)
 	if r.verts.b != nil {
 		p.SetVertexBuffer(0, r.verts.b, 0)
 		for i, in := range s.Inst {
 			if m, ok := r.meshes[in.Mesh]; ok && m[1] > 0 {
-				// the instance's number comes from ids (a nonzero first instance needs a feature)
-				p.SetVertexBuffer(1, r.ids.b, uint64(4*i))
-				p.Draw(gputypes.DrawArgs{VertexCount: m[1], InstanceCount: 1, FirstVertex: m[0]})
+				p.Draw(gputypes.DrawArgs{VertexCount: m[1], InstanceCount: 1, FirstVertex: m[0], FirstInstance: uint32(i)})
 			}
 		}
 	}
 	p.SetVertexBuffer(0, r.dyn.b, 0)
 	if ground > 0 {
-		p.SetVertexBuffer(1, r.ids.b, uint64(4*insts))
-		p.Draw(gputypes.DrawArgs{VertexCount: uint32(ground), InstanceCount: 1})
+		p.Draw(gputypes.DrawArgs{VertexCount: uint32(ground), InstanceCount: 1, FirstInstance: uint32(insts)})
 	}
-	p.SetPipeline(flat)
+	p.SetPipeline(r.flat)
 	for f := 0; f < len(s.Flats)/4; f++ {
 		m := s.FlatMat + f
 		if 4*m+1 < len(s.Mats) && s.Mats[4*m+1]&3 == FlatTranslucent {
-			// it blends with what is drawn so far. The copy goes in an encoder of its own: the
-			// wgpu port tracks usage per encoder, and idx is the pass's target
+			// it blends with what is drawn so far
 			end(p)
-			gpu.Submit()
-			gpu.Encoder().CopyTextureToTexture(t.idx.t, t.dest.t, []wgpu.TextureCopy{{Source: wgpu.ImageCopyTexture{Texture: t.idx.t},
+			enc.CopyTextureToTexture(t.idx.t, t.dest.t, []wgpu.TextureCopy{{Source: wgpu.ImageCopyTexture{Texture: t.idx.t},
 				Destination: wgpu.ImageCopyTexture{Texture: t.dest.t}, Size: wgpu.Extent3D{Width: uint32(t.w), Height: uint32(t.h), DepthOrArrayLayers: 1}}})
-			gpu.Submit()
 			p = begin(false)
-			p.SetPipeline(flat)
+			p.SetPipeline(r.flat)
 			p.SetVertexBuffer(0, r.dyn.b, 0)
 		}
 		p.Draw(gputypes.DrawArgs{VertexCount: 6, InstanceCount: 1, FirstVertex: uint32(ground + 6*f)})

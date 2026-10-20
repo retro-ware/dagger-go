@@ -17,3 +17,5 @@ require (
 )
 
 replace github.com/gogpu/wgpu => ../../gogpu-wgpu
+
+replace github.com/gogpu/naga => ../../gogpu-naga

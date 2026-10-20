@@ -107,8 +107,9 @@ under the options' panel) turns them on, and ENHANCE.CFG next to the saves keeps
   internal/host/r3d.go). The engine still culls, lights and sorts as FALL.EXE does; the
   models, the ground and the flats go to the GPU as triangles, which it transforms, clips
   and rasterises with the game's own 8-bit textures, shade, fog and translucency tables,
-  so the colours stay the palette's. A 320 x 200 pass of the same scene feeds picking,
-  water and the back buffer, and the window shows the sharp view wherever the frame still
+  so the colours stay the palette's. One pass draws it; its colour indices, what each
+  pixel shows and its depth are read back, and picking, water and the back buffer take the
+  pixel at each screen pixel's centre. The window shows the sharp view wherever the frame still
   shows the 3D view. Only the textured mode at 320 x 200 uses it; when the GPU fails the
   game falls back to the software renderer.
 

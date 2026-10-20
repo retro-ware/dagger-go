@@ -43,8 +43,7 @@ fn project(s: vec3f) -> vec4f {
 }
 
 @vertex
-fn vsGeo(@location(0) pos: vec3f, @location(1) uv: vec2f, @location(2) face: u32, @location(3) ii: u32) -> VOut {
-	let v = VIn(pos, uv, face);
+fn vsGeo(v: VIn, @builtin(instance_index) ii: u32) -> VOut {
 	let t = insts[ii];
 	let w = vec3f(dot(t.r0.xyz, v.pos) + t.r0.w, dot(t.r1.xyz, v.pos) + t.r1.w, dot(t.r2.xyz, v.pos) + t.r2.w);
 	let s = vec3f(dot(cam.v0.xyz, w), dot(cam.v1.xyz, w), dot(cam.v2.xyz, w));
@@ -60,8 +59,7 @@ fn vsGeo(@location(0) pos: vec3f, @location(1) uv: vec2f, @location(2) face: u32
 }
 
 @vertex
-fn vsFlat(@location(0) pos: vec3f, @location(1) uv: vec2f, @location(2) face: u32) -> VOut {
-	let v = VIn(pos, uv, face); // loose inputs: naga's Metal output garbles a struct input
+fn vsFlat(v: VIn) -> VOut {
 	var o: VOut;
 	o.face = v.face;
 	o.uv = v.uv;
@@ -124,10 +122,7 @@ fn shadeGeo(i: VOut) -> u32 {
 }
 
 @fragment
-fn fsGeoHi(i: VOut) -> @location(0) u32 { return shadeGeo(i); }
-
-@fragment
-fn fsGeoLo(i: VOut) -> Lo { return Lo(shadeGeo(i), i.face, i.view.z); }
+fn fsGeo(i: VOut) -> Lo { return Lo(shadeGeo(i), i.face, i.view.z); }
 
 fn texelFlat(i: VOut) -> u32 {
 	let m = mats[i.face];
@@ -157,14 +152,7 @@ fn shadeFlat(i: VOut, c0: u32) -> u32 {
 }
 
 @fragment
-fn fsFlatHi(i: VOut) -> @location(0) u32 {
-	let c = texelFlat(i);
-	if (c == 0u) { discard; }
-	return shadeFlat(i, c);
-}
-
-@fragment
-fn fsFlatLo(i: VOut) -> Lo {
+fn fsFlat(i: VOut) -> Lo {
 	let c = texelFlat(i);
 	if (c == 0u) { discard; }
 	return Lo(shadeFlat(i, c), 0x80000000u | (i.face - u32(cam.vp.z)), i.view.z);

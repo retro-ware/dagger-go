@@ -87,10 +87,11 @@ type Scene3D struct {
 	Flats   []Vert3D // 4 corners a flat, from top left clockwise
 	FlatMat int      // the material index of flat 0
 
-	// read back for the game: per screen pixel (320 x 200)
-	Idx []uint32
-	ID  []uint32
-	Z   []float32 // view z (24.8)
+	// read back for the game: per pixel of the window-sized view (W x H)
+	W, H int
+	Idx  []uint32
+	ID   []uint32
+	Z    []float32 // view z (24.8)
 
 	// After is the screen as the 3D view left it: pixels the game has not drawn over since
 	// show the window-sized view.
@@ -99,6 +100,11 @@ type Scene3D struct {
 	hi    int       // the window-sized render's slot
 	hiGen uint64    // the slot's render (a later one reuses the slot)
 	reply chan bool // the window's answer
+}
+
+// At is the read-back's pixel at the centre of screen pixel (x, y).
+func (s *Scene3D) At(x, y int32) int {
+	return (int(y)*s.H+s.H/2)/200*s.W + (int(x)*s.W+s.W/2)/320
 }
 
 var r3d struct {

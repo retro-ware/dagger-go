@@ -498,8 +498,8 @@ func hwRenderFrame(flags int32) int32 {
 		hw.on, hw.scene = false, nil
 		return 0
 	}
-	for p, c := range s.Idx {
-		if c != host.None {
+	for p := range int32(64000) {
+		if c := s.Idx[s.At(p%320, p/320)]; c != host.None {
 			Screen[p] = byte(c)
 		}
 	}
@@ -516,7 +516,7 @@ func hwPick(x, y int32) any {
 	if s == nil {
 		return nil
 	}
-	p := y*320 + x
+	p := s.At(x, y)
 	id, z := s.ID[p], s.Z[p]
 	switch {
 	case id == host.None:
@@ -556,7 +556,7 @@ func hwWater(top, rows, invTop, step int32) {
 		zw := float32(int64(1<<40) / int64(max(inv, 1)))
 		x0, x1 := max(CamCentreX-CamHalfWidth, ClipLeft), min(CamCentreX+CamHalfWidth, ClipRight)
 		for x := x0; x < x1; x++ {
-			if p := r*320 + x; s.Idx[p] == host.None || s.Z[p] > zw {
+			if p := s.At(x, r); s.Idx[p] == host.None || s.Z[p] > zw {
 				WaterSpan(line, jitter, x, x+1)
 			}
 		}
