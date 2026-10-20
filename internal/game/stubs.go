@@ -21,7 +21,6 @@ func AutomapLoad()  {}
 func FlatsCfgLoad() {}
 
 func TownMapNoteBuilding(o *Record, b *Building) {}
-func MusicSelectTables()                         {}
 func AutomapDeleteFiles()                        {}
 func AutomapButtonViewMode()                     {}
 
@@ -32,8 +31,6 @@ const strInvalidPersonSelected = 0x174F71
 func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
 func ClassmakerRun()        {}
-
-var ()
 
 func DetectConsiderCreature(o *Record, distance int32) {}
 func MarkerMakeClutter(o *Record, b *Building)         {}
@@ -49,13 +46,9 @@ func ItemAddRandomToContainer(c *Record, group int32)  {}
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
 func DaedraSummon(npc *Record)                         {}
 
-func AutomapOpen()    {}
-func MagicItemsOpen() {}
-func TransportMenu()  {}
+func AutomapOpen() {}
 
 // Per-frame callees of GameFrame not yet ported.
-func MusicPlayCourt()  {}
-func HeadBobUpdate()   {}
 func InfoPopupUpdate() {}
 
 var (
@@ -64,17 +57,13 @@ var (
 	QuestGlobalStates   [256]uint8
 )
 
-func MagicItemsFrame()                             {}
-func MusicChooseSong()                             {}
-func MusicUpdate()                                 {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
 func WeatherDrawPrecipitation()                    {}
 
 // tamriel.c's callees, not ported yet.
-func TransportChoose(button int32) {}
-func AutomapExpireRecords()        {}
-func AutomapPurgeOldFiles()        {}
+func AutomapExpireRecords() {}
+func AutomapPurgeOldFiles() {}
 
 func b2i32(b bool) int32 {
 	if b {
