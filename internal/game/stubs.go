@@ -76,7 +76,6 @@ func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func SheetOpen(mode int16) int32                                  { return 0 }
-func TavernOpen(mode int16)                                       {}
 
 // guilds.c's callees, not ported yet.
 func TrainingOffer(skills uint32) {}
@@ -167,7 +166,6 @@ func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
 func TalkUpdate()                                  {}
-func TavernFrame()                                 {}
 func TrainingUpdate()                              {}
 func TravelMapUpdate()                             {}
 func WeatherDrawPrecipitation()                    {}
