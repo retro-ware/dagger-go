@@ -8,7 +8,6 @@ import (
 
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
-func UnequipObject(o *Record)                        {}
 func FlatAnimalSound(x, y, z, archive, record int32) {}
 
 // Globals owned by unported modules.
@@ -17,8 +16,7 @@ var (
 	HazeTable1 []byte
 )
 
-func AutomapLoad()  {}
-func FlatsCfgLoad() {}
+func AutomapLoad() {}
 
 func TownMapNoteBuilding(o *Record, b *Building) {}
 func AutomapDeleteFiles()                        {}
@@ -37,9 +35,6 @@ func MarkerMakeClutter(o *Record, b *Building)         {}
 func MarkerMakeLootPile(o *Record, b *Building)        {}
 func MonsterDespawnToMarker(o *Record) bool            { return false }
 func TownNoteFactionBuildings(faction int32)           {}
-func GuardsSummon(n int32)                             {}
-func PedestrianPickSprite(o *Record)                   {}
-func TownMapAreaClear(x, z int32) bool                 { return false }
 func ItemAddRandomToContainer(c *Record, group int32)  {}
 
 // click.c's callees, not ported yet.
@@ -48,18 +43,11 @@ func DaedraSummon(npc *Record)                         {}
 
 func AutomapOpen() {}
 
-// Per-frame callees of GameFrame not yet ported.
-func InfoPopupUpdate() {}
-
 var (
 	EnchantCasterLevel  int8
 	EnchantEffectParams [3][2]int16
 	QuestGlobalStates   [256]uint8
 )
-
-func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
-func BuildingAccessLevel(kind int32) int32         { return 0 }
-func WeatherDrawPrecipitation()                    {}
 
 // tamriel.c's callees, not ported yet.
 func AutomapExpireRecords() {}

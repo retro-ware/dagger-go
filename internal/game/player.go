@@ -27,7 +27,7 @@ func PlayerFrameUpdate() {
 	case 1:
 		Trespassing = 0
 	case 2:
-		Trespassing = InteriorRestrictionAtPlayer(2) - BuildingAccessLevel(0)
+		Trespassing = InteriorRestrictionAtPlayer(2) - BuildingAccessLevel(nil)
 		if Trespassing < 0 {
 			Trespassing = 0
 		}
