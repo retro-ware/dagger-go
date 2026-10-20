@@ -40,21 +40,18 @@ var (
 	BigBuffer []byte
 )
 
-func DetectConsiderCreature(o *Record, distance int32)            {}
-func MarkerMakeClutter(o *Record, b *Building)                    {}
-func MarkerMakeLootPile(o *Record, b *Building)                   {}
-func MonsterDespawnToMarker(o *Record) bool                       { return false }
-func TownNoteFactionBuildings(faction int32)                      {}
-func GuardsSummon(n int32)                                        {}
-func PedestrianPickSprite(o *Record)                              {}
-func TownMapAreaClear(x, z int32) bool                            { return false }
-func ItemAddRandomToContainer(c *Record, group int32)             {}
-func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
-func EnchantPowersText(item *Item) string                         { return "" }
-func TalkMacroHint(which int32) string                            { return "" }
-func TalkMacro1Com() string                                       { return "" }
-func SpellmakerEnterName()                                        {}
-func SheetOpen(mode int16) int32                                  { return 0 }
+func DetectConsiderCreature(o *Record, distance int32) {}
+func MarkerMakeClutter(o *Record, b *Building)         {}
+func MarkerMakeLootPile(o *Record, b *Building)        {}
+func MonsterDespawnToMarker(o *Record) bool            { return false }
+func TownNoteFactionBuildings(faction int32)           {}
+func GuardsSummon(n int32)                             {}
+func PedestrianPickSprite(o *Record)                   {}
+func TownMapAreaClear(x, z int32) bool                 { return false }
+func ItemAddRandomToContainer(c *Record, group int32)  {}
+func EnchantPowersText(item *Item) string              { return "" }
+func SpellmakerEnterName()                             {}
+func SheetOpen(mode int16) int32                       { return 0 }
 
 // guilds.c's callees, not ported yet.
 func TrainingOffer(skills uint32) {}
@@ -64,23 +61,14 @@ func SpellmakerOpen(mode int32)   {}
 
 // click.c's callees, not ported yet.
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
-func TalkStart(npc *Record)                            {}
 func DaedraSummon(npc *Record)                         {}
 
-var npcRecordBuffer Character
-
-// NPCTalkRecordBuild is not ported; only the NPC's name is set.
-func NPCTalkRecordBuild(npc *Record) *Character {
-	npcRecordBuffer = Character{}
-	copy(npcRecordBuffer.Name[:31], NPCDisplayName(npc))
-	return &npcRecordBuffer
-}
-
-func PotionDrink(recipe *Record)                         {}
-func AutomapOpen()                                       {}
-func OptionsToggleFullScreen()                           {}
-func MagicItemsOpen()                                    {}
-func TransportMenu()                                     {}
+func PotionDrink(recipe *Record)  {}
+func AutomapOpen()                {}
+func OptionsToggleFullScreen()    {}
+func MagicItemsOpen()             {}
+func TransportMenu()              {}
+func LogbookCopyText(text string) {}
 
 // Per-frame callees of GameFrame not yet ported.
 func MusicPlayCourt()  {}
@@ -106,7 +94,6 @@ func SheetUpdate()                                 {}
 func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
-func TalkUpdate()                                  {}
 func TrainingUpdate()                              {}
 func WeatherDrawPrecipitation()                    {}
 

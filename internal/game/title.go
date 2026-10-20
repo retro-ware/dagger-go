@@ -149,6 +149,7 @@ func TitleMenu() {
 		if LoadGame(slot) {
 			quickGotoTown()
 			quickStartQuest()
+			quickTalk()
 			return
 		}
 	}

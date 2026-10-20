@@ -1071,9 +1071,9 @@ func QuestEventIndividualNPC(event int16, o, other *Record) bool {
 	}
 	var faction int16
 	switch {
-	case o.Type == 8:
+	case o != nil && o.Type == 8: // a nil record read DOS's zero page: not a person
 		faction = int16(o.Person.FactionID)
-	case other.Type == 8:
+	case other != nil && other.Type == 8:
 		faction = int16(other.Person.FactionID)
 	default:
 		return false
@@ -1089,7 +1089,7 @@ func QuestEventIndividualNPC(event int16, o, other *Record) bool {
 		CurrentQuest = r.Quest
 		for i := range CurrentQuest.Persons {
 			p := CurrentQuest.Persons[i].Object
-			if p.Type == 65 && uint16(faction) == uint16(p.Param19) {
+			if p != nil && p.Type == 65 && uint16(faction) == uint16(p.Param19) {
 				QuestEventCode = event
 				QuestEventObject = o
 				QuestEventObject2 = other

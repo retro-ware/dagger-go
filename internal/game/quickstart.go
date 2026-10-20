@@ -75,3 +75,20 @@ func quickStartQuest() {
 	QuestStart(QuickQuest)
 	QuickQuest = ""
 }
+
+// QuickTalk (the -talk flag, a testing aid) talks to a stand-in pedestrian once a game is
+// loaded.
+var QuickTalk bool
+
+func quickTalk() {
+	if !QuickTalk || CurrentLocation == nil {
+		return
+	}
+	QuickTalk = false
+	npc := &Record{Type: 53, ID: 0x51A1, Image: U16At(addrPedestrianSprites) << 7, Data2B: 1234, Person: &Person{}}
+	if f := FactionFindTypeInRegion(int16(CurrentRegion), 15); f != nil {
+		npc.Person.FactionID = f.ID
+	}
+	npc.X, npc.Z = PlayerObject.X, PlayerObject.Z
+	NPCTalk(npc)
+}
