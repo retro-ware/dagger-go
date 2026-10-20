@@ -4,13 +4,9 @@ import (
 	"github.com/memmaker/dagger-go/internal/xn"
 )
 
-// Stubs for game functions not ported yet. Each one is replaced by its port.
-
 func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x2, z2) }
 
-func FlatAnimalSound(x, y, z, archive, record int32) {}
-
-// Globals owned by unported modules.
+// Globals the original kept in other modules.
 var (
 	HazeTable0 []byte
 	HazeTable1 []byte
@@ -20,18 +16,10 @@ var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
 const strInvalidPersonSelected = 0x174F71
 
-func QuestDebugOverlay()    {}
+func QuestDebugOverlay() {}
+
+// QuestInitRecordSizes set the QBN sections' record sizes; the port's QBN decoder knows them.
 func QuestInitRecordSizes() {}
-
-func DetectConsiderCreature(o *Record, distance int32) {}
-func MarkerMakeClutter(o *Record, b *Building)         {}
-func MarkerMakeLootPile(o *Record, b *Building)        {}
-func MonsterDespawnToMarker(o *Record) bool            { return false }
-func ItemAddRandomToContainer(c *Record, group int32)  {}
-
-// click.c's callees, not ported yet.
-func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
-func DaedraSummon(npc *Record)                         {}
 
 var (
 	EnchantCasterLevel  int8
