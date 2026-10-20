@@ -1,9 +1,10 @@
 #!/bin/sh
 # Fetches the GeneralUser GS SoundFont (S. Christian Collins, v2.0.3, free to use and
-# redistribute, see internal/music/sf2/LICENSE-GeneralUser-GS.txt) into internal/music/sf2,
-# where builds embed it for the General MIDI music. It is ~32 MB, so it stays out of git.
+# redistribute, see LICENSE-GeneralUser-GS.txt) into the project's root, where the game
+# loads the first .sf2 file it finds in its working directory. It is ~32 MB, so it stays out
+# of git. Any other General MIDI SoundFont dropped there works too.
 set -e
-dir=$(cd "$(dirname "$0")/.." && pwd)/internal/music/sf2
+dir=$(cd "$(dirname "$0")/.." && pwd)
 rev=684543d5e5efaef08d02be50dcda8d552478fa60 # github.com/mrbumpy409/GeneralUser-GS, v2.0.3
 sum=9575028c7a1f589f5770fccc8cff2734566af40cd26ed836944e9a5152688cfe
 f="$dir/GeneralUser-GS.sf2"

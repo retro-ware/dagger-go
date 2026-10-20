@@ -1,4 +1,4 @@
 bin/
 *.png
 /dagger
-/internal/music/sf2/*.sf2
+/*.sf2

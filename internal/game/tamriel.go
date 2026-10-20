@@ -81,9 +81,6 @@ func TimePassMinutes(minutes int32) {
 		AutomapExpireRecords()
 	}
 	FrameCheckpoint = 2004
-	if days != 0 {
-		AutomapPurgeOldFiles()
-	}
 	CalendarUpdate()
 	if PlayerDeathTimer < 0 {
 		return

@@ -13,8 +13,9 @@ file lists where it does something else, and why. Small guards are marked in the
   sample's done callback runs from Poll on the game's goroutine, and the mixer stops a chunk
   where a chained sample ends, so chained buffers still follow without a gap.
 - Music: the DOS MPU-401/OPL drivers are replaced by a General MIDI synth (meltysynth, MIT)
-  and a SoundFont: SC55_zzdenis_v0.5.sf2 by default (copied into internal/music/sf2), else
-  GeneralUser GS (tools/fetch-soundfont.sh), or the file `$DAGGER_SF2` names. The HMI
+  and a SoundFont read at start from the working directory: the first *.sf2 there (e.g.
+  SC55_zzdenis_v0.5.sf2, or GeneralUser GS from tools/fetch-soundfont.sh), unless
+  `$DAGGER_SF2` names a file. The HMI
   parser (internal/music/hmi.go) reads MIDI.BSA's GM songs; the SOS controllers 102-119
   are dropped. With no SoundFont there is no music, as with no MIDI device. A track end far
   past a song's last note is ignored: SUNNYDAY.HMI's track 5 sets the reverb 2.8 hours
@@ -75,7 +76,8 @@ The full list is the `port:` comments.
 
 - potionCauldronCount is never raised, as in the original.
 - The class maker's "clear magery" resets all the flags to 5120.
-- AutomapPurgeOldFiles deletes nothing (the original passes the search pattern to unlink).
+- The automap's old-files purge (delete notes and maps unvisited for 90 days) is dropped:
+  the original passed the search pattern to unlink, so it never deleted anything.
 - The quest debug overlay shows the stale text_buffer, and the side-effect exclusion uses
   scratch_190d66, as the original.
 

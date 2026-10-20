@@ -1,15 +1,11 @@
 // Package music plays Daggerfall's General MIDI songs (HMI files from MIDI.BSA) the way the
 // GOG release does through DOSBox's MPU-401: a General MIDI synthesizer, here meltysynth with
-// a SoundFont embedded from internal/music/sf2 (by default SC55_zzdenis_v0.5.sf2, copied there
-// by hand; else GeneralUser GS from tools/fetch-soundfont.sh), or the
-// file $DAGGER_SF2 names). Without a SoundFont there is no music.
+// a SoundFont read at startup (soundFont: $DAGGER_SF2, else the first .sf2 file in the
+// working directory). Without a SoundFont there is no music.
 package music
-
-//go:generate sh ../../tools/fetch-soundfont.sh
 
 import (
 	"bytes"
-	"os"
 	"sync"
 
 	"github.com/memmaker/dagger-go/internal/meltysynth"
@@ -36,12 +32,7 @@ func Init() bool {
 		return synth != nil
 	}
 	loaded = true
-	sf2 := embeddedSF2()
-	if p := os.Getenv("DAGGER_SF2"); p != "" {
-		if b, err := os.ReadFile(p); err == nil {
-			sf2 = b
-		}
-	}
+	sf2 := soundFont()
 	if sf2 == nil {
 		return false
 	}

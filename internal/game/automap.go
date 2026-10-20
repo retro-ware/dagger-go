@@ -374,10 +374,6 @@ func AutomapExpireRecords() {
 	}
 }
 
-// AutomapPurgeOldFiles was to delete notes files older than 90 days; the original passes the
-// search pattern to unlink, so it never deletes anything.
-func AutomapPurgeOldFiles() {}
-
 // AutomapDeleteFiles deletes the saved town notes and dungeon maps (a new game).
 func AutomapDeleteFiles() {
 	for _, pattern := range []uint32{strAtfPattern, strAmfPattern} {
