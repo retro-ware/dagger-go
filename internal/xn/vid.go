@@ -600,3 +600,29 @@ func VidAudioStart() {
 	}
 	v.sampleHandle = SoundStart(&vidSample)
 }
+
+// VidFrames decodes the movie at path (a DOS path) without timing or sound, calling fn with
+// the screen and the palette (6-bit) after each frame: for a still from it (goplay's cover).
+func VidFrames(path string, fn func(screen []byte, pal *[0x300]byte)) bool {
+	if Width == 0 {
+		Width, Height, ScreenSize = 320, 200, 64000
+	}
+	if len(Screen) < 64000 {
+		Screen = make([]byte, ScreenSize)
+	}
+	BuildRowOffsets()
+	SetClip(0, 0, Width, Height)
+	v := &VidState
+	if !dosfs.Exists(path) || !VidOpen(0, 0, path) {
+		return false
+	}
+	for done := v.FramesDone; v.Done == 0; {
+		if v.FramesDone != done {
+			done = v.FramesDone
+			fn(Screen[:64000], &v.Palette)
+		}
+		v.FrameWaits = 0
+		VidDecodeChunk()
+	}
+	return true
+}

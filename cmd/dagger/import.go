@@ -10,6 +10,8 @@ import (
 	"path/filepath"
 	"strings"
 
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 	"github.com/retro-ware/gameimport"
 )
 
@@ -32,8 +34,9 @@ CHEATMODE 0
 
 // importGame finds Daggerfall in src (folders, zips, CD images, GOG installers, loose
 // files) and copies what the engine reads into dir: FALL.EXE, Z.CFG and ARENA2, plus
-// COVER.PNG for goplay's disk label. ARENA2's files come from the one beside FALL.EXE,
-// missing ones from any other (a CD's), as the original's path and pathCD.
+// COVER.PNG for goplay's disk label (the intro's logo, else the title screen). ARENA2's
+// files come from the one beside FALL.EXE, missing ones from any other (a CD's), as the
+// original's path and pathCD.
 func importGame(src, dir string) error {
 	files, err := gameimport.Find(src, func(name string) bool {
 		base := strings.ToUpper(path.Base(name))
@@ -80,7 +83,36 @@ func importGame(src, dir string) error {
 			return err
 		}
 	}
+	if img, ok := logoCard(dir); ok {
+		return writeCover(dir, img)
+	}
 	return writeCover(dir, out["ARENA2/TITL00I0.IMG"])
+}
+
+// logoCard is the intro's Daggerfall logo (ANIM0001.VID, after the Bethesda card) as an
+// IMG's bytes: the first frame of the movie's second half that stands still (under 64
+// pixels changing over the next two frames), with its palette.
+func logoCard(dir string) ([]byte, bool) {
+	dosfs.SetDirs(dir, dir)
+	var frames [][]byte
+	xn.VidFrames(`ARENA2\ANIM0001.VID`, func(screen []byte, pal *[0x300]byte) {
+		frames = append(frames, append(append([]byte(nil), screen...), pal[:]...))
+	})
+	changed := func(a, b []byte) int {
+		n := 0
+		for i := range 64000 {
+			if a[i] != b[i] {
+				n++
+			}
+		}
+		return n
+	}
+	for i := len(frames) / 2; i+2 < len(frames); i++ {
+		if changed(frames[i], frames[i+1]) < 64 && changed(frames[i+1], frames[i+2]) < 64 {
+			return frames[i], true
+		}
+	}
+	return nil, false
 }
 
 // arena2Rel is the name's path below an ARENA2 folder, "" when it is not in one.
@@ -94,11 +126,11 @@ func arena2Rel(name string) string {
 	return ""
 }
 
-// writeCover writes the title screen (TITL00I0.IMG: 320 x 200 pixels and its 6-bit
-// palette) as dir/COVER.PNG.
+// writeCover writes a 320 x 200 picture with its 6-bit palette (an IMG's layout) as
+// dir/COVER.PNG.
 func writeCover(dir string, img []byte) error {
 	if len(img) < 64000+768 {
-		return fmt.Errorf("TITL00I0.IMG is %d bytes", len(img))
+		return fmt.Errorf("a cover of %d bytes", len(img))
 	}
 	pal := make(color.Palette, 256)
 	for i := range pal {
