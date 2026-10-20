@@ -59,9 +59,7 @@ func MarkerMakeClutter(o *Record, b *Building)                    {}
 func MarkerMakeLootPile(o *Record, b *Building)                   {}
 func MonsterDespawnToMarker(o *Record) bool                       { return false }
 func PlaceSpawnFromMarker(o *Record)                              {}
-func TavernRoomRented() bool                                      { return false }
 func TownNoteFactionBuildings(faction int32)                      {}
-func SkillAddUses(skill, uses int32)                              {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func GuardsSummon(n int32)                                        {}
 func MonsterInit(o *Record, mobile int32)                         {}
@@ -125,7 +123,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 func PotionDrink(recipe *Record)                         {}
 func PlayerMouseLook()                                   {}
 func CursorDraw(region int16)                            {}
-func FatigueAdd(n int32)                                 {}
 func QuestsUnlinkAll(root *Record)                       {}
 func QuestsRelinkAll(root *Record)                       {}
 func QuestFacesAfterLoad()                               {}
@@ -140,12 +137,10 @@ func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()         {}
 func BankFrame()                 {}
-func BreathUpdate()              {}
 func MusicPlayCourt()            {}
 func HeadBobUpdate()             {}
 func InfoPopupUpdate()           {}
 func ItemmakerUpdate()           {}
-func LevelupCheck()              {}
 func AIAlertCreatures(o *Record) {}
 
 var (
@@ -166,7 +161,6 @@ func PotionmakerUpdate()                           {}
 func QuestFacesDraw()                              {}
 func QuestPromptAnswer()                           {}
 func QuestStartPending()                           {}
-func RestUpdate()                                  {}
 func SheetUpdate()                                 {}
 func SkyUpdate()                                   {}
 func SpellbookFrame()                              {}
@@ -186,7 +180,6 @@ func TransportChoose(button int32)     {}
 func AutomapExpireRecords()            {}
 func AutomapPurgeOldFiles()            {}
 func TravelShowDaysLeft(minutes int32) {}
-func FatigueUpdate()                   {}
 func SkyUpdateMoons()                  {}
 func EncounterTick(minute, flag int32) {}
 func QuestRunOpcodes(q *Quest)         {}
