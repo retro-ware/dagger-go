@@ -83,28 +83,11 @@ func PotionmakerOpen(mode int32)  {}
 func ItemmakerOpen(mode int32)    {}
 func SpellmakerOpen(mode int32)   {}
 
-// bankHouse is an entry of bank_houses_for_sale.
-type bankHouse struct {
-	ID       int32
-	Block    *Record
-	Building *Building
-}
-
-var (
-	BankHousesForSale       [64]bankHouse
-	BankHouseCount          uint8
-	BankBoughtHouse         *Record
-	BankBoughtHouseBuilding *Building
-)
-
-func BankAddHouseForSale(o *Record) {}
-
 // click.c's callees, not ported yet.
 func QuestEventClickedFaction(faction uint16) bool               { return false }
 func QuestEventIndividualNPC(event int16, o, other *Record) bool { return false }
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool           { return false }
 func QuestStartTestQuest(p *Person) bool                         { return false }
-func BankOpen(mode int32)                                        {}
 func TalkStart(npc *Record)                                      {}
 func DaedraSummon(npc *Record)                                   {}
 func QuestPickForNPC(npc *Record)                                {}
@@ -135,7 +118,6 @@ func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func AIUpdateCreatures()         {}
-func BankFrame()                 {}
 func MusicPlayCourt()            {}
 func HeadBobUpdate()             {}
 func InfoPopupUpdate()           {}
@@ -148,7 +130,6 @@ var (
 	QuestGlobalStates   [256]uint8
 )
 
-func LoanCollectorsUpdate()                        {}
 func LogbookUpdate()                               {}
 func MagicItemsFrame()                             {}
 func MusicChooseSong()                             {}
@@ -183,3 +164,4 @@ func EncounterTick(minute, flag int32) {}
 func QuestRunOpcodes(q *Quest)         {}
 
 func QuestsRaiseEventAll(event int32, o *Record) {}
+func EncounterSpawnHidden(mobile int32)          {}

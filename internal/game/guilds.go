@@ -964,8 +964,8 @@ func guildGiveHouse(m *Membership) {
 		return
 	}
 	h := BankHousesForSale[RandRange(0, int32(BankHouseCount)-1)]
-	pc.House = h.ID
-	BankBoughtHouse = h.Block
+	pc.House = int32(h.ID)
+	BankBoughtHouse = blockRecord(h.Block)
 	BankBoughtHouseBuilding = h.Building
 	MsgboxShowRSC(462, 1)
 	SavedRegionName = RegionName(CurrentRegion)
