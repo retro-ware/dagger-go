@@ -13,6 +13,7 @@ import (
 	"github.com/memmaker/dagger-go/internal/exe"
 	"github.com/memmaker/dagger-go/internal/game"
 	"github.com/memmaker/dagger-go/internal/host"
+	"github.com/memmaker/dagger-go/internal/music"
 	"github.com/memmaker/dagger-go/internal/xn"
 )
 
@@ -54,6 +55,11 @@ func main() {
 	}
 	xn.LoadData(img)
 	xn.SoundUseHost()
+	if music.Init() {
+		host.Music = music.Render
+		game.MusicPlayer = music.Play
+		game.MusicVolumeSet = func(v int32) { music.SetVolume(int(v)) }
+	}
 	game.LoadData(img)
 	if *overlay == "" {
 		dir, err := os.UserConfigDir()

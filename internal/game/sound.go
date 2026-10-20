@@ -43,13 +43,14 @@ var (
 	soundCacheBytes        int32
 )
 
-// SoundInitMusic readies the sound channels. The MIDI music is not played (no synth): the
-// port keeps the digital channels only.
+// SoundInitMusic readies the sound channels and opens MIDI.BSA. The port plays its HMI
+// songs through a General MIDI synth (internal/music) in place of the DOS drivers.
 func SoundInitMusic() int32 {
 	musicTimerHandle = xn.TimerRegister(140, xn.TimerTickCallback)
 	for i := range SoundChannels {
 		SoundChannels[i].Handle = soundNoHandle
 	}
+	MidiBSA = ArchiveOpen("midi.bsa", nil, 0)
 	SoundEnabled = true
 	return 1
 }

@@ -43,8 +43,11 @@ var (
 	MusicUsesFM uint8
 	// MusicCurrent is the playing song's file name.
 	MusicCurrent string
-	// MusicPlayer plays a song file (nil: no music device). The host sets it.
-	MusicPlayer func(name string)
+	// MusicPlayer plays an HMI song (nil: stops it), MusicVolumeSet sets its volume (0..128);
+	// nil: no music device. The host sets them.
+	MusicPlayer    func(hmi []byte)
+	MusicVolumeSet func(volume int32)
+	MidiBSA        int32
 
 	musicDungeon, musicGeneral, musicSneaking uint32
 	musicGuild, musicBuildings, musicCourt    uint32
@@ -78,7 +81,7 @@ func MusicPlay(name string) {
 	MusicStop()
 	MusicCurrent = name
 	if MusicPlayer != nil {
-		MusicPlayer(name)
+		MusicPlayer(ArchiveReadRecord(MidiBSA, ArchiveFindRecord(MidiBSA, name, 13), nil))
 	}
 }
 
@@ -89,11 +92,11 @@ func MusicStop() {
 	}
 	MusicCurrent = ""
 	if MusicPlayer != nil {
-		MusicPlayer("")
+		MusicPlayer(nil)
 	}
 }
 
-// MusicUpdate restarts a finished song; the host's player loops songs itself.
+// MusicUpdate restarted a finished song; the host's player starts it again itself.
 func MusicUpdate() {}
 
 // MusicPlayCourt plays the court's song.

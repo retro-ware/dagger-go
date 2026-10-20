@@ -946,7 +946,12 @@ func saveloadDraw(saving, used, slot int32) {
 func AutomapUnmarkSeenOne(o *Record) { o.Flags &^= 0x80 }
 
 // SoundSetVolume sets the music volume (sound_set_volume; the MIDI driver's).
-func SoundSetVolume(volume int32) { MusicVolume = volume }
+func SoundSetVolume(volume int32) {
+	MusicVolume = volume
+	if MusicVolumeSet != nil {
+		MusicVolumeSet(volume)
+	}
+}
 
 var (
 	QuestDebugData int32

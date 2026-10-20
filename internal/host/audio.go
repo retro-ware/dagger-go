@@ -213,6 +213,9 @@ func (mixer) Read(b []byte) (int, error) {
 			r += s * pan >> 7
 			v.pos += uint64(v.Rate) << 32 / mixRate
 		}
+		ml, mr := musicSample()
+		l += ml
+		r += mr
 		l, r = clamp16(l), clamp16(r)
 		b[i*4], b[i*4+1] = byte(l), byte(l>>8)
 		b[i*4+2], b[i*4+3] = byte(r), byte(r>>8)
@@ -220,3 +223,31 @@ func (mixer) Read(b []byte) (int, error) {
 	return n * 4, nil
 }
 func clamp16(v int32) int32 { return max(-32768, min(32767, v)) }
+
+// Music renders the music into l and r (float samples at 44.1 kHz, added); nil: none. The
+// mixer pulls it in blocks, so a chunk cut short at a chained voice loses none of it.
+var Music func(l, r []float32)
+
+var musicBuf struct {
+	l, r [512]float32
+	pos  int
+}
+
+func init() { musicBuf.pos = len(musicBuf.l) }
+
+// musicSample is the music's next sample as 16-bit values. mix.mu is held.
+func musicSample() (int32, int32) {
+	if Music == nil {
+		return 0, 0
+	}
+	m := &musicBuf
+	if m.pos == len(m.l) {
+		clear(m.l[:])
+		clear(m.r[:])
+		Music(m.l[:], m.r[:])
+		m.pos = 0
+	}
+	l, r := m.l[m.pos], m.r[m.pos]
+	m.pos++
+	return int32(max(-1, min(1, l)) * 32767), int32(max(-1, min(1, r)) * 32767)
+}
