@@ -311,8 +311,9 @@ func enhOptionsButtonDraw() {
 	TextDrawCentredColoured("ENHANCEMENTS", int32(b.X0+b.X1)/2, int32(b.Y0)+3, colour, 156)
 }
 
-// enhTitleRect is the title menu's Enhancements line, under Exit.
-var enhTitleRect = Rect{115, 161, 205, 171}
+// enhTitleRect is the title menu's Enhancements line, under Exit, centred as the scroll's
+// lines are (on x = 145, the middle of their click areas).
+var enhTitleRect = Rect{100, 161, 190, 171}
 
 // enhTitleDraw writes the Enhancements line on the title scroll in its darkest colour (pal:
 // the title's 8-bit palette).
@@ -326,7 +327,7 @@ func enhTitleDraw(pal []byte) {
 	xn.FontSelect(4)
 	saved := xn.TextColour
 	xn.TextColour = dark
-	TextDrawCentred("Enhancements", 160, int32(enhTitleRect.Y0)+2)
+	TextDrawCentred("Enhancements", int32(enhTitleRect.X0+enhTitleRect.X1)/2, int32(enhTitleRect.Y0)+2)
 	xn.TextColour = saved
 }
 
