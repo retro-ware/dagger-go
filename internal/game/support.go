@@ -350,9 +350,26 @@ func FrameTimerInit() {
 	FrameTimerLast = FrameTimerMS
 }
 
-// FrameTicksUpdate turns the timer ticks since the last frame into animation ticks.
+// The clock FrameTicksUpdate reads, and the fraction of a tick it carries.
+var (
+	frameClock        time.Duration
+	frameClockStarted bool
+	frameTickCarry    float64
+)
+
+// FrameTicksUpdate turns the time since the last frame into animation ticks (1828/256 of
+// them a 140 Hz timer tick, about a millisecond). port: the original counted its timer's
+// ticks; the port reads the clock and carries the fraction, so the ticks follow the frames'
+// own pace (the display's) instead of the 140 Hz grid.
 func FrameTicksUpdate() {
-	FrameTicks = int32(xn.TimerTickCount) * 1828 / 256
+	now := host.Now()
+	if !frameClockStarted {
+		frameClock, frameClockStarted = now, true
+	}
+	frameTickCarry += float64(now-frameClock) * 140 * 1828 / 256 / float64(time.Second)
+	frameClock = now
+	FrameTicks = int32(frameTickCarry)
+	frameTickCarry -= float64(FrameTicks)
 	if FrameTicks > 100 {
 		FrameTicks = 100
 	}

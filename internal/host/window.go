@@ -1,6 +1,8 @@
 package host
 
 import (
+	"time"
+
 	"gpu"
 )
 
@@ -55,15 +57,14 @@ const (
 	glfwRightAlt     gpu.Key = 346
 )
 
-// The window shows 320x200 with square pixels stretched to 4:3, as a VGA monitor showed it.
-const aspect = 1.2
-
 type window struct {
-	done    <-chan struct{}
-	held    map[gpu.Key]bool
-	screen  *gpu.Image
-	dw, dh  int
-	buttons [3]bool
+	done     <-chan struct{}
+	held     map[gpu.Key]bool
+	screen   *gpu.Image
+	dw, dh   int
+	buttons  [3]bool
+	hidden   bool      // the OS pointer is hidden over the window
+	lastDraw time.Time // the last frame shown, for the display's refresh interval
 }
 
 func (g *window) Update() error {
@@ -103,27 +104,42 @@ func (g *window) Update() error {
 	return nil
 }
 
-// mouse sends the window's mouse to the driver: motion while the window has the pointer
-// captured (the first click captures it, Ctrl+G or losing focus releases it), and buttons.
+// mouse hands the window's mouse to the game. The OS pointer, hidden over the window,
+// places the game's cursor directly. While the game asks for relative motion (mouse look, a
+// weapon swing: RequestPointerLock) the pointer is locked and its raw motion is sent;
+// losing the focus or the game no longer asking releases it.
 func (g *window) mouse() {
-	if gpu.CursorCaptured() && (!gpu.IsFocused() ||
-		gpu.IsKeyPressed(gpu.KeyG) && (gpu.IsKeyPressed(glfwLeftControl) || gpu.IsKeyPressed(glfwRightControl))) {
-		gpu.SetCursorCaptured(false)
-	}
-	dx, dy := gpu.CursorDelta()
-	if !gpu.CursorCaptured() {
-		if gpu.IsMouseButtonJustPressed(gpu.MouseButtonLeft) {
-			gpu.SetCursorCaptured(true)
-			gpu.CursorDelta()
-		}
-		return
-	}
 	st.mu.Lock()
+	want := Now() < st.lockUntil
+	warp, wx, wy := st.warp, st.ptrX, st.ptrY
+	st.warp = false
 	w, h := st.w, st.h
 	st.mu.Unlock()
-	if (dx != 0 || dy != 0) && g.dw > 0 && g.dh > 0 {
-		MouseMove(dx*float64(w)/float64(g.dw), dy*float64(h)/float64(g.dh))
+	want = want && gpu.IsFocused()
+	if want != gpu.CursorCaptured() {
+		gpu.SetCursorCaptured(want)
+		gpu.CursorDelta() // the lock's own jump is not motion
+		g.hidden = false
 	}
+	if gpu.CursorCaptured() {
+		if dx, dy := gpu.CursorDelta(); dx != 0 || dy != 0 {
+			MouseMove(dx, dy)
+		}
+	} else if g.dw > 0 && g.dh > 0 {
+		if !g.hidden {
+			gpu.SetCursorHidden(true)
+			g.hidden = true
+		}
+		if warp {
+			gpu.SetCursorPosition(int(wx*float64(g.dw)/float64(w)), int(wy*float64(g.dh)/float64(h)))
+		} else {
+			x, y := gpu.CursorPosition()
+			MouseTo(float64(x)*float64(w)/float64(g.dw), float64(y)*float64(h)/float64(g.dh))
+		}
+	}
+	st.mu.Lock()
+	st.locked = gpu.CursorCaptured()
+	st.mu.Unlock()
 	for b, mb := range []gpu.MouseButton{gpu.MouseButtonLeft, gpu.MouseButtonRight, gpu.MouseButtonMiddle} {
 		down := gpu.IsMouseButtonPressed(mb)
 		if down != g.buttons[b] {
@@ -145,6 +161,12 @@ func (g *window) Draw(dst *gpu.Image) {
 	if shot != "" {
 		_ = WritePNG(shot, px, w, h)
 	}
+	now := time.Now()
+	if !g.lastDraw.IsZero() {
+		refreshNote(now.Sub(g.lastDraw))
+	}
+	g.lastDraw = now
+	st.frameSeq++
 	st.mu.Unlock()
 	op := &gpu.DrawImageOptions{}
 	op.GeoM.Scale(float64(g.dw)/float64(w), float64(g.dh)/float64(h))

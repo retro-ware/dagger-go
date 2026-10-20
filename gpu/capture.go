@@ -41,3 +41,16 @@ func CursorDelta() (float64, float64) {
 
 // IsFocused reports whether the window has the input focus.
 func IsFocused() bool { return win.w != nil && win.w.GetAttrib(glfw.Focused) == glfw.True }
+
+// SetCursorHidden hides the pointer while it is over the window (when not captured), for a
+// game that draws its own cursor.
+func SetCursorHidden(on bool) {
+	if win.w == nil || capture.on {
+		return
+	}
+	mode := glfw.CursorNormal
+	if on {
+		mode = glfw.CursorHidden
+	}
+	win.w.SetInputMode(glfw.CursorMode, mode)
+}

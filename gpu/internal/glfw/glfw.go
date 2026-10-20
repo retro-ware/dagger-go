@@ -31,6 +31,7 @@ const (
 	ContextVersionMajor     = glfw.ContextVersionMajor
 	ContextVersionMinor     = glfw.ContextVersionMinor
 	CursorDisabled          = glfw.CursorDisabled
+	CursorHidden            = glfw.CursorHidden
 	CursorMode              = glfw.CursorMode
 	CursorNormal            = glfw.CursorNormal
 	Decorated               = glfw.Decorated

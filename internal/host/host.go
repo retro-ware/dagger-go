@@ -34,12 +34,20 @@ var st struct {
 	quit  bool
 	start time.Time
 	shot  string // a PNG to write of the next frame shown
+
+	ptrX, ptrY float64       // the pointer on the frame, in its pixels
+	ptrSet     bool          // the pointer has a position (the window or a script set it)
+	warp       bool          // the game moved the pointer: the window moves the OS pointer
+	lockUntil  time.Duration // the pointer stays locked until then (RequestPointerLock)
+	locked     bool          // the window has the pointer locked
+	frameSeq   uint64        // frames the window has shown (pace.go)
 }
 
 func init() { st.w, st.h, st.start = 320, 200, time.Now() }
 
-// Scripted makes the window ignore the real keyboard and mouse: only PushKey, MouseMove and
-// MouseButton reach the game, so a scripted run can't pick up the user's keystrokes.
+// Scripted makes the window ignore the real keyboard and mouse: only PushKey, MouseMove,
+// MouseTo and MouseButton reach the game, so a scripted run can't pick up the user's
+// keystrokes.
 var Scripted bool
 
 // Present shows a frame of w x h palette indices.
@@ -83,8 +91,8 @@ func PushKey(code byte) {
 	st.mu.Unlock()
 }
 
-// A MouseEvent is the mouse moving (Button < 0: DX, DY in the frame's pixels) or a button
-// (0 left, 1 right, 2 middle) going down or up.
+// A MouseEvent is relative mouse motion (Button < 0: DX, DY in counts, the OS's raw motion
+// while the pointer is locked) or a button (0 left, 1 right, 2 middle) going down or up.
 type MouseEvent struct {
 	DX, DY float64
 	Button int
@@ -103,18 +111,15 @@ func ReadMouse() (MouseEvent, bool) {
 	return e, true
 }
 
-// MouseAbsolute is the Button of a MouseEvent that puts the mouse at (DX, DY) in mode 13h
-// pixels: a script's move.
-const MouseAbsolute = -2
-
-// MouseTo queues putting the mouse at (x, y).
+// MouseTo puts the pointer at (x, y) on the frame, as a script or the window does.
 func MouseTo(x, y float64) {
 	st.mu.Lock()
-	st.mouse = append(st.mouse, MouseEvent{DX: x, DY: y, Button: MouseAbsolute})
+	st.ptrX, st.ptrY, st.ptrSet = x, y, true
 	st.mu.Unlock()
 }
 
-// MouseMove queues motion, as a script or the window sends it.
+// MouseMove queues relative motion, as a script or the window (with the pointer locked)
+// sends it.
 func MouseMove(dx, dy float64) {
 	st.mu.Lock()
 	st.mouse = append(st.mouse, MouseEvent{DX: dx, DY: dy, Button: -1})
@@ -126,6 +131,39 @@ func MouseButton(b int, down bool) {
 	st.mu.Lock()
 	st.mouse = append(st.mouse, MouseEvent{Button: b, Down: down})
 	st.mu.Unlock()
+}
+
+// Pointer is the pointer's position on the frame in its pixels; false before it has one.
+func Pointer() (x, y float64, ok bool) {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.ptrX, st.ptrY, st.ptrSet
+}
+
+// SetPointer moves the pointer to (x, y) on the frame (the game placing its cursor).
+func SetPointer(x, y float64) {
+	st.mu.Lock()
+	st.ptrX, st.ptrY, st.ptrSet, st.warp = x, y, true, true
+	st.mu.Unlock()
+}
+
+// pointerLockHold is how long a lock request lasts: the game asks each frame it wants
+// relative motion, so a screen that stops asking gets the pointer back by itself.
+const pointerLockHold = 150 * time.Millisecond
+
+// RequestPointerLock asks the window to lock the pointer (hidden, raw relative motion) for a
+// little while.
+func RequestPointerLock() {
+	st.mu.Lock()
+	st.lockUntil = Now() + pointerLockHold
+	st.mu.Unlock()
+}
+
+// PointerLocked is whether the window has the pointer locked.
+func PointerLocked() bool {
+	st.mu.Lock()
+	defer st.mu.Unlock()
+	return st.locked
 }
 
 // Quit asks the window to close.
@@ -183,7 +221,7 @@ func WritePNG(path string, px []byte, w, h int) error {
 }
 
 // Run opens the window and runs game on its own goroutine until it returns or the window
-// closes.
+// closes. The window reads input at 240 Hz, so a game frame always sees fresh input.
 func Run(title string, game func()) error {
 	done := make(chan struct{})
 	go func() {
@@ -193,7 +231,7 @@ func Run(title string, game func()) error {
 	gpu.SetWindowTitle(title)
 	gpu.SetWindowSize(960, 600)
 	gpu.SetWindowResizingMode(gpu.WindowResizingModeEnabled)
-	gpu.SetTPS(70)
+	gpu.SetTPS(240)
 	gpu.SetRunnableOnUnfocused(true)
 	return gpu.RunGame(&window{done: done})
 }

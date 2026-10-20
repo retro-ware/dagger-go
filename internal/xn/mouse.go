@@ -1,6 +1,6 @@
 package xn
 
-// The mouse (mouse.c): polling the driver, double clicks, and the software cursor.
+// The mouse (mouse.c): polling the pointer (pointer.go), double clicks, and the software cursor.
 
 const (
 	MouseLeft  = 1
@@ -37,26 +37,26 @@ var (
 	}
 )
 
-func MouseSetRange320x200() { MouseDrvXRange(0, 310); MouseDrvYRange(0, 194) }
-func MouseSetRange640x480() { MouseDrvXRange(0, 620); MouseDrvYRange(0, 460) }
+func MouseSetRange320x200() { pointerRangeX(0, 310); pointerRangeY(0, 194) }
+func MouseSetRange640x480() { pointerRangeX(0, 620); pointerRangeY(0, 460) }
 
 func MouseInit() {
-	MouseDrvXRange(10, 630)
-	MouseDrvYRange(10, 460)
-	MouseDrvSetPosition(10, 10)
+	pointerRangeX(5, 315) // the driver's 10..630 in its 640 units across mode 13h
+	pointerRangeY(10, 460)
+	pointerSet(5, 10)
 }
 
-func MouseSetSensitivity(h, v int32) { MouseDrvSetSpeed(uint16(h), uint16(v), 50) }
+func MouseSetSensitivity(h, v int32) { pointerSetSpeed(uint16(h), uint16(v), 50) }
 
 func MouseGetSensitivity() (h, v uint8) {
-	sh, sv, _ := MouseDrvSpeed()
+	sh, sv, _ := pointerSpeed()
 	return uint8(sh), uint8(sv)
 }
 
-// MouseReadMotion is the mickeys since the last read.
-func MouseReadMotion() (int16, int16) { return MouseDrvMotion() }
+// MouseReadMotion is the motion since the last read.
+func MouseReadMotion() (int16, int16) { return pointerMotion() }
 
-func MouseSetPosition(x, y int32) { MouseDrvSetPosition(int16(x), int16(y)) }
+func MouseSetPosition(x, y int32) { pointerSet(int16(x), int16(y)) }
 
 // near16 is |a - b| < 4 in 16 bits (Q-MOUSE-02: negating -32768 leaves it negative: near).
 func near16(a, b int16) bool {
@@ -82,13 +82,13 @@ func mousePress(bit uint8, now uint32, i int) {
 	p.tick, p.x, p.y = now, MouseX, MouseY
 }
 
-// MousePoll reads the buttons and the position from the driver; MouseDoubleClick is set for
+// MousePoll reads the buttons and the position from the pointer; MouseDoubleClick is set for
 // a button pressed again within 8 BIOS ticks and 4 pixels.
 func MousePoll() {
 	Poll()
 	MouseButtonsPrev = MouseButtons
 	var b uint16
-	b, MouseX, MouseY = MouseDrvState()
+	b, MouseX, MouseY = pointerState()
 	MouseButtons = uint8(b)
 	MouseDoubleClick = 0
 	now := BIOSTicks()

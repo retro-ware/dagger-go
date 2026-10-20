@@ -55,9 +55,10 @@ func Main(cfgPath string) {
 		xn.RenderSetMode(8)
 		EngineRunning = 1
 		for {
-			// port: the DOS game never outran its 140 Hz timer; frames wait for two of its
-			// ticks (about 70 a second) so the per-frame steps keep their speed
-			for xn.TimerTickCount < 2 {
+			// port: frames are paced to the display (host/pace.go): one each refresh, or each
+			// n-th on a fast display, at most 75 a second; their ticks come from the clock
+			// (FrameTicksUpdate)
+			for !host.GameFrameDue() {
 				xn.Poll()
 				host.Sleep()
 			}
@@ -72,6 +73,7 @@ func Main(cfgPath string) {
 			HudDrawHeadingStrip(0)
 			xn.TimerFPSUpdate()
 			FrameCheckpoint = 2
+			mouseLockUpdate()
 			MouseMotionX, MouseMotionY = xn.MouseReadMotion()
 			PlayerMovementUpdate()
 			KeysWorldActions()

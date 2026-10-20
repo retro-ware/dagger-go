@@ -13,15 +13,26 @@ file lists where it does something else, and why. Small guards are marked in the
   sample's done callback runs from Poll on the game's goroutine, and the mixer stops a chunk
   where a chained sample ends, so chained buffers still follow without a gap.
 - Music: the DOS MPU-401/OPL drivers are replaced by a General MIDI synth (meltysynth, MIT)
-  and the GeneralUser GS SoundFont (tools/fetch-soundfont.sh, or `$DAGGER_SF2`). The HMI
+  and a SoundFont: SC55_zzdenis_v0.5.sf2 by default (copied into internal/music/sf2), else
+  GeneralUser GS (tools/fetch-soundfont.sh), or the file `$DAGGER_SF2` names. The HMI
   parser (internal/music/hmi.go) reads MIDI.BSA's GM songs; the SOS controllers 102-119
-  are dropped. With no SoundFont there is no music, as with no MIDI device. Faithful quirk:
-  SUNNYDAY.HMI has a track with a giant delta, so the song only loops after ~2.8 hours.
-- The mouse is a model of the int 33h driver (internal/xn/mousedrv.go) fed by host events.
+  are dropped. With no SoundFont there is no music, as with no MIDI device. A track end far
+  past a song's last note is ignored: SUNNYDAY.HMI's track 5 sets the reverb 2.8 hours
+  after its music ends, so under DOS the song only came round again after that silence.
+- The mouse: the original polled the DOS int 33h driver. The port uses a modern pointer
+  (internal/xn/pointer.go): the game's cursor follows the OS pointer (hidden over the
+  window) directly, clamped to the game's ranges; mouse look, the free look and weapon
+  swings lock the pointer and read its raw motion (the game asks each frame, so menus get
+  the pointer back by themselves; losing the focus releases it). Motion is the same across
+  and down (the DOS driver's default doubled it down) and doesn't depend on the window size.
 - No joystick is read: joystick_status stays 2 (none found), so the joystick screens show
   a centred stick.
-- Frames: the DOS game never outran its 140 Hz timer; the port waits for two of its ticks
-  per frame (internal/game/main.go).
+- Frames: the DOS game ran as fast as the PC allowed and measured each frame's time in its
+  140 Hz timer's ticks. The port paces frames to the display (internal/host/pace.go): a game
+  frame each refresh, or each n-th refresh on a fast display, at most 75 a second, so each
+  stays on screen equally long; a frame's ticks come from the clock with the fraction
+  carried (FrameTicksUpdate). Some steps still count frames (guards' arrival, fatigue,
+  message delays), so the game rate stays near the 70 a second the port was tested at.
 
 ## Engine quirks dropped (see dagger-re/docs/engine/quirks.md)
 
@@ -53,14 +64,15 @@ The full list is the `port:` comments.
   leftover counter); a running total starts at 0.
 - Travel: the C loaded the location past the last one; the last one is loaded.
 - Quests: a retry counter the C never counted up is counted, so the search ends.
+- Spell costs: an equipped item's spell-point enchantment cuts a spell's cost to 75% while
+  its condition holds (spellCostItemPercent). The original read the character record's slot
+  array as the item, so the discount never applied, and its creature check never stepped.
 - The class maker opens a class file only when it exists.
 - The save menu's thumbnails are taken as the menu opens (the original kept one in
   big_buffer), and BigBuffer keeps the screen under a paged message box.
 
 ## Kept as the original does (faithful, though odd)
 
-- spellCostItemPercent is 100: the original means 75% under an item's spell-point
-  enchantment but reads the character record as the item.
 - potionCauldronCount is never raised, as in the original.
 - The class maker's "clear magery" resets all the flags to 5120.
 - AutomapPurgeOldFiles deletes nothing (the original passes the search pattern to unlink).

@@ -38,6 +38,7 @@ const (
 	CursorMode     InputMode = 0x33001
 	CursorNormal             = 0x34001
 	CursorDisabled           = 0x34003
+	CursorHidden             = 0x34002
 
 	Resizable               Hint = 0x20003
 	Visible                 Hint = 0x20004
