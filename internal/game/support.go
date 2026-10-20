@@ -359,6 +359,7 @@ func FrameTicksUpdate() {
 	xn.AnimTicks += uint32(FrameTicks)
 	FrameTicksFraction &= 7
 	xn.TimerTickCount = 0
+	xn.FrameTicks = FrameTicks
 }
 
 // PlayerPositionSave saves the player's position in slot.
@@ -637,6 +638,7 @@ func PITFrameTicksUpdate() {
 	if FrameTicks > 500 {
 		FrameTicks = 500
 	}
+	xn.FrameTicks = FrameTicks // port: xn's copy is what the movement code reads
 }
 
 // ObjectMatchFiltersCb finds the object matching the set filters (0 any).

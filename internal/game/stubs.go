@@ -45,15 +45,12 @@ var (
 )
 
 func DetectConsiderCreature(o *Record, distance int32)            {}
-func LocationContains(x, z int32) bool                            { return false }
 func MarkerMakeClutter(o *Record, b *Building)                    {}
 func MarkerMakeLootPile(o *Record, b *Building)                   {}
 func MonsterDespawnToMarker(o *Record) bool                       { return false }
-func PlaceSpawnFromMarker(o *Record)                              {}
 func TownNoteFactionBuildings(faction int32)                      {}
 func GuardsSummon(n int32)                                        {}
 func PedestrianPickSprite(o *Record)                              {}
-func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
 func QuestRaiseEvent(event int16, o, other *Record) bool          { return false }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
@@ -133,11 +130,9 @@ func WeatherDrawPrecipitation()                    {}
 // damage.c's callees, not ported yet.
 
 // tamriel.c's callees, not ported yet.
-func TransportChoose(button int32)     {}
-func AutomapExpireRecords()            {}
-func AutomapPurgeOldFiles()            {}
-func EncounterTick(minute, flag int32) {}
-func QuestRunOpcodes(q *Quest)         {}
+func TransportChoose(button int32) {}
+func AutomapExpireRecords()        {}
+func AutomapPurgeOldFiles()        {}
+func QuestRunOpcodes(q *Quest)     {}
 
 func QuestsRaiseEventAll(event int32, o *Record) {}
-func EncounterSpawnHidden(mobile int32)          {}
