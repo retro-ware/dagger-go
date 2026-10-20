@@ -21,6 +21,7 @@ var (
 
 func AutomapLoad()             {}
 func SpellbookOpen(mode int32) {}
+func SpellbookClose()          {}
 func OptionsOpen(mode int32)   {}
 func FlatsCfgLoad()            {}
 
@@ -61,7 +62,6 @@ func PlaceSpawnFromMarker(o *Record)                              {}
 func TavernRoomRented() bool                                      { return false }
 func TownNoteFactionBuildings(faction int32)                      {}
 func SkillAddUses(skill, uses int32)                              {}
-func GuildCountCrime(crime, count int32)                          {}
 func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func GuardsSummon(n int32)                                        {}
 func MonsterInit(o *Record, mobile int32)                         {}
@@ -71,9 +71,6 @@ func TownMapAreaClear(x, z int32) bool                            { return false
 func QuestRaiseEvent(event int16, o, other *Record) bool          { return false }
 func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
-func GuildJoinDarkBrotherhood()                                   {}
-func GuildFindMembershipByKind(kind uint8) *Membership            { return nil }
-func GuildFindMembershipByBits(bits uint8) *Membership            { return nil }
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
 func QuestFindSiteForBuilding(b *Building) *Record                { return nil }
 func EnchantPowersText(item *Item) string                         { return "" }
@@ -82,6 +79,28 @@ func TalkMacro1Com() string                                       { return "" }
 func SpellmakerEnterName()                                        {}
 func SheetOpen(mode int16) int32                                  { return 0 }
 func TavernOpen(mode int16)                                       {}
+
+// guilds.c's callees, not ported yet.
+func TrainingOffer(skills uint32) {}
+func PotionmakerOpen(mode int32)  {}
+func ItemmakerOpen(mode int32)    {}
+func SpellmakerOpen(mode int32)   {}
+
+// bankHouse is an entry of bank_houses_for_sale.
+type bankHouse struct {
+	ID       int32
+	Block    *Record
+	Building *Building
+}
+
+var (
+	BankHousesForSale       [64]bankHouse
+	BankHouseCount          uint8
+	BankBoughtHouse         *Record
+	BankBoughtHouseBuilding *Building
+)
+
+func BankAddHouseForSale(o *Record) {}
 
 // click.c's callees, not ported yet.
 func QuestEventClickedFaction(faction uint16) bool               { return false }
@@ -92,7 +111,6 @@ func BankOpen(mode int32)                                        {}
 func TalkStart(npc *Record)                                      {}
 func DaedraSummon(npc *Record)                                   {}
 func QuestPickForNPC(npc *Record)                                {}
-func GuildServiceDispatch(npc *Record)                           {}
 func BuildingExit()                                              {}
 
 var npcRecordBuffer Character
@@ -114,7 +132,6 @@ func QuestFacesAfterLoad()                               {}
 func MonsterReloadAnims()                                {}
 func TravelMapOpen(mode int32)                           {}
 func AutomapOpen()                                       {}
-func RestOpen()                                          {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
 func TransportMenu()                                     {}
@@ -125,7 +142,6 @@ func AIUpdateCreatures()         {}
 func BankFrame()                 {}
 func BreathUpdate()              {}
 func MusicPlayCourt()            {}
-func GuildCheckInvitations()     {}
 func HeadBobUpdate()             {}
 func InfoPopupUpdate()           {}
 func ItemmakerUpdate()           {}
@@ -172,7 +188,6 @@ func AutomapPurgeOldFiles()            {}
 func TravelShowDaysLeft(minutes int32) {}
 func FatigueUpdate()                   {}
 func SkyUpdateMoons()                  {}
-func GuildExpireBlessings()            {}
 func EncounterTick(minute, flag int32) {}
 func QuestRunOpcodes(q *Quest)         {}
 
