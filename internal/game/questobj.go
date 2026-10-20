@@ -873,3 +873,17 @@ func RumorAddQuest(q *Quest, message, target, flags int32) {
 	h.TextLength = int32(len(text))
 	f.Write(rumorBytes(&h, text))
 }
+
+// QuestLoadText puts the quest's message (from its QRC file) in TextRSCBuffer; it stays as
+// it was when the message is missing.
+func QuestLoadText(q *Quest, id int32, flags int16, width int32) {
+	text := TextQRCLoadForQuest(q, int16(id), flags, int16(width))
+	if text == nil {
+		return
+	}
+	s := CString(text)
+	if len(s) > 2047 {
+		s = s[:2047]
+	}
+	TextRSCBuffer = s
+}

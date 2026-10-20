@@ -81,7 +81,6 @@ func AutomapOpen()                                       {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
 func TransportMenu()                                     {}
-func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
 func MusicPlayCourt()  {}
