@@ -51,13 +51,11 @@ func TownMapAreaClear(x, z int32) bool                 { return false }
 func ItemAddRandomToContainer(c *Record, group int32)  {}
 func EnchantPowersText(item *Item) string              { return "" }
 func SpellmakerEnterName()                             {}
-func SheetOpen(mode int16) int32                       { return 0 }
 
 // guilds.c's callees, not ported yet.
-func TrainingOffer(skills uint32) {}
-func PotionmakerOpen(mode int32)  {}
-func ItemmakerOpen(mode int32)    {}
-func SpellmakerOpen(mode int32)   {}
+func PotionmakerOpen(mode int32) {}
+func ItemmakerOpen(mode int32)   {}
+func SpellmakerOpen(mode int32)  {}
 
 // click.c's callees, not ported yet.
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
@@ -88,11 +86,9 @@ func OptionsFrame()                                {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
 func PotionmakerUpdate()                           {}
-func SheetUpdate()                                 {}
 func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
-func TrainingUpdate()                              {}
 func WeatherDrawPrecipitation()                    {}
 
 // tamriel.c's callees, not ported yet.
