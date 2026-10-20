@@ -1,7 +1,6 @@
 package game
 
 import (
-	"bytes"
 	"strings"
 
 	"github.com/memmaker/dagger-go/internal/dosfs"
@@ -725,4 +724,3 @@ func TownNoteFactionBuildings(faction int32) {
 	}
 }
 
-var _ = bytes.IndexByte
