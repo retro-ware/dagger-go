@@ -17,10 +17,8 @@ var (
 	HazeTable1 []byte
 )
 
-func AutomapLoad()             {}
-func SpellbookOpen(mode int32) {}
-func SpellbookClose()          {}
-func FlatsCfgLoad()            {}
+func AutomapLoad()  {}
+func FlatsCfgLoad() {}
 
 func TownMapNoteBuilding(o *Record, b *Building) {}
 func MusicSelectTables()                         {}
@@ -47,12 +45,10 @@ func PedestrianPickSprite(o *Record)                   {}
 func TownMapAreaClear(x, z int32) bool                 { return false }
 func ItemAddRandomToContainer(c *Record, group int32)  {}
 func EnchantPowersText(item *Item) string              { return "" }
-func SpellmakerEnterName()                             {}
 
 // guilds.c's callees, not ported yet.
 func PotionmakerOpen(mode int32) {}
 func ItemmakerOpen(mode int32)   {}
-func SpellmakerOpen(mode int32)  {}
 
 // click.c's callees, not ported yet.
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
@@ -81,9 +77,6 @@ func MusicUpdate()                                 {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
 func PotionmakerUpdate()                           {}
-func SpellbookFrame()                              {}
-func SpellmakerUpdate()                            {}
-func StatusShow(mode int16)                        {}
 func WeatherDrawPrecipitation()                    {}
 
 // tamriel.c's callees, not ported yet.

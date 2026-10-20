@@ -32,7 +32,6 @@ var (
 	JoystickStatus uint8
 
 	ButtonsRCI          []byte
-	IconImage           []byte
 	SpellRecords        []Spell
 	SpellRecordCount    uint32
 	HudBarImage         []byte
@@ -94,7 +93,7 @@ func InitGameData() {
 	TextRSCOpen()
 	GridVisitFunc = ObjectForeachOpen
 	ButtonsRCI = DiskReadFile("buttons.rci")
-	IconImage = DiskReadFile("icon00i0.img")
+	xn.IconImage = DiskReadFile("icon00i0.img")
 	raw := DiskReadFile("spells.std")
 	SpellRecordCount = uint32(DiskLastFileSize) / spellSize
 	SpellRecords = make([]Spell, SpellRecordCount)
