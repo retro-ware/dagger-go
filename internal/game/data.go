@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/exe"
+import "github.com/retro-ware/dagger-go/internal/exe"
 
 // The game's initial data is FALL.EXE's object 3 (and XnGine's object 2). Its text and tables
 // are not in this repository: the game reads them from the player's FALL.EXE at their

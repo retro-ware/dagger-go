@@ -3,8 +3,8 @@ package game
 import (
 	"io"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // init_game_data (FALL.EXE 0x4ED36): fonts, the HUD's images, archives, controls, the world.

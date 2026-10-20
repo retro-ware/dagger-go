@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // maploads.c: a region's location table (MAPS.BSA MAPTABLE, MAPNAMES), the discovered

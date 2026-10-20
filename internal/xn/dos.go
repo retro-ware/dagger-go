@@ -3,7 +3,7 @@ package xn
 import (
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
 )
 
 // Arena2Path is the game's data folder (the game's arena2_path, from its config).

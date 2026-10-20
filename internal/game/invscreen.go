@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // inven.c's inventory screen: the paper doll, the two item lists, the action buttons, and the

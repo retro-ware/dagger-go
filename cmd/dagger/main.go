@@ -9,12 +9,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/exe"
-	"github.com/memmaker/dagger-go/internal/game"
-	"github.com/memmaker/dagger-go/internal/host"
-	"github.com/memmaker/dagger-go/internal/music"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/exe"
+	"github.com/retro-ware/dagger-go/internal/game"
+	"github.com/retro-ware/dagger-go/internal/host"
+	"github.com/retro-ware/dagger-go/internal/music"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 func main() {

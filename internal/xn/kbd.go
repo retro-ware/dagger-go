@@ -1,6 +1,6 @@
 package xn
 
-import "github.com/memmaker/dagger-go/internal/host"
+import "github.com/retro-ware/dagger-go/internal/host"
 
 // Keyboard (kbd.c). The int9 handler is fed from host.ReadKey by Poll.
 

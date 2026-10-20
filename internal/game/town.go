@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // Loading a town (maploads.c town_load_blocks, objlib.c's RMB records, maplogic.c town_load,

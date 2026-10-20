@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // player_frame_update (main.c): the player's per-frame state.
 

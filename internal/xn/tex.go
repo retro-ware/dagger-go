@@ -1,6 +1,6 @@
 package xn
 
-import "github.com/memmaker/dagger-go/internal/dosfs"
+import "github.com/retro-ware/dagger-go/internal/dosfs"
 
 // The texture cache (tex.c): TEXTURE.nnn archives loaded whole on first use into a heap of
 // cfg_texture_memory bytes, evicted least recently used; animated records decoded into the

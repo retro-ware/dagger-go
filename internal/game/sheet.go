@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The character sheet (sheet.c): the attributes, the skill lists, the affiliations, the

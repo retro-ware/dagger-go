@@ -3,8 +3,8 @@ package game
 import (
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The automap (automap.c): the 3D map of interiors and dungeons with notes on objects, and the

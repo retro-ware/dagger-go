@@ -4,8 +4,8 @@ import (
 	"encoding/binary"
 	"io"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The item generator (equip.c): items from templates, magic items, artifacts, loot and shop

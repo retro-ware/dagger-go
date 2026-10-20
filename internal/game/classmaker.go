@@ -4,7 +4,7 @@ import (
 	"encoding/binary"
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The class maker (custom.c): a custom class's attributes, skills, hit points, specials and

@@ -6,7 +6,7 @@ package game
 import (
 	"encoding/binary"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The game's record structures (records.h). Every game object is a Record: the 71-byte header

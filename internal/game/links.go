@@ -5,7 +5,7 @@ import (
 	"io"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // links.c: the dungeon's action links (the RDB action records): moving and turning models,

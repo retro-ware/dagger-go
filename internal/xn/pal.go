@@ -1,6 +1,6 @@
 package xn
 
-import "github.com/memmaker/dagger-go/internal/host"
+import "github.com/retro-ware/dagger-go/internal/host"
 
 // A palette is 768 bytes: 256 RGB triples of 6-bit components, as the DAC takes them.
 // Palettes are slices into the game's buffers: PalCurrent aliases the palette last set.

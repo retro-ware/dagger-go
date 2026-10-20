@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // init.c: start-up, shutdown, the new game's player, fog.

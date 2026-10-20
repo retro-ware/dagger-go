@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The options screen (options.c): save, load, exit, the volumes and detail, full screen,

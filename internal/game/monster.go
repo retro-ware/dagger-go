@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // moninit.c and monster.c: making creatures (their type's animation, class, health, gear and
 // spells), moving them, and the creatures' AI (equip.c's ai_*).

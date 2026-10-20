@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // parse.c and text.c's loaders: TEXT.RSC, the %xxx macros and _symbol_ quest symbols, the
 // line wrapping, item weights and holidays.

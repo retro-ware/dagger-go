@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // A starting quest's resources: its persons, places, items and foes (qinit.c), and the
 // conditions and actions that move them (automap.c's and damage.c's quest ops).

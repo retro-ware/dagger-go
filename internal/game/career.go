@@ -3,7 +3,7 @@ package game
 import (
 	"bytes"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // career.c: the background questions after the class (BIOGnnT0.TXT), their effects on the new

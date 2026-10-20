@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // colstuff.c: moving the player, creatures and missiles against the world's models.
 

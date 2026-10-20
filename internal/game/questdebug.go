@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The quest debugger (qcom.c), in cheat mode: F9 (scan 0x43) shows a quest's symbols, '
 // (0x28) steps to the next quest, ; (0x27) to the next kind of symbol.

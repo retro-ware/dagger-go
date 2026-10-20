@@ -5,8 +5,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // Z.CFG, the configuration DAGGER.EXE passes to FALL.EXE (args.c): `key value` pairs.

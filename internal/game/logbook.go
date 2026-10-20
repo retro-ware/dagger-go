@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The logbook window (logbook.c): the quests' log messages and the notes copied from talks.

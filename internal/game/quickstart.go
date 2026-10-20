@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // QuickStart (the -quickstart flag, a testing aid not in the original) skips the title menu
 // and character creation: a fixed character starts a new game in Privateer's Hold.

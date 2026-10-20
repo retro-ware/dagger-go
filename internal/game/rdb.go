@@ -3,7 +3,7 @@ package game
 import (
 	"encoding/binary"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // fs2df.c: a dungeon block's RDB file (BLOCKS.BSA) becomes objects under four quarters, and

@@ -3,7 +3,7 @@ package game
 import (
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // inpstr.c: the one-line text and number input.

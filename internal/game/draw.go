@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // object_draw_cb: submitting one object to the renderer (flats, lights, models, blocks).

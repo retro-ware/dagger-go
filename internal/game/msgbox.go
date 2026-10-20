@@ -3,7 +3,7 @@ package game
 import (
 	"io"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // text.c's message box drawing and the quest text (QRC) loaders.

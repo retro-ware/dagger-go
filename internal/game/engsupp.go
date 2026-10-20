@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // engsupp.c: picking what is under a screen point, furniture containers, and visiting
 // the objects near the player.

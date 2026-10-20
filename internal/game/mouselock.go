@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // mouseLockUpdate asks the host to lock the pointer this frame when the game reads the
 // mouse's motion rather than its cursor: mouse look (control mode 1 with the cursor off),

@@ -1,6 +1,6 @@
 package xn
 
-import "github.com/memmaker/dagger-go/internal/host"
+import "github.com/retro-ware/dagger-go/internal/host"
 
 // The mouse as the game reads it, from the host's pointer: modern handling in place of the
 // DOS int 33h driver the original polled. The cursor follows the OS pointer directly (its

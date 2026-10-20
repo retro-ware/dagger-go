@@ -3,7 +3,7 @@ package game
 import (
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // Small ports from several C files: the info popup, rain and snow, the guards, the

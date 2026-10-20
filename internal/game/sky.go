@@ -3,7 +3,7 @@ package game
 import (
 	"encoding/binary"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // sky.c: the day and night skies, the sun's light, the moons' paths and the weather.

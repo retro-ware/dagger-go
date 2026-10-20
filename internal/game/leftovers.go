@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // Small functions from several modules: Detect's creatures, clutter and loot pile markers,
 // creatures going back to their markers, daedra summoning and the farm animals' noises.

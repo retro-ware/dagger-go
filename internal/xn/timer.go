@@ -3,7 +3,7 @@ package xn
 import (
 	"time"
 
-	"github.com/memmaker/dagger-go/internal/host"
+	"github.com/retro-ware/dagger-go/internal/host"
 )
 
 // Timing (timer.c) and the interrupts behind it: the BIOS tick at 18.2 Hz, and the periodic

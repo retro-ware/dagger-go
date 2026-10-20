@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The rest of mplace.c: creatures from their markers and random encounters; and where
 // spawned things go (spawn_find_point), the location's bounds and pacifying a creature.

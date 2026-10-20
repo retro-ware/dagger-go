@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // objlib.c's model cache: ARCH3D models by key (id + texture set << 17), prepared and given

@@ -3,7 +3,7 @@ package game
 import (
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // click.c: clicking things in the world, shop shelves, the repair, coven and

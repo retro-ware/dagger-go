@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The paper doll (char.c): the body, face and worn items, the HUD portrait and the mask
 // that tells which slot a click on the doll hits; and the armour values it updates.

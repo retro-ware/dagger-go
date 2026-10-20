@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // maplogic.c (dungeon loading, unloading), objcode.c (markers), the dungeon grid (support.c),

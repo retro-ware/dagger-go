@@ -1,6 +1,6 @@
 package xn
 
-import "github.com/memmaker/dagger-go/internal/host"
+import "github.com/retro-ware/dagger-go/internal/host"
 
 // The digital sound boundary (the game's SOS driver as XnGine and the game use it). The host
 // sets the functions; without them there is no digital device. A sample's Done runs from

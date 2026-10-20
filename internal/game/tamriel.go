@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The game clock (tamriel.c): passing time, the calendar, opening hours, prices and
 // reputation decay.

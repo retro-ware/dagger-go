@@ -1,8 +1,8 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // camera.c: screenshots (\ saves PICS\SCRn.BMP). rumor.c: the marquee, region event flags.

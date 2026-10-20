@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The rest of args.c: drawing the world's objects, the automap's, and placing an RMB block's
 // lights, doors and people.

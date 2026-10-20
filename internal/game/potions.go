@@ -3,7 +3,7 @@ package game
 import (
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The potion maker (potions.c): ingredients into the cauldron, mixing by recipe or by

@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // The player's weapons (weapons.c): the hand sprites, swinging by mouse motion, the bow and
 // arrows in flight, the melee strike, and opening doors.

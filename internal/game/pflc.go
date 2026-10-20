@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // pflc.c: the FLC player, for the short animations (the class questions' answers, the

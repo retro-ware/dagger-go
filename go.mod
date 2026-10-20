@@ -1,4 +1,4 @@
-module github.com/memmaker/dagger-go
+module github.com/retro-ware/dagger-go
 
 go 1.26.2
 

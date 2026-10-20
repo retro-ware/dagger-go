@@ -5,7 +5,7 @@ import (
 	"io"
 	"os"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // book.c: the book reader; text, clip and mouse helpers; spell ticks.

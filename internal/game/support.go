@@ -3,8 +3,8 @@ package game
 import (
 	"time"
 
-	"github.com/memmaker/dagger-go/internal/host"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/host"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // support.c: HUD messages, the mode stack, the per-frame object sweep, gold, frame timing,

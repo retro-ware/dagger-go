@@ -3,7 +3,7 @@ package game
 import (
 	"encoding/binary"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The HUD: the bar along the bottom with its buttons, the portrait, the compass and the

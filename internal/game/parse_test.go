@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/memmaker/dagger-go/internal/exe"
+	"github.com/retro-ware/dagger-go/internal/exe"
 )
 
 // loadTestData loads FALL.EXE, TEXT.RSC and NAMEGEN.DAT from $DAGGER_DATA (the game folder).

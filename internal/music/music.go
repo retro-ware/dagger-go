@@ -8,7 +8,7 @@ import (
 	"bytes"
 	"sync"
 
-	"github.com/memmaker/dagger-go/internal/meltysynth"
+	"github.com/retro-ware/dagger-go/internal/meltysynth"
 )
 
 // Rate is the sample rate the music renders at.

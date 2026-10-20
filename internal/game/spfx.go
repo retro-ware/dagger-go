@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // Spell effects (spfx.c, with the handlers kept in maplogic.c and hand-matched runs): the
 // 64 effect handlers, lasting effects' ticks, diseases' daily course, resistance rolls and

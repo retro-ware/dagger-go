@@ -3,7 +3,7 @@ package game
 import (
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // picklist.c and its hand-matched runs: the scrolling text list, and support.c's list popup

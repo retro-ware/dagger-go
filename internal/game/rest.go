@@ -4,7 +4,7 @@ import (
 	"math"
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // rest.c: resting and loitering, fatigue and breath; with sheet.c's skill advancement and

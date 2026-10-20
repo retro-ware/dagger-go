@@ -4,9 +4,9 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/host"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/host"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // Main-loop state (main.c).

@@ -3,7 +3,7 @@ package game
 import (
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // bank.c: the bank window (gold, letters of credit, loans, houses and ships) and the

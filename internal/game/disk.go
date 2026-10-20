@@ -6,7 +6,7 @@ import (
 	"sort"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
 )
 
 // The game's data files (disk.c): read whole, written whole, found through an index of the

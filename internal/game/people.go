@@ -3,7 +3,7 @@ package game
 import (
 	"math"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // people.c: witnesses, the people debug map. steal.c: pickpocketing, lock difficulty.

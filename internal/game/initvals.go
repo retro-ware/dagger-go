@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // Scalar globals whose initial values FALL.EXE's data segment sets (non-zero at start).
 

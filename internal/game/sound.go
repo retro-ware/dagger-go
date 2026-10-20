@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // sound.c, and the sound cache from objlib.c: four digital channels (three for one-shot
 // sounds, the fourth for the ambient loop) on the xn sound driver. The original's SOS

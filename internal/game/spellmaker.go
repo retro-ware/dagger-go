@@ -3,7 +3,7 @@ package game
 import (
 	"strconv"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // The spell maker (spells.c): effects, their settings, element, target, icon and name, the

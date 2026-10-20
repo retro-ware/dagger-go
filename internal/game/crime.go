@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // Crime and the court (crime.c): the guards' arrest, the trial (plead or debate), fines,
 // banishment, execution and prison.

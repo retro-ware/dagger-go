@@ -4,7 +4,7 @@ package xn
 // own bytes are copied from the player's copy at start-up; the ones code can generate are
 // generated.
 
-import "github.com/memmaker/dagger-go/internal/exe"
+import "github.com/retro-ware/dagger-go/internal/exe"
 
 // LoadData copies the engine's initial tables from object 2's load image, then computes
 // the generated ones.

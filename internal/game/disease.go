@@ -1,8 +1,8 @@
 package game
 
 import (
-	"github.com/memmaker/dagger-go/internal/dosfs"
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/dosfs"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // disease.c (and its hand-matched runs): diseases and poisons, vampirism and lycanthropy,

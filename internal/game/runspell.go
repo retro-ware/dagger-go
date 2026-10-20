@@ -1,6 +1,6 @@
 package game
 
-import "github.com/memmaker/dagger-go/internal/xn"
+import "github.com/retro-ware/dagger-go/internal/xn"
 
 // Casting spells (runspell.c and its hand-matched runs): the player's, items' and
 // creatures' casts, resistance, missiles, area effects, the casting hands and the HUD icons;

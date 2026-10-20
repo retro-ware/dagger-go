@@ -4,7 +4,7 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // travel.c: the fast travel map (the province map, a region's locations, the trip

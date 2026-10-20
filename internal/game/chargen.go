@@ -3,7 +3,7 @@ package game
 import (
 	"encoding/binary"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // generate.c's character screens: the name, the face, the attributes, the skills and the

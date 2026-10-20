@@ -3,7 +3,7 @@ package game
 import (
 	"bytes"
 
-	"github.com/memmaker/dagger-go/internal/xn"
+	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
 // Combat damage (qkey.c's attack code, damage.c): resolving a blow, to-hit rolls, applying
