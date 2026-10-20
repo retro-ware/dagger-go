@@ -161,7 +161,7 @@ func NewgamePlacePlayer() {
 func ShutdownFreeAll() {
 	xn.RenderShutdown()
 	ArchiveCloseAll()
-	MonsterAnimRecords = [127]*MonsterAnim{}
+	MonsterAnimRecords = [128][]byte{}
 	xn.MouseSetSensitivity(MouseSavedSensitivityX, MouseSavedSensitivityY)
 	RegionFreeTables()
 	RegionUnload()

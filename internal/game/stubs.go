@@ -13,9 +13,8 @@ func FlatAnimalSound(x, y, z, archive, record int32) {}
 
 // Globals owned by unported modules.
 var (
-	MonsterAnimRecords [127]*MonsterAnim
-	HazeTable0         []byte
-	HazeTable1         []byte
+	HazeTable0 []byte
+	HazeTable1 []byte
 )
 
 func AutomapLoad()             {}
@@ -52,14 +51,11 @@ func MarkerMakeLootPile(o *Record, b *Building)                   {}
 func MonsterDespawnToMarker(o *Record) bool                       { return false }
 func PlaceSpawnFromMarker(o *Record)                              {}
 func TownNoteFactionBuildings(faction int32)                      {}
-func AIAngleDiff(a, b int32, turn *int32) int32                   { return 0 }
 func GuardsSummon(n int32)                                        {}
-func MonsterInit(o *Record, mobile int32)                         {}
 func PedestrianPickSprite(o *Record)                              {}
 func SpawnFindPoint(o *Record, minD, maxD int32) bool             { return false }
 func TownMapAreaClear(x, z int32) bool                            { return false }
 func QuestRaiseEvent(event int16, o, other *Record) bool          { return false }
-func MonsterSummonNearPlayer(mobile int32) *Record                { return nil }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
 func QuestFindSiteForBuilding(b *Building) *Record                { return nil }
@@ -97,7 +93,6 @@ func PotionDrink(recipe *Record)                         {}
 func QuestsUnlinkAll(root *Record)                       {}
 func QuestsRelinkAll(root *Record)                       {}
 func QuestFacesAfterLoad()                               {}
-func MonsterReloadAnims()                                {}
 func AutomapOpen()                                       {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
@@ -105,12 +100,10 @@ func TransportMenu()                                     {}
 func QuestLoadText(q *Quest, id int32, a int16, b int32) { TextRSCBuffer = "" }
 
 // Per-frame callees of GameFrame not yet ported.
-func AIUpdateCreatures()         {}
-func MusicPlayCourt()            {}
-func HeadBobUpdate()             {}
-func InfoPopupUpdate()           {}
-func ItemmakerUpdate()           {}
-func AIAlertCreatures(o *Record) {}
+func MusicPlayCourt()  {}
+func HeadBobUpdate()   {}
+func InfoPopupUpdate() {}
+func ItemmakerUpdate() {}
 
 var (
 	EnchantCasterLevel  int8
@@ -138,7 +131,6 @@ func TrainingUpdate()                              {}
 func WeatherDrawPrecipitation()                    {}
 
 // damage.c's callees, not ported yet.
-func MonsterWabbajack(weapon, target *Record) {}
 
 // tamriel.c's callees, not ported yet.
 func TransportChoose(button int32)     {}
