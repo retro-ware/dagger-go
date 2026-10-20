@@ -430,123 +430,6 @@ type Settings struct {
 	MusicVolume uint16
 }
 
-// Quest is the data of a quest (type 14): its QBN file, parsed.
-type Quest struct {
-	ID             int16
-	FactionID      int16
-	TextFile       int16
-	Name           [9]byte
-	Flags          uint8 // bit 1 rewarded
-	SectionCounts  [10]int16
-	SectionOffsets [10]int16
-	TextOffset     int32
-	Items          []QbnItem
-	Persons        []QbnPerson
-	Places         []QbnPlace
-	Timers         []QbnTimer
-	Foes           []QbnFoe
-	Ops            []QbnOp
-	States         []QbnState
-	TextVars       []QbnTextVar
-	Raw            []byte // the QBN file
-}
-
-// QbnArg is an argument of a quest op: Ref names the resource (section, index).
-type QbnArg struct {
-	Negate  uint8
-	Section int16
-	Index   int32 // the resource's index in its section (the file's record pointer)
-	Value   int32 // -1 none, -2 filler
-	Object  *Record
-}
-
-// QbnOp is a quest op (section 8).
-type QbnOp struct {
-	Opcode      int16
-	Flags       uint16 // bit 0 done
-	ArgCount    int16
-	Args        [5]QbnArg // arg 0 is the state
-	Message     int16
-	LastMinutes int32
-}
-
-// QbnState is a quest state (section 9).
-type QbnState struct {
-	Index    int16
-	IsGlobal uint8
-	Value    uint8 // or the global index
-	NameHash int32
-}
-
-// QbnTimer is a quest clock (section 6).
-type QbnTimer struct {
-	Pad00     int16
-	Flags     uint16 // 64 running, 128 expired, 0x400 links resolved, 16 doubled, 256/512 a person
-	Type      uint8  // 0 random, 1 fixed, 2-5 travel time
-	Minimum   int32
-	Maximum   int32
-	Start     int32
-	Delay     uint32
-	Link1     int32 // a place or person index, then its object
-	Link2     int32
-	Link1Obj  *Record
-	Link2Obj  *Record
-	StateHash int32
-}
-
-// QbnItem is a quest item (section 0).
-type QbnItem struct {
-	Pad00    [2]byte
-	Flags    uint8 // bit 7 topic hidden
-	Group    int16
-	Index    int16
-	Symbol   int32
-	Object   *Record
-	Messages [2]int16
-}
-
-// QbnPerson is a quest person (section 3).
-type QbnPerson struct {
-	Pad00     [2]byte
-	Flags     uint16
-	Kind      int16
-	FactionID int16
-	Symbol    int32
-	Object    *Record
-	Messages  [2]int16
-}
-
-// QbnPlace is a quest place (section 4).
-type QbnPlace struct {
-	Pad00    [2]byte
-	Flags    uint8 // bit 7 topic hidden, bit 6 opcode 81
-	Scope    int8  // 0 fixed, > 0 another location, -1 here
-	P1       uint16
-	P2       int16
-	P3       int16
-	Pad0A    [2]byte
-	Symbol   int32
-	Object   *Record
-	Messages [2]int16
-}
-
-// QbnFoe is a quest foe (section 7).
-type QbnFoe struct {
-	Pad00  [3]byte
-	Type   uint8
-	Count  uint8
-	Killed uint8
-	Symbol int32
-	Object *Record
-}
-
-// QbnTextVar is a text variable (section 10).
-type QbnTextVar struct {
-	Name    [20]byte
-	Section uint8
-	Index   int16
-}
-
 // QuestNPC is the data of a quest NPC (type 41).
 type QuestNPC struct {
 	Building     Building
@@ -781,6 +664,7 @@ func (r *Record) copyRecord() *Record {
 	if r.QuestNPC != nil {
 		v := *r.QuestNPC
 		c.QuestNPC = &v
+		c.Building = &c.QuestNPC.Building // type 41's data is one block
 	}
 	if r.Block != nil {
 		v := *r.Block

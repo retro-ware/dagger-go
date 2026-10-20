@@ -30,15 +30,11 @@ func AutomapButtonViewMode()                     {}
 
 var Arch3dBSA, MapsBSA, DaggerSnd, MonsterBSA int32
 
-func QuestObjectInstantiate(o, twin *Record) {}
-
 const strInvalidPersonSelected = 0x174F71
 
 func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
-func RegionUnload()         {}
 func ClassmakerRun()        {}
-func QuestsStartInitial()   {}
 
 var (
 	BigBuffer []byte
@@ -52,10 +48,8 @@ func TownNoteFactionBuildings(faction int32)                      {}
 func GuardsSummon(n int32)                                        {}
 func PedestrianPickSprite(o *Record)                              {}
 func TownMapAreaClear(x, z int32) bool                            { return false }
-func QuestRaiseEvent(event int16, o, other *Record) bool          { return false }
 func ItemAddRandomToContainer(c *Record, group int32)             {}
 func QuestSymbolText(hash int32, level uint8, hash2 int32) string { return "" }
-func QuestFindSiteForBuilding(b *Building) *Record                { return nil }
 func EnchantPowersText(item *Item) string                         { return "" }
 func TalkMacroHint(which int32) string                            { return "" }
 func TalkMacro1Com() string                                       { return "" }
@@ -69,13 +63,9 @@ func ItemmakerOpen(mode int32)    {}
 func SpellmakerOpen(mode int32)   {}
 
 // click.c's callees, not ported yet.
-func QuestEventClickedFaction(faction uint16) bool               { return false }
-func QuestEventIndividualNPC(event int16, o, other *Record) bool { return false }
-func PedestrianSpawnSpotOk(o *Record, x, z int32) bool           { return false }
-func QuestStartTestQuest(p *Person) bool                         { return false }
-func TalkStart(npc *Record)                                      {}
-func DaedraSummon(npc *Record)                                   {}
-func QuestPickForNPC(npc *Record)                                {}
+func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
+func TalkStart(npc *Record)                            {}
+func DaedraSummon(npc *Record)                         {}
 
 var npcRecordBuffer Character
 
@@ -87,9 +77,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 }
 
 func PotionDrink(recipe *Record)                         {}
-func QuestsUnlinkAll(root *Record)                       {}
-func QuestsRelinkAll(root *Record)                       {}
-func QuestFacesAfterLoad()                               {}
 func AutomapOpen()                                       {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
@@ -116,9 +103,6 @@ func OptionsFrame()                                {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
 func PotionmakerUpdate()                           {}
-func QuestFacesDraw()                              {}
-func QuestPromptAnswer()                           {}
-func QuestStartPending()                           {}
 func SheetUpdate()                                 {}
 func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
@@ -127,12 +111,14 @@ func TalkUpdate()                                  {}
 func TrainingUpdate()                              {}
 func WeatherDrawPrecipitation()                    {}
 
-// damage.c's callees, not ported yet.
-
 // tamriel.c's callees, not ported yet.
 func TransportChoose(button int32) {}
 func AutomapExpireRecords()        {}
 func AutomapPurgeOldFiles()        {}
-func QuestRunOpcodes(q *Quest)     {}
 
-func QuestsRaiseEventAll(event int32, o *Record) {}
+func b2i32(b bool) int32 {
+	if b {
+		return 1
+	}
+	return 0
+}

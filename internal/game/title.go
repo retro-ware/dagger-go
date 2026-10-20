@@ -148,6 +148,7 @@ func TitleMenu() {
 		PaletteRestore()
 		if LoadGame(slot) {
 			quickGotoTown()
+			quickStartQuest()
 			return
 		}
 	}

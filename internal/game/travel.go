@@ -208,7 +208,7 @@ func TravelMapUpdate() {
 		return
 	}
 	if travelBarButtons == nil {
-		exit := func() { travelButtonExit(0) }
+		exit := func() { TravelButtonExit(0) }
 		arrows := func(i int32) func() { return func() { travelButtonArrows(i) } }
 		travelBarButtons = menuButtons(addrTravelBarButtons, travelButtonFind, exit, travelButtonMap,
 			arrows(3), arrows(4), travelButtonImAt, travelButtonFilter)
@@ -318,8 +318,8 @@ func TravelMapUpdate() {
 	}
 }
 
-// travelButtonExit closes the travel map (button 100: after the trip, without a click).
-func travelButtonExit(button int32) {
+// TravelButtonExit closes the travel map (button 100: after the trip, without a click).
+func TravelButtonExit(button int32) {
 	if button != 100 && !travelClicked() {
 		return
 	}
@@ -824,7 +824,7 @@ func travelTeleportYes() {
 	WorldRunning = 1
 	minutes := TravelRoute(PlayerObject.X, PlayerObject.Z, TravelDestX, TravelDestZ, 1)
 	travelCloseRegion()
-	travelButtonExit(100)
+	TravelButtonExit(100)
 	if minutes != -1 {
 		MapGotoLocation(int32(TravelSelectedRegion), 1, TravelSelectedLocation, 0)
 		LocationPlacePlayerAtEdge(dir)
@@ -862,7 +862,7 @@ func travelBeginTrip() {
 	t := TravelRoute(PlayerObject.X, PlayerObject.Z, TravelDestX, TravelDestZ, 1)
 	TravelShowProgress = 0
 	travelCloseRegion()
-	travelButtonExit(100)
+	TravelButtonExit(100)
 	if t != -1 {
 		MapGotoLocation(int32(TravelSelectedRegion), 1, TravelSelectedLocation, 0)
 	}

@@ -64,3 +64,14 @@ func quickGotoTown() {
 		}
 	}
 }
+
+// QuickQuest (the -quest flag, a testing aid) starts the QBN file once a game is loaded.
+var QuickQuest string
+
+func quickStartQuest() {
+	if QuickQuest == "" {
+		return
+	}
+	QuestStart(QuickQuest)
+	QuickQuest = ""
+}

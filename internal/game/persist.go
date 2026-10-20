@@ -475,6 +475,12 @@ func recordDataFromDisk(o *Record, data []byte) []byte {
 		o.Building = &o.QuestNPC.Building
 		return data
 	case t == 40 || t == 64:
+		if t == 40 && len(data) >= 58 { // a quest place's: the building and the location name
+			o.QuestNPC = &QuestNPC{}
+			data = decodeStruct(data, o.QuestNPC)
+			o.Building = &o.QuestNPC.Building
+			return data
+		}
 		o.Building = &Building{}
 		return decodeStruct(data, o.Building)
 	case t == 51:

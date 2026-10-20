@@ -782,6 +782,193 @@ func questLinkObjectCb(o *Record) {
 		QuestObjectInstantiate(o, twin)
 		return
 	}
+	o.Twin = twin
+	if o.Flags&2048 != 0 {
+		twin.Flags |= 0xA00
+	}
 	twin.QuestID = o.QuestID
 	twin.Twin = o
+}
+
+const addrQuestLocationSubKinds = 0x187EE4 // [17]int32: a service for quest_pick_location
+
+// RegionUnload saves the automap, unloads the location and drops the region's locations.
+func RegionUnload() {
+	AutomapSave()
+	LocationUnload(int32(LocationObject.Image))
+	RegionLocations = nil
+	RegionLocationCount = 0
+	LocationHere = nil
+}
+
+// LocationFree drops a loaded location.
+func LocationFree(l *LoadedLocationData) { *l = LoadedLocationData{} }
+
+func isTownType(m *MapLocation) bool { return m.Type() <= 2 }
+
+// LocationPickRandomTown loads one of the region's cities, towns or villages.
+func LocationPickRandomTown(l *LoadedLocationData) {
+	*l = LoadedLocationData{}
+	towns := int32(0)
+	for i := range RegionLocations[:RegionLocationCount] {
+		if isTownType(&RegionLocations[i]) {
+			towns++
+		}
+	}
+	if towns == 0 {
+		LocationFree(l)
+		return
+	}
+	pick := Rand()%towns + 1
+	for i := range RegionLocations[:RegionLocationCount] {
+		if isTownType(&RegionLocations[i]) {
+			pick--
+		}
+		if pick == 0 {
+			LocationLoadExterior(l, int32(i))
+			return
+		}
+	}
+}
+
+// LocationSetHidden sets a location's hidden bit.
+func LocationSetHidden(i int32, hidden bool) {
+	m := &RegionLocations[i]
+	m.XTypeFlags &^= 1 << 31
+	if hidden {
+		m.XTypeFlags |= 1 << 31
+	}
+}
+
+// LocationReveal marks the location with mapID in region discovered and not hidden.
+func LocationReveal(region, mapID int32) {
+	old := int32(uint8(CurrentRegion))
+	MaploadsLoadRegion(region)
+	for i := range RegionLocations[:RegionLocationCount] {
+		if int32(RegionLocations[i].MapID&0xFFFFF) == mapID {
+			LocationSetDiscovered(int32(i), true)
+			LocationSetHidden(int32(i), false)
+			break
+		}
+	}
+	MaploadsLoadRegion(old)
+}
+
+// LocationHasService is whether a location's service flags offer service (13 and 14: a
+// temple, subtype its god).
+func LocationHasService(services uint32, service, subtype int32) int32 {
+	bit := func(byteIndex, b uint) int32 { return int32(services >> (byteIndex*8 + b) & 1) }
+	switch service {
+	case 0:
+		return bit(1, 0)
+	case 3:
+		return bit(1, 1)
+	case 5:
+		return bit(1, 3)
+	case 6:
+		return bit(1, 4)
+	case 7:
+		return bit(1, 5)
+	case 8:
+		return bit(1, 6)
+	case 10:
+		return bit(1, 7)
+	case 11:
+		return bit(2, 0)
+	case 13, 14:
+		switch subtype {
+		case -1:
+			return b2i32(services&0xFF > 0)
+		case 0, 26:
+			return bit(0, 0)
+		case 1, 21:
+			return bit(0, 1)
+		case 2, 29:
+			return bit(0, 2)
+		case 3, 27:
+			return bit(0, 3)
+		case 4, 35:
+			return bit(0, 4)
+		case 5, 24:
+			return bit(0, 5)
+		case 6, 33:
+			return bit(0, 6)
+		case 7, 22:
+			return bit(0, 7)
+		}
+	case 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35:
+		return bit(2, 1)
+	case 36:
+		return bit(2, 2)
+	case 37:
+		return bit(2, 3)
+	case 38:
+		return bit(2, 4)
+	case 39:
+		return bit(2, 5)
+	case 15:
+		return bit(2, 7)
+	case 12:
+		return bit(2, 6)
+	case 1:
+		return bit(3, 0)
+	}
+	return 0
+}
+
+// LocationPickRandomWithService loads one of the region's locations offering the service.
+func LocationPickRandomWithService(l *LoadedLocationData, kind, subKind int32) {
+	*l = LoadedLocationData{}
+	count := int32(0)
+	for i := range RegionLocations[:RegionLocationCount] {
+		count += LocationHasService(RegionLocations[i].Services, kind, subKind)
+	}
+	if count == 0 {
+		LocationFree(l)
+		return
+	}
+	pick := Rand()%count + 1
+	for i := range RegionLocations[:RegionLocationCount] {
+		pick -= LocationHasService(RegionLocations[i].Services, kind, subKind)
+		if pick == 0 {
+			LocationLoadExterior(l, int32(i))
+			return
+		}
+	}
+}
+
+// QuestPickLocation loads a location for a quest place: kind 0 a town (with a service by
+// subKind), 1 a dungeon (of type subKind); mode 0 here, 1 anywhere else, else anywhere.
+func QuestPickLocation(l *LoadedLocationData, kind uint32, subKind, mode int32) {
+	*l = LoadedLocationData{}
+	if mode == 0 {
+		LocationLoadExterior(l, int32(LocationObject.Image))
+		return
+	}
+	for done := false; !done; {
+		LocationFree(l)
+		switch kind {
+		case 0:
+			for subKind == -1 || subKind == 1 {
+				subKind = Rand() % 21
+			}
+			if subKind > 16 {
+				LocationPickRandomTown(l)
+			} else {
+				subKind = int32(U32At(addrQuestLocationSubKinds + uint32(subKind)*4))
+				LocationPickRandomWithService(l, subKind, -1)
+			}
+		case 1:
+			if subKind != -1 && RegionDungeonTypeCounts[subKind] != 0 {
+				LocationLoadNthDungeonOfType(l, subKind, Rand()%RegionDungeonTypeCounts[subKind])
+				break
+			}
+			LocationLoadDungeon(l, Rand()%RegionDungeonCount)
+		}
+		if mode == 1 {
+			done = l.Object.Image != LocationObject.Image
+		} else {
+			done = true
+		}
+	}
 }
