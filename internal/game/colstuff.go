@@ -103,7 +103,7 @@ func modelHandles(o *Record, fn func(h *xn.ModelHandle) bool) {
 			return
 		}
 		for i := range o.Block.Models {
-			if h := &o.Block.Models[i].Handle; h.Model != nil {
+			if h := o.Block.Models[i].syncHandle(); h.Model != nil {
 				if fn(h) {
 					return
 				}

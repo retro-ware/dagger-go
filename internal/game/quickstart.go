@@ -48,3 +48,19 @@ func quickStartCharacter() {
 	RealtimeClockTick = xn.BIOSTicks()
 	QuestsStartInitial()
 }
+
+// QuickTown (the -town flag, a testing aid) moves a loaded game's player into the first
+// city of the current region.
+var QuickTown bool
+
+func quickGotoTown() {
+	if !QuickTown {
+		return
+	}
+	for i := int32(0); i < RegionLocationCount; i++ {
+		if RegionLocations[i].Type() == 0 {
+			MapGotoLocation(int32(uint8(CurrentRegion)), 1, i, 0)
+			return
+		}
+	}
+}

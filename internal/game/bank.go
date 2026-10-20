@@ -416,8 +416,7 @@ func bankDrawPreview(models []BlockModel) {
 
 // blockModelSubmit submits a block model: C's handle shared the model's position and yaw.
 func blockModelSubmit(m *BlockModel) {
-	m.Handle.X, m.Handle.Y, m.Handle.Z, m.Handle.Yaw = m.X, m.Y, m.Z, m.Yaw
-	xn.ModelSubmit(&m.Handle, 0)
+	xn.ModelSubmit(m.syncHandle(), 0)
 }
 
 func bankArrowImage(on bool) []byte {

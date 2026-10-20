@@ -25,10 +25,12 @@ func main() {
 	skipIntro := flag.Bool("skipintro", false, "skip the logo and the new game's movies (a testing aid, not in the original)")
 	quickStart := flag.Bool("quickstart", false, "skip the title menu and character creation: a fixed test character starts a new game (a testing aid)")
 	load := flag.Int("load", -1, "load save slot N (0-5) instead of showing the title menu (a testing aid)")
+	town := flag.Bool("town", false, "with -load: move to the first city of the region (a testing aid)")
 	flag.Parse()
 	game.SkipIntro = *skipIntro
 	game.QuickStart = *quickStart
 	game.QuickLoad = int32(*load)
+	game.QuickTown = *town
 	if _, err := os.Stat(filepath.Join(*data, "ARENA2")); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
 		os.Exit(1)

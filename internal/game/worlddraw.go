@@ -132,7 +132,7 @@ func AutomapDrawObjectCb(o *Record) {
 			}
 			m.Handle.Model = ModelGet(int32(m.ID), int32(m.Variant), modelClimateVariant())
 			if m.Handle.Model != nil {
-				xn.ModelSubmit(&m.Handle, 0)
+				xn.ModelSubmit(m.syncHandle(), 0)
 			}
 		}
 		automapDrawInstance(o) // falls through to the models' case
@@ -146,7 +146,7 @@ func AutomapDrawObjectCb(o *Record) {
 			}
 			m.Handle.Model = ModelGet(int32(m.ID), int32(m.Variant), modelClimateVariant())
 			if m.Handle.Model != nil {
-				xn.ModelSubmit(&m.Handle, 0)
+				xn.ModelSubmit(m.syncHandle(), 0)
 			}
 		}
 	}

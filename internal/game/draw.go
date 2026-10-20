@@ -43,6 +43,17 @@ func drawModel(h *xn.ModelHandle, id, variant uint16) {
 	}
 }
 
+// syncHandle copies the block model's position and angles into its engine handle: in C the
+// handle sat inside the block model, sharing those fields.
+func (m *BlockModel) syncHandle() *xn.ModelHandle {
+	h := &m.Handle
+	h.Pad0C = int16(le16(m.Pad10[0:]))
+	h.BaseAngleX, h.BaseYaw, h.BaseAngleZ = int16(le16(m.Pad10[2:])), int16(le16(m.Pad10[4:])), int16(le16(m.Pad10[6:]))
+	h.X, h.Y, h.Z = m.X, m.Y, m.Z
+	h.AngleX, h.Yaw, h.AngleZ = int32(le32(m.Pad30[:])), m.Yaw, int32(le32(m.Pad38[:]))
+	return h
+}
+
 // ObjectDrawCb submits the object (none while the model cache was just flushed).
 func ObjectDrawCb(o *Record) {
 	if ModelCacheFlushCount != 0 {
@@ -157,7 +168,7 @@ func ObjectDrawCb(o *Record) {
 	case 43:
 		b := o.Block
 		for i := range b.Models {
-			drawModel(&b.Models[i].Handle, b.Models[i].ID, uint16(b.Models[i].Variant))
+			drawModel(b.Models[i].syncHandle(), b.Models[i].ID, uint16(b.Models[i].Variant))
 		}
 		for i := range b.Flats {
 			f := &b.Flats[i]
@@ -203,7 +214,7 @@ func ObjectDrawCb(o *Record) {
 	case 56:
 		b := o.Block
 		for i := range b.Models {
-			drawModel(&b.Models[i].Handle, b.Models[i].ID, uint16(b.Models[i].Variant))
+			drawModel(b.Models[i].syncHandle(), b.Models[i].ID, uint16(b.Models[i].Variant))
 		}
 		for i := range b.Flats {
 			f := &b.Flats[i]

@@ -104,7 +104,6 @@ func QuestsUnlinkAll(root *Record)                       {}
 func QuestsRelinkAll(root *Record)                       {}
 func QuestFacesAfterLoad()                               {}
 func MonsterReloadAnims()                                {}
-func TravelMapOpen(mode int32)                           {}
 func AutomapOpen()                                       {}
 func OptionsToggleFullScreen()                           {}
 func MagicItemsOpen()                                    {}
@@ -143,7 +142,6 @@ func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
 func TalkUpdate()                                  {}
 func TrainingUpdate()                              {}
-func TravelMapUpdate()                             {}
 func WeatherDrawPrecipitation()                    {}
 
 // damage.c's callees, not ported yet.
@@ -153,7 +151,6 @@ func MonsterWabbajack(weapon, target *Record) {}
 func TransportChoose(button int32)     {}
 func AutomapExpireRecords()            {}
 func AutomapPurgeOldFiles()            {}
-func TravelShowDaysLeft(minutes int32) {}
 func SkyUpdateMoons()                  {}
 func EncounterTick(minute, flag int32) {}
 func QuestRunOpcodes(q *Quest)         {}
