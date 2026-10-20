@@ -117,6 +117,10 @@ var (
 // invButton is inv_buttons[i]'s rectangle.
 func invButton(i int) Rect { return careerRect(addrInvButtons, i) }
 
+// invCellRect is the item cells' button table: inv_buttons, or the item maker's (C passes
+// the table to the drawing functions).
+var invCellRect = invButton
+
 // invModeButton is inv_mode_buttons[mode][i]'s rectangle.
 func invModeButton(mode, i int) Rect { return careerRect(addrInvModeButtons, mode*7+i) }
 
@@ -567,7 +571,7 @@ func invDrawItemImage(item *Item, r Rect) {
 // InvDrawItemCell draws an object in inv_buttons[first+cell]: its highlight, marks, picture
 // and count or repair time.
 func InvDrawItemCell(o *Record, cell, first int) {
-	r := invButton(first + cell)
+	r := invCellRect(first + cell)
 	ScratchCurrentObj = o
 	item := o.Item
 	if item == nil {

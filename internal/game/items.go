@@ -1116,7 +1116,7 @@ func EnchantItemValue(item *Item) int32 {
 		if e.Type >= 16 || e.Type == -1 {
 			continue
 		}
-		code := PtrAt(addrEnchantPowerCosts + uint32(e.Type)*4)
+		code := codeAt(addrEnchantPowerCosts + uint32(e.Type)*4)
 		if code == 0 {
 			continue
 		}

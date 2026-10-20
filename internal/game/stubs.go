@@ -44,10 +44,6 @@ func GuardsSummon(n int32)                             {}
 func PedestrianPickSprite(o *Record)                   {}
 func TownMapAreaClear(x, z int32) bool                 { return false }
 func ItemAddRandomToContainer(c *Record, group int32)  {}
-func EnchantPowersText(item *Item) string              { return "" }
-
-// guilds.c's callees, not ported yet.
-func ItemmakerOpen(mode int32) {}
 
 // click.c's callees, not ported yet.
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
@@ -61,7 +57,6 @@ func TransportMenu()  {}
 func MusicPlayCourt()  {}
 func HeadBobUpdate()   {}
 func InfoPopupUpdate() {}
-func ItemmakerUpdate() {}
 
 var (
 	EnchantCasterLevel  int8
