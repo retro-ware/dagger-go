@@ -723,4 +723,3 @@ func TownNoteFactionBuildings(faction int32) {
 		}
 	}
 }
-
