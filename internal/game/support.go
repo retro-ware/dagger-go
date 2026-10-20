@@ -26,7 +26,6 @@ var (
 	ModeStackDepth    int16
 	ScreenActive      int8
 	GameMode          int8
-	GameModeUnderPop  uint8
 	InfoPopupSaved    int8
 	InfoPopupText     string
 	KeyWasDown        [128]uint8
@@ -139,7 +138,7 @@ func KeyPressedOnce(scancode uint8) bool {
 func ModePush() {
 	ModeStack[ModeStackDepth] = [2]int8{ScreenActive, GameMode}
 	ModeStackDepth++
-	GameModeUnderPop = uint8(GameMode)
+	GameModeUnderPopup = uint8(GameMode)
 }
 
 // ModePop restores the screen and game mode.
@@ -147,10 +146,10 @@ func ModePop() {
 	ModeStackDepth--
 	ScreenActive, GameMode = ModeStack[ModeStackDepth][0], ModeStack[ModeStackDepth][1]
 	if ModeStackDepth != 0 {
-		GameModeUnderPop = uint8(ModeStack[ModeStackDepth][1])
+		GameModeUnderPopup = uint8(ModeStack[ModeStackDepth][1])
 		return
 	}
-	GameModeUnderPop = 255
+	GameModeUnderPopup = 255
 }
 
 // SizeFit scales width and height down to fit, keeping the aspect.
