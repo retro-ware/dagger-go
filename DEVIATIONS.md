@@ -103,6 +103,14 @@ under the options' panel) turns them on, and ENHANCE.CFG next to the saves keeps
   uses, V the travel map, G aborts a spell, Z readies the weapon, H switches hands; the rest
   keep their keys. At start it replaces keys still at the defaults only.
 - Crosshair: a small plus at the view's centre while the mouse looks around.
+- Hardware 3D: the GPU draws the 3D view at the window's resolution (internal/xn/hw3d.go,
+  internal/host/r3d.go). The engine still culls, lights and sorts as FALL.EXE does; the
+  models, the ground and the flats go to the GPU as triangles, which it transforms, clips
+  and rasterises with the game's own 8-bit textures, shade, fog and translucency tables,
+  so the colours stay the palette's. A 320 x 200 pass of the same scene feeds picking,
+  water and the back buffer, and the window shows the sharp view wherever the frame still
+  shows the 3D view. Only the textured mode at 320 x 200 uses it; when the GPU fails the
+  game falls back to the software renderer.
 
 ## Testing aids (not in the original)
 

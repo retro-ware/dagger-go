@@ -12,6 +12,9 @@ func RenderFrame(flags int32) int32 {
 	if TexCacheFull {
 		return 1
 	}
+	if hw.on {
+		return hwRenderFrame(flags)
+	}
 	if RenderDrawModels() {
 		return 1
 	}

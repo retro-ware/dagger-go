@@ -97,7 +97,12 @@ func Present(keep bool) {
 }
 
 // ShowVGA hands the screen's memory to the window.
-func ShowVGA() { host.Present(VGA[:Width*Height], int(Width), int(Height)) }
+func ShowVGA() {
+	if hwPresent() {
+		return
+	}
+	host.Present(VGA[:Width*Height], int(Width), int(Height))
+}
 
 // Clear fills the back buffer's clip rows with colour.
 func Clear(colour uint8) {

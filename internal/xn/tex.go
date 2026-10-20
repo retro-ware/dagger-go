@@ -33,6 +33,7 @@ type TexImage struct {
 	XScale       int16
 	YScale       int16
 	FrameOffsets []int32
+	CurFrame     int32 // the frame Pixels holds (Hardware 3D tells the frames apart by it)
 
 	Pixels []byte // rows of 256 from the image's data (animated: the decoded frame)
 	raw    []byte // the record from its header
@@ -190,6 +191,7 @@ func TexCacheLookup(archive, record, frame int32) *TexEntry {
 			}
 		}
 		img.Pixels = TexDecodeFrame(img.frame(frame), key)
+		img.CurFrame = frame
 	}
 	e.Current = img
 	return e

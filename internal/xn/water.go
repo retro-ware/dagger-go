@@ -143,6 +143,10 @@ func WaterDraw() {
 	}
 	step := (invBottom - invTop) / rows
 	inv := invTop
+	if hw.on && hw.scene != nil {
+		hwWater(top, rows, invTop, step)
+		return
+	}
 	for r := top; rows != 0; rows, r, inv = rows-1, r+1, inv+step {
 		phase := WaterRowPhase[r] + WaterRowVelocity[r]
 		if phase > 4 || phase < -4 {

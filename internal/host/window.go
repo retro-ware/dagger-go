@@ -1,6 +1,8 @@
 package host
 
 import (
+	"fmt"
+	"os"
 	"time"
 
 	"gpu"
@@ -65,6 +67,8 @@ type window struct {
 	buttons  [3]bool
 	hidden   bool      // the OS pointer is hidden over the window
 	lastDraw time.Time // the last frame shown, for the display's refresh interval
+	r        *renderer // Hardware 3D (nil until the first frame, or after it failed)
+	rFailed  bool
 }
 
 func (g *window) Update() error {
@@ -79,6 +83,7 @@ func (g *window) Update() error {
 	if quit {
 		return gpu.ErrTermination
 	}
+	g.serve()
 	if Scripted {
 		return nil
 	}
@@ -150,15 +155,21 @@ func (g *window) mouse() {
 }
 
 func (g *window) Draw(dst *gpu.Image) {
+	g.serve()
 	st.mu.Lock()
 	px, w, h := rgbaLocked(), st.w, st.h
 	shot := st.shot
 	st.shot = ""
+	scene, pal := st.scene, st.pal
+	var frame []byte
+	if scene != nil && g.r != nil && w == 320 && h == 200 {
+		frame = append([]byte(nil), st.frame[:64000]...)
+	}
 	if g.screen == nil || g.screen.Bounds().Dx() != w || g.screen.Bounds().Dy() != h {
 		g.screen = gpu.NewImage(w, h)
 	}
 	g.screen.WritePixels(px)
-	if shot != "" {
+	if shot != "" && frame == nil {
 		_ = WritePNG(shot, px, w, h)
 	}
 	now := time.Now()
@@ -171,6 +182,60 @@ func (g *window) Draw(dst *gpu.Image) {
 	op := &gpu.DrawImageOptions{}
 	op.GeoM.Scale(float64(g.dw)/float64(w), float64(g.dh)/float64(h))
 	dst.DrawImage(g.screen, op)
+	if frame == nil {
+		return
+	}
+	// Hardware 3D: the window-sized view over the frame
+	shown := g.guard(func() bool { return g.r.composite(dst, scene, frame, pal) })
+	if shot != "" {
+		if !shown {
+			_ = WritePNG(shot, px, w, h)
+			return
+		}
+		dw, dh := dst.Bounds().Dx(), dst.Bounds().Dy()
+		big := make([]byte, dw*dh*4)
+		dst.ReadPixels(big)
+		_ = WritePNG(shot, big, dw, dh)
+	}
+}
+
+// serve draws a Hardware 3D request, if one waits.
+func (g *window) serve() {
+	if g.r == nil && !g.rFailed {
+		r, err := newRenderer()
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "dagger: hardware 3D:", err)
+			g.rFailed = true
+			return
+		}
+		g.r = r
+		st.mu.Lock()
+		r3d.live = true
+		st.mu.Unlock()
+	}
+	if g.r == nil {
+		return
+	}
+	select {
+	case s := <-r3d.req:
+		s.reply <- g.guard(func() bool { return g.r.render(s, g.dw, g.dh) })
+	default:
+	}
+}
+
+// guard runs a renderer call; a failure turns Hardware 3D off (the engine draws the view).
+func (g *window) guard(f func() bool) (ok bool) {
+	defer func() {
+		if e := recover(); e != nil {
+			fmt.Fprintln(os.Stderr, "dagger: hardware 3D:", e)
+			gpu.Discard()
+			g.r, g.rFailed, ok = nil, true, false
+			st.mu.Lock()
+			r3d.live = false
+			st.mu.Unlock()
+		}
+	}()
+	return f()
 }
 
 // Layout keeps the window's whole area, so the frame scales to it; the cursor maps through

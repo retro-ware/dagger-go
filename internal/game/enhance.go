@@ -84,14 +84,16 @@ func EnhLoad() {
 			Enh.WASD = on
 		case "crosshair":
 			Enh.Crosshair = on
+		case "hw3d":
+			xn.HW3D = on // the GPU draws the 3D view at the window's resolution
 		}
 	}
 }
 
 func enhSave() {
 	n := func(b bool) int { return int(b2i32(b)) }
-	s := fmt.Sprintf("mouselook=%d\nclickactivate=%d\nswing=%d\nwasd=%d\ncrosshair=%d\n",
-		n(Enh.MouseLook), n(Enh.ClickActivate), Enh.Swing, n(Enh.WASD), n(Enh.Crosshair))
+	s := fmt.Sprintf("mouselook=%d\nclickactivate=%d\nswing=%d\nwasd=%d\ncrosshair=%d\nhw3d=%d\n",
+		n(Enh.MouseLook), n(Enh.ClickActivate), Enh.Swing, n(Enh.WASD), n(Enh.Crosshair), n(xn.HW3D))
 	_ = dosfs.WriteFile(enhanceFile, []byte(s))
 }
 
@@ -186,6 +188,7 @@ var enhRows = []enhRow{
 		optionsSaveControls()
 	}},
 	{"Crosshair", func() string { return onOff(Enh.Crosshair) }, func() { Enh.Crosshair = !Enh.Crosshair }},
+	{"Hardware 3D", func() string { return onOff(xn.HW3D) }, func() { xn.HW3D = !xn.HW3D }},
 }
 
 const (

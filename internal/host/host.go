@@ -41,6 +41,7 @@ var st struct {
 	lockUntil  time.Duration // the pointer stays locked until then (RequestPointerLock)
 	locked     bool          // the window has the pointer locked
 	frameSeq   uint64        // frames the window has shown (pace.go)
+	scene      *Scene3D      // the presented frame's 3D view (Hardware 3D), nil for none
 }
 
 func init() { st.w, st.h, st.start = 320, 200, time.Now() }
@@ -55,6 +56,7 @@ func Present(px []byte, w, h int) {
 	st.mu.Lock()
 	st.w, st.h = w, h
 	copy(st.frame[:w*h], px)
+	st.scene = nil
 	st.mu.Unlock()
 }
 

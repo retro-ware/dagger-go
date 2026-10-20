@@ -133,6 +133,7 @@ func RenderBeginFrame() {
 	FlatDrawnCount = 0
 	RenderPolyCount = 0
 	LightBeginFrame()
+	hwBeginFrame()
 
 	ambient := LightAmbient &^ 0xFF
 	if ambient < 0 {
@@ -148,6 +149,9 @@ func RenderBeginFrame() {
 func RenderPick(x, y int32) any {
 	if x < ClipLeft || x >= ClipRight || y < ClipTop || y >= ClipBottom {
 		return nil
+	}
+	if hw.on && hw.scene != nil {
+		return hwPick(x, y)
 	}
 	flat := FlatPick(x, y)
 	PickDistance = 0x8000

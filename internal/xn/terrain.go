@@ -50,6 +50,10 @@ func TerrainDraw() {
 	TerrainBuildHeightTable()
 	TerrainTransformGrid()
 	TerrainAddNatureFlats()
+	if hw.on {
+		hwTerrainCells()
+		return
+	}
 	if TerrainDrawCells() {
 		TerrainBuildLightList()
 	}
