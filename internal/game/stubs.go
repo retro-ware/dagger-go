@@ -63,12 +63,11 @@ func SpellmakerOpen(mode int32)   {}
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
 func DaedraSummon(npc *Record)                         {}
 
-func PotionDrink(recipe *Record)  {}
-func AutomapOpen()                {}
-func OptionsToggleFullScreen()    {}
-func MagicItemsOpen()             {}
-func TransportMenu()              {}
-func LogbookCopyText(text string) {}
+func PotionDrink(recipe *Record) {}
+func AutomapOpen()               {}
+func OptionsToggleFullScreen()   {}
+func MagicItemsOpen()            {}
+func TransportMenu()             {}
 
 // Per-frame callees of GameFrame not yet ported.
 func MusicPlayCourt()  {}
@@ -82,7 +81,6 @@ var (
 	QuestGlobalStates   [256]uint8
 )
 
-func LogbookUpdate()                               {}
 func MagicItemsFrame()                             {}
 func MusicChooseSong()                             {}
 func MusicUpdate()                                 {}
