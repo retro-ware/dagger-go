@@ -757,3 +757,60 @@ func hexDigitValue(c byte) int32 {
 	}
 	return 0
 }
+
+// CursorDraw draws the cursor of the view's region under the mouse (the arrow over a
+// screen, and in mouse-look mode only while the view cursor is on).
+func CursorDraw(region int16) {
+	if UIModeFlags&4 != 0 {
+		return
+	}
+	if ScreenActive != 0 || GameStateFlags&4 != 0 {
+		CursorDrawArrow()
+		return
+	}
+	if Controls.MouseControlMode == 1 {
+		if ViewCursorActive != 0 {
+			CursorDrawArrow()
+		}
+		return
+	}
+	b := CursorRegionImages
+	for ; region != 0; region-- {
+		b = b[parseImg(b).DataSize+12:]
+	}
+	p := parseImg(b)
+	xn.DrawImageTransparent(int32(xn.MouseX), int32(xn.MouseY), p.W, p.H, p.Pixels)
+}
+
+// PlayerMouseLook turns the player with the mouse in mouse-look mode, else moves the free
+// look while it is on.
+func PlayerMouseLook() {
+	if GameMode != 0 || GameStateFlags&0x24 != 0 {
+		return
+	}
+	if Controls.MouseControlMode == 1 {
+		if ViewCursorActive != 0 || KeyActionHeld(33) {
+			return
+		}
+		SwiftPoll()
+		if GameMode != 0 || !(PlayerOnGround != 0 || InDungeonWater != 0 || PlayerMotionFlags&0x20 != 0 || PlayerCharacter.Conditions&8 != 0) {
+			return
+		}
+		dy, dx := MouseMotionX, MouseMotionY
+		if MouseTurnRate&0x80 != 0 {
+			dx = -dx
+		}
+		PlayerObject.AngleX += dx
+		PlayerObject.Yaw += dy
+		if dy > 2 {
+			xn.SnowTurnShift = -8
+		} else if dy < -2 {
+			xn.SnowTurnShift = 8
+		}
+		PlayerObject.AngleX = min(max(PlayerObject.AngleX, -256), 256)
+		CameraObject.AngleX, CameraObject.Yaw = PlayerObject.AngleX, PlayerObject.Yaw
+	} else if MiscStateFlags&0x40 != 0 {
+		ViewLookPitch = min(max(ViewLookPitch+int32(MouseMotionY), -256), 256)
+		ViewLookYaw = min(max(ViewLookYaw+int32(MouseMotionX), -512), 512)
+	}
+}

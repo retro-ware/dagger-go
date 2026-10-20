@@ -98,8 +98,6 @@ func NPCTalkRecordBuild(npc *Record) *Character {
 }
 
 func PotionDrink(recipe *Record)                         {}
-func PlayerMouseLook()                                   {}
-func CursorDraw(region int16)                            {}
 func QuestsUnlinkAll(root *Record)                       {}
 func QuestsRelinkAll(root *Record)                       {}
 func QuestFacesAfterLoad()                               {}
