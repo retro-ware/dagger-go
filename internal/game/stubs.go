@@ -25,10 +25,6 @@ func SpellbookClose()          {}
 func OptionsOpen(mode int32)   {}
 func FlatsCfgLoad()            {}
 
-// BuildingEnter is not ported; only the shop's item groups (building_type_odds) are set.
-func BuildingEnter(b *Building) {
-	ShopItemGroups = PtrAt(addrBuildingTypeOdds + uint32(b.Type)*4)
-}
 func TownMapNoteBuilding(o *Record, b *Building) {}
 func SkyInit()                                   {}
 func WeatherRoll()                               {}
@@ -91,7 +87,6 @@ func QuestStartTestQuest(p *Person) bool                         { return false 
 func TalkStart(npc *Record)                                      {}
 func DaedraSummon(npc *Record)                                   {}
 func QuestPickForNPC(npc *Record)                                {}
-func BuildingExit()                                              {}
 
 var npcRecordBuffer Character
 
