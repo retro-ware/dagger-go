@@ -280,10 +280,52 @@ func spellbookMove(up bool) {
 	spellbookBuildList()
 }
 
-// spellCostItemPercent is 100: the original means to give 75% under an item's
-// spell-point enchantment (moon phases, creatures about), but it reads the character record
-// as the item, where no such enchantment can be found.
-func spellCostItemPercent() int32 { return 100 }
+// spellCostItemPercent is 75 while an equipped item's spell-point enchantment (type 3) holds
+// its condition: the moon phase of the month, a new, half or full moon today or four days on,
+// or a kind of creature about (0 undead, 1 daedra, 2 humanoid, 3 animal); else 100.
+// port: the original reads every slot's enchantments from the character record's own slot
+// array (&equipped[1]) instead of the item, so the discount never applied, and its creature
+// loop never stepped (a hang once it could be reached); the item's own enchantments are read
+// and the creatures counted through, as meant.
+func spellCostItemPercent() int32 {
+	percent := int32(100)
+	day := (uint32(GameMinutes) / 1440) & 31
+	dayAhead := (uint32(GameMinutes+5760) / 1440) & 31
+	for _, e := range PlayerCharacter.Equipped {
+		if e == nil || e.Item == nil {
+			continue
+		}
+		for _, en := range e.Item.Enchantments {
+			if en.Type == -1 {
+				break
+			}
+			if en.Type != 3 {
+				continue
+			}
+			holds := false
+			switch p := uint16(en.Param); p {
+			case 0, 1, 2, 3:
+				holds = uint16(U8At(addrMonthMoonPhase+uint32(GameMinutes)/43200)) == p
+			case 4:
+				holds = day == 0 || dayAhead == 0
+			case 5:
+				holds = day == 8 || day == 24 || dayAhead == 8 || dayAhead == 24
+			case 6:
+				holds = day == 16 || dayAhead == 16
+			case 7, 8, 9, 10:
+				for _, c := range CreatureList[:CreatureCount] {
+					if c.Character != nil && uint16(monsterCategory(c.Character.Race)) == p-7 {
+						holds = true
+					}
+				}
+			}
+			if holds {
+				percent = 75
+			}
+		}
+	}
+	return percent
+}
 
 // StatusShow shows the status popup and the health (force, or the status key).
 func StatusShow(force int16) {
