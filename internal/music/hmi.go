@@ -27,8 +27,7 @@ type Event struct {
 	D1, D2 byte
 }
 
-// Song is an HMI song: its events in tick order, its rate and its length (the last track's
-// end).
+// Song is an HMI song: its events in tick order, its rate and its length (where it loops).
 type Song struct {
 	Events      []Event
 	TicksPerSec int
@@ -49,6 +48,7 @@ func ParseHMI(b []byte) (*Song, error) {
 	if dir+n*4 > len(b) {
 		return nil, errHMI
 	}
+	var ends []int
 	for i := range n {
 		start := le32(dir + i*4)
 		end := len(b)
@@ -65,9 +65,16 @@ func ParseHMI(b []byte) (*Song, error) {
 		if at < start || at > end {
 			continue
 		}
-		length := parseHMITrack(b[at:end], &s.Events)
-		s.Length = max(s.Length, length)
+		ends = append(ends, parseHMITrack(b[at:end], &s.Events))
 	}
+	s.Length = songLength(s.Events, ends, s.TicksPerSec)
+	kept := s.Events[:0]
+	for _, e := range s.Events {
+		if e.Tick <= s.Length {
+			kept = append(kept, e)
+		}
+	}
+	s.Events = kept
 	sort.SliceStable(s.Events, func(i, j int) bool {
 		a, c := s.Events[i], s.Events[j]
 		if a.Tick != c.Tick {
@@ -76,6 +83,28 @@ func ParseHMI(b []byte) (*Song, error) {
 		return a.Status&0xF0 == 0x80 && c.Status&0xF0 != 0x80 // note-offs first
 	})
 	return s, nil
+}
+
+// songLength is where the song loops: its latest track end. A track end far past the last
+// note (more than twice the music's length, and more than 10 seconds past it) is a broken
+// delta, not a rest: SUNNYDAY.HMI's track 5 waits 2.8 hours after its last note to set the
+// reverb, so the original's driver played that much silence before the song came round
+// again. Such ends are ignored, as are the events placed there.
+func songLength(events []Event, ends []int, ticksPerSec int) int {
+	lastNote := 0
+	for _, e := range events {
+		if e.Status&0xF0 == 0x80 {
+			lastNote = max(lastNote, e.Tick)
+		}
+	}
+	limit := max(2*lastNote, lastNote+10*ticksPerSec)
+	length := lastNote
+	for _, end := range ends {
+		if end <= limit {
+			length = max(length, end)
+		}
+	}
+	return length
 }
 
 // hmiForGeneralMIDI is whether a track's designations (eight device ids, 4 bytes apart; none

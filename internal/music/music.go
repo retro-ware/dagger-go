@@ -1,6 +1,7 @@
 // Package music plays Daggerfall's General MIDI songs (HMI files from MIDI.BSA) the way the
 // GOG release does through DOSBox's MPU-401: a General MIDI synthesizer, here meltysynth with
-// the GeneralUser GS SoundFont (embedded when tools/fetch-soundfont.sh fetched it, or the
+// a SoundFont embedded from internal/music/sf2 (by default SC55_zzdenis_v0.5.sf2, copied there
+// by hand; else GeneralUser GS from tools/fetch-soundfont.sh), or the
 // file $DAGGER_SF2 names). Without a SoundFont there is no music.
 package music
 
