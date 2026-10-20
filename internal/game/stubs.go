@@ -10,7 +10,6 @@ func approxDist2D(x1, z1, x2, z2 int32) int32 { return xn.ApproxDist2D(x1, z1, x
 
 func UnequipObject(o *Record)                        {}
 func FlatAnimalSound(x, y, z, archive, record int32) {}
-func SkyApplySunlight()                              {}
 
 // Globals owned by unported modules.
 var (
@@ -26,8 +25,6 @@ func OptionsOpen(mode int32)   {}
 func FlatsCfgLoad()            {}
 
 func TownMapNoteBuilding(o *Record, b *Building) {}
-func SkyInit()                                   {}
-func WeatherRoll()                               {}
 func MusicSelectTables()                         {}
 func AutomapDeleteFiles()                        {}
 func AutomapButtonViewMode()                     {}
@@ -41,7 +38,6 @@ const strInvalidPersonSelected = 0x174F71
 func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
 func RegionUnload()         {}
-func SkyFree()              {}
 func ClassmakerRun()        {}
 func QuestsStartInitial()   {}
 
@@ -134,7 +130,6 @@ func QuestFacesDraw()                              {}
 func QuestPromptAnswer()                           {}
 func QuestStartPending()                           {}
 func SheetUpdate()                                 {}
-func SkyUpdate()                                   {}
 func SpellbookFrame()                              {}
 func SpellmakerUpdate()                            {}
 func StatusShow(mode int16)                        {}
@@ -149,7 +144,6 @@ func MonsterWabbajack(weapon, target *Record) {}
 func TransportChoose(button int32)     {}
 func AutomapExpireRecords()            {}
 func AutomapPurgeOldFiles()            {}
-func SkyUpdateMoons()                  {}
 func EncounterTick(minute, flag int32) {}
 func QuestRunOpcodes(q *Quest)         {}
 

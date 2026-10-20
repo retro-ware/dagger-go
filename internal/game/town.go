@@ -632,7 +632,7 @@ func TownLoad(index int32) {
 	FloorObject = nil
 	NightSkyLoaded = 0
 	SkyLoadedFrame = 10000
-	DungeonWaterLevel = 10000
+	xn.DungeonWaterLevel = 10000
 	LoanCollectorsNext = GameMinutes + uint32(RandRange(1400, 1700))
 	ObjectTwinCheckAll()
 }

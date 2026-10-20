@@ -278,8 +278,8 @@ func IntrfaceKeyRegion() int16 {
 
 // ObjectApplyGravity drops the object by its fall speed.
 func ObjectApplyGravity(o *Record, c *Character) {
-	if DungeonWaterLevel != 10000 && c == PlayerCharacter {
-		if o.Y-50 > DungeonWaterLevel {
+	if xn.DungeonWaterLevel != 10000 && c == PlayerCharacter {
+		if o.Y-50 > xn.DungeonWaterLevel {
 			if InDungeonWater == 0 {
 				SoundPlay(86, o, 100)
 			}
@@ -572,7 +572,7 @@ func PlayerMovementUpdate() {
 	if PlayerMotionFlags&0x20 != 0 || PlayerCharacter.Conditions&0x8 != 0 {
 		VerticalVelocity = 0
 	}
-	if PlayerObject.Y-50 <= DungeonWaterLevel {
+	if PlayerObject.Y-50 <= xn.DungeonWaterLevel {
 		InDungeonWater = 0
 	}
 	PlayerJumping = 0
@@ -605,7 +605,7 @@ func PlayerMovementUpdate() {
 	}
 	savedY := PlayerObject.Y
 	airborne = playerAirborne()
-	if CollideFlags&16 != 0 || airborne || (DungeonWaterLevel != 10000 && PlayerObject.Y-50 > DungeonWaterLevel) {
+	if CollideFlags&16 != 0 || airborne || (xn.DungeonWaterLevel != 10000 && PlayerObject.Y-50 > xn.DungeonWaterLevel) {
 		savedY = PlayerObject.Y
 		ObjectApplyGravity(PlayerObject, PlayerCharacter)
 		dy += PlayerObject.Y - savedY
@@ -658,7 +658,7 @@ func PlayerMovementUpdate() {
 		}
 	}
 	PlayerHorseSounds(PlayerMomentum)
-	if DungeonWaterLevel == 10000 || PlayerObject.Y-76 <= DungeonWaterLevel || Rand() >= 100 {
+	if xn.DungeonWaterLevel == 10000 || PlayerObject.Y-76 <= xn.DungeonWaterLevel || Rand() >= 100 {
 		return
 	}
 	SoundPlay(384, PlayerObject, 100)

@@ -927,7 +927,7 @@ func FootstepSounds() {
 			sound = 0
 		}
 		sound <<= 1
-		if DungeonWaterLevel != 10000 && PlayerObject.Y > DungeonWaterLevel && InDungeonWater == 0 {
+		if xn.DungeonWaterLevel != 10000 && PlayerObject.Y > xn.DungeonWaterLevel && InDungeonWater == 0 {
 			sound = 8
 		}
 		if InDungeonWater != 0 && PlayerUnderwater != 1 {
@@ -1136,8 +1136,8 @@ func AmbientOutdoorSounds() {
 			SoundPlay(367, PlayerObject, 100)
 		}
 	case 3:
-		if DungeonWaterLevel != 10000 && Rand() < 50 {
-			SoundPlayAtPoint(302, PlayerObject.X, DungeonWaterLevel, PlayerObject.Z, 100)
+		if xn.DungeonWaterLevel != 10000 && Rand() < 50 {
+			SoundPlayAtPoint(302, PlayerObject.X, xn.DungeonWaterLevel, PlayerObject.Z, 100)
 		}
 	case 2:
 		if CurrentBuilding.Type == 5 && Rand() < 100 {

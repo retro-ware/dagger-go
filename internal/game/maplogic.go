@@ -360,7 +360,7 @@ func DungeonLoad(index int32) {
 	LinkAxisState = 0
 	FloorObject = nil
 	PlayerEnvironment = 3
-	DungeonWaterLevel = 10000
+	xn.DungeonWaterLevel = 10000
 	QuestMarkGivers()
 	PlayerObject.X, PlayerObject.Y, PlayerObject.Z = LocationObject.X, LocationObject.Y, LocationObject.Z
 	if !PlayerToNearestMarker(LocationObject.Children, 8) {
@@ -415,7 +415,7 @@ func LocationUnload(image int32) {
 	AutomapFreeTownMap()
 	if PlayerEnvironment == 3 {
 		PlayerEnvironment = 1
-		DungeonWaterLevel = 10000
+		xn.DungeonWaterLevel = 10000
 		TerrainCellAtPlayer = -1
 		LinksReset()
 		xn.WorldReload()

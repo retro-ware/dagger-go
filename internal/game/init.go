@@ -64,7 +64,6 @@ var (
 	CurrentRegion     uint8
 	CurrentRegionData *Region
 
-	DungeonWaterLevel int32 = 10000
 	PlayerUnderwater  uint8
 	ViewCursorActive  uint8
 	Daylight          int32
@@ -139,7 +138,7 @@ func NewgamePlacePlayer() {
 	CurrentRegion = uint8(CfgRegion)
 	CurrentRegionData = &Regions[CurrentRegion]
 	RegionEnter(0, CurrentRegion)
-	DungeonWaterLevel = 10000
+	xn.DungeonWaterLevel = 10000
 	if PlayerEnvironment == 1 {
 		MapGotoLocation(int32(uint8(CfgRegion)), int32(PlayerEnvironment), CfgStartMap, 0)
 	} else {
@@ -411,11 +410,11 @@ func InitPlayerRecords(root *Record) {
 
 // UpdateUnderwater switches the shade table when the player's head crosses the water.
 func UpdateUnderwater() {
-	if DungeonWaterLevel == 10000 {
+	if xn.DungeonWaterLevel == 10000 {
 		return
 	}
 	var underwater uint8
-	if PlayerObject.Y-76 > DungeonWaterLevel {
+	if PlayerObject.Y-76 > xn.DungeonWaterLevel {
 		underwater = 1
 	}
 	if PlayerUnderwater == underwater {
@@ -472,7 +471,7 @@ func UpdateFog() {
 		}
 		return
 	}
-	if DungeonWaterLevel != 10000 && PlayerObject.Y-76 > DungeonWaterLevel {
+	if xn.DungeonWaterLevel != 10000 && PlayerObject.Y-76 > xn.DungeonWaterLevel {
 		xn.CamFarZ = detail * 768
 		xn.FogTableLast = xn.Row{Buf: HazeTable0, Pos: 16128}
 		xn.ShadeSetFog(4)

@@ -215,7 +215,7 @@ func (s savevarsIO) all() {
 	s.v(&LastSkillCheck)
 	s.v(&ClimateIndex)
 	s.v(ClimateWeathers[:6])
-	s.v(&DungeonWaterLevel)
+	s.v(&xn.DungeonWaterLevel)
 	s.v(&LastUnloadedLocation)
 	s.v(&RecallAnchorEnvironment)
 	s.v(&RecallAnchorLocation)

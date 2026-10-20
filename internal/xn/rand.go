@@ -3,9 +3,9 @@ package xn
 // Random numbers and value noise (rand.c).
 
 var (
-	RandSeed       uint32
-	NoiseValues    [513]int32 // 256 values, the same again, the first once more
-	NoiseFadeTable [512]int32 // smoothstep weights, [t+256] for t = -256..255
+	RandSeed       uint32     = 1 // FALL.EXE's initial value
+	NoiseValues    [513]int32     // 256 values, the same again, the first once more
+	NoiseFadeTable [512]int32     // smoothstep weights, [t+256] for t = -256..255
 )
 
 func RandNoiseInit() {
