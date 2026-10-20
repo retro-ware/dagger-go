@@ -22,7 +22,6 @@ const strInvalidPersonSelected = 0x174F71
 
 func QuestDebugOverlay()    {}
 func QuestInitRecordSizes() {}
-func ClassmakerRun()        {}
 
 func DetectConsiderCreature(o *Record, distance int32) {}
 func MarkerMakeClutter(o *Record, b *Building)         {}

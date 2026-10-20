@@ -107,5 +107,7 @@ func quickScreen() {
 		PotionmakerOpen(1)
 	case "itemmaker":
 		ItemmakerOpen(1)
+	case "classmaker":
+		ClassmakerRun()
 	}
 }
