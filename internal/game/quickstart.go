@@ -92,3 +92,20 @@ func quickTalk() {
 	npc.X, npc.Z = PlayerObject.X, PlayerObject.Z
 	NPCTalk(npc)
 }
+
+// QuickScreen (the -screen flag, a testing aid) opens a guild's service screen once a game
+// is loaded: spellmaker, potionmaker, itemmaker, classmaker.
+var QuickScreen string
+
+func quickScreen() {
+	screen := QuickScreen
+	QuickScreen = ""
+	switch screen {
+	case "spellmaker":
+		SpellmakerOpen(1)
+	case "potionmaker":
+		PotionmakerOpen(1)
+	case "itemmaker":
+		ItemmakerOpen(1)
+	}
+}

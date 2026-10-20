@@ -28,6 +28,7 @@ func main() {
 	town := flag.Bool("town", false, "with -load: move to the first city of the region (a testing aid)")
 	quest := flag.String("quest", "", "with -load: start this QBN file (a testing aid)")
 	talk := flag.Bool("talk", false, "with -load -town: talk to a stand-in pedestrian (a testing aid)")
+	screen := flag.String("screen", "", "with -load: open a guild screen: spellmaker, potionmaker, itemmaker (a testing aid)")
 	flag.Parse()
 	game.SkipIntro = *skipIntro
 	game.QuickStart = *quickStart
@@ -35,6 +36,7 @@ func main() {
 	game.QuickTown = *town
 	game.QuickQuest = *quest
 	game.QuickTalk = *talk
+	game.QuickScreen = *screen
 	if _, err := os.Stat(filepath.Join(*data, "ARENA2")); err != nil {
 		fmt.Fprintln(os.Stderr, "dagger: no ARENA2 in", *data)
 		os.Exit(1)

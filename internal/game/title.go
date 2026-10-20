@@ -150,6 +150,7 @@ func TitleMenu() {
 			quickGotoTown()
 			quickStartQuest()
 			quickTalk()
+			quickScreen()
 			return
 		}
 	}

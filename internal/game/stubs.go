@@ -47,17 +47,15 @@ func ItemAddRandomToContainer(c *Record, group int32)  {}
 func EnchantPowersText(item *Item) string              { return "" }
 
 // guilds.c's callees, not ported yet.
-func PotionmakerOpen(mode int32) {}
-func ItemmakerOpen(mode int32)   {}
+func ItemmakerOpen(mode int32) {}
 
 // click.c's callees, not ported yet.
 func PedestrianSpawnSpotOk(o *Record, x, z int32) bool { return false }
 func DaedraSummon(npc *Record)                         {}
 
-func PotionDrink(recipe *Record) {}
-func AutomapOpen()               {}
-func MagicItemsOpen()            {}
-func TransportMenu()             {}
+func AutomapOpen()    {}
+func MagicItemsOpen() {}
+func TransportMenu()  {}
 
 // Per-frame callees of GameFrame not yet ported.
 func MusicPlayCourt()  {}
@@ -76,7 +74,6 @@ func MusicChooseSong()                             {}
 func MusicUpdate()                                 {}
 func InteriorRestrictionAtPlayer(kind int32) int32 { return 0 }
 func BuildingAccessLevel(kind int32) int32         { return 0 }
-func PotionmakerUpdate()                           {}
 func WeatherDrawPrecipitation()                    {}
 
 // tamriel.c's callees, not ported yet.
