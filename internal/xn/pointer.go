@@ -10,9 +10,15 @@ import "github.com/retro-ware/dagger-go/internal/host"
 // otherwise. Positions are in the frame's pixels; motion is in the game's units (the
 // driver's mickeys), scaled by the sensitivity (50 = 1.0), the same across and down.
 
-// lookScale is the motion per count of raw motion (a screen point): the speed across the
-// DOS driver gave a 320-pixel view in the default 960-point window.
-const lookScale = 1.0 / 3
+// lookScale is the motion per count of raw motion (a screen point): a point turns the view a
+// step (1/2048 of a turn, 0.18 degrees), as a mickey did, about a pixel of the host's mouse
+// under DOSBox, and close to Daggerfall Unity's default (0.2 degrees a point). cursorScale
+// moves the cursor during a lock as the free pointer does: 3 points a frame pixel in the
+// default 960-point window.
+const (
+	lookScale   = 1.0
+	cursorScale = 1.0 / 3
+)
 
 var ptr struct {
 	x, y                   float64 // the cursor, in frame pixels
@@ -52,8 +58,8 @@ func pumpMouse() {
 		case e.Button < 0:
 			ptr.mx += e.DX * lookScale * sx
 			ptr.my += e.DY * lookScale * sy
-			ptr.x = clampF(ptr.x+e.DX*lookScale, ptr.minX, ptr.maxX)
-			ptr.y = clampF(ptr.y+e.DY*lookScale, ptr.minY, ptr.maxY)
+			ptr.x = clampF(ptr.x+e.DX*cursorScale, ptr.minX, ptr.maxX)
+			ptr.y = clampF(ptr.y+e.DY*cursorScale, ptr.minY, ptr.maxY)
 		case e.Down:
 			ptr.buttons |= 1 << e.Button
 		default:

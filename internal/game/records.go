@@ -592,6 +592,8 @@ type Record struct {
 	DrawHandle any
 	// placeholder marks a link read from disk: only ID is set (persist.go).
 	placeholder bool
+	// stepCarry is the fraction of a unit a creature's step carries to its next (carryWhole).
+	stepCarry float64
 }
 
 // copyRecord is a copy of the record with its data (the links are copied as they are).

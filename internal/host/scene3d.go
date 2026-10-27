@@ -70,6 +70,7 @@ type Scene3D struct {
 	Clip                                 [4]int32
 	View                                 [9]float32 // eye-relative world to view space (row-major)
 	Near, Far                            float32
+	Zoom                                 float32 // the view drawn this much larger about its centre (0: 1)
 	FogStart                             float32 // world units; < 0: no fog
 	FogStep                              float32 // table bytes a world unit
 	FogLast                              float32 // the fog table's last row's position in Tables
@@ -162,6 +163,7 @@ func Render3D(s *Scene3D) bool {
 // PresentScene shows a frame whose 3D view is s (rendered by Render3D).
 func PresentScene(px []byte, w, h int, s *Scene3D) {
 	st.mu.Lock()
+	presentPace(true)
 	st.w, st.h = w, h
 	copy(st.frame[:w*h], px)
 	st.scene = s

@@ -42,9 +42,9 @@ var (
 	SteerTicks             int32
 	SteerTurnSpeedMax      int32
 	TurnThisFrame          int32
-	PlayerSpeed            int16
-	PlayerBaseSpeed        int16
-	PlayerMomentum         int32
+	PlayerSpeed            float64 // port: the speeds unrounded (FALL.EXE's were whole units)
+	PlayerBaseSpeed        float64
+	PlayerMomentum         float64
 	MoveAngleOffset        int32
 	MoveDistanceTotal      int32
 	MoveDxTotal            int32
@@ -83,6 +83,9 @@ var (
 	// (a literal would make an initialization cycle through SteerCenter's click).
 	steerRegionHandlers [9]func()
 )
+
+// port: the fractions of a unit the player's moves carry to the next frame (carryWhole)
+var moveCarry, climbCarry, sinkCarry, fallCarry float64
 
 func init() {
 	steerRegionHandlers = [9]func(){
@@ -141,7 +144,7 @@ func PlayerAddPush(distance int32) {
 	GameStateFlags |= 16
 	PlayerObject.Yaw = int16(uint16(PlayerObject.Yaw) &^ 0xF800)
 	dx, dz := xn.YawOffsetXZ(int32(PlayerObject.Yaw), distance<<7)
-	PlayerMomentum = distance
+	PlayerMomentum = float64(distance)
 	MoveDistanceTotal += distance
 	MoveDxTotal += dx
 	MoveDzTotal += dz
@@ -166,18 +169,18 @@ func turnRight() int32 {
 func SteerForwardLeft() {
 	xn.SnowTurnShift = 8
 	TurnThisFrame = turnLeft()
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightUp) / 256)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightUp) / 256
 }
 
 func SteerForward() {
 	TurnThisFrame = 0
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightUp) / 220)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightUp) / 220
 }
 
 func SteerForwardRight() {
 	xn.SnowTurnShift = -8
 	TurnThisFrame = turnRight()
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightUp) / 256)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightUp) / 256
 }
 
 func SteerTurnLeft() {
@@ -204,19 +207,19 @@ func SteerTurnRight() {
 
 func SteerSlideLeft() {
 	xn.SnowTurnShift = 4
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightLeft) / 256)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightLeft) / 256
 	MoveAngleOffset = -512
 }
 
 func SteerBackward() {
 	MoveAngleOffset = 1024
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightDown) / 256)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightDown) / 256
 }
 
 func SteerSlideRight() {
 	xn.SnowTurnShift = -4
 	MoveAngleOffset = 512
-	PlayerSpeed = int16(int32(PlayerSpeed) * int32(SteerWeightRight) / 256)
+	PlayerSpeed = PlayerSpeed * float64(SteerWeightRight) / 256
 }
 
 // ClickActivate uses what is under the cursor (or the view's centre), else fires the
@@ -303,6 +306,12 @@ func ObjectApplyGravity(o *Record, c *Character) {
 		return
 	}
 	VerticalVelocity += FrameTicks * 100352 / 1000
+	if o == PlayerObject {
+		// port: the fraction carried, as the player's other moves (rounded down each frame, a
+		// jump rose two thirds as high at 60 frames a second as at 23)
+		o.Y += carryWhole(&fallCarry, float64(VerticalVelocity)*float64(FrameTicks)/1000/256)
+		return
+	}
 	o.Y += VerticalVelocity * FrameTicks / 1000 / 256
 }
 
@@ -437,12 +446,17 @@ func IntrfaceSteer(region, regionX, regionY int32) {
 	if PlayerCharacter.Conditions&1 == 0 &&
 		((Controls.MouseControlMode != 1 && xn.MouseButtons&1 != 0) || SteerKeyRegion != -1) {
 		steerRegionHandlers[region]()
+		if Enh.Diagonal && SteerKeyRegion != -1 {
+			EnhSteerDiagonal() // port: the enhancement
+		}
 	} else {
 		PlayerSpeed = 0
 		TurnThisFrame = 0
 		MoveAngleOffset = 0
 	}
-	PlayerMoving = b2u8(PlayerSpeed > 2)
+	// port: faster than 2 units a frame at 23 frames a second (FALL.EXE's first guess of its
+	// rate, xn.TimerFPS), 46 a second: at the port's rates 2 a frame was most of a slide
+	PlayerMoving = b2u8(PlayerSpeed*1000 > 46*float64(FrameTicks))
 }
 
 // ClimbAngleOk is whether a wall that steep can be climbed.
@@ -460,7 +474,9 @@ func PlayerMovementUpdate() {
 	}
 	WorldStateFlags &= 223
 	SteerTurnSpeedMax = int32(Controls.MouseTurnRate&127)*2 + 4
-	PlayerMouseLook()
+	if !lookEarly {
+		PlayerMouseLook()
+	}
 	IntrfacePollControls()
 	PlayerMoving = 0
 	if HudUpdate() {
@@ -484,13 +500,13 @@ func PlayerMovementUpdate() {
 		PlayerOnGround = 1
 	}
 	airborne := playerAirborne()
-	var distance int32
+	var distance float64
 	if airborne {
 		TurnThisFrame = 0
 		distance = PlayerMomentum
 	} else {
 		IntrfaceSteer(region, regionX, dy)
-		distance = int32(PlayerSpeed)
+		distance = PlayerSpeed
 		PlayerMomentum = distance
 	}
 	if UIModeFlags&2 != 0 {
@@ -511,17 +527,19 @@ func PlayerMovementUpdate() {
 	}
 	blocked := false
 	if !airborne && Controls.MouseControlMode == 1 && KeyActionHeld(23) {
-		PlayerMomentum >>= 1
-		PlayerMomentum--
-		distance >>= 1
+		PlayerMomentum = PlayerMomentum/2 - 1
+		distance /= 2
 	}
-	for !blocked && distance > 0 {
+	// port: the frame's whole units, the fraction carried to the next: FALL.EXE moved whole
+	// units a frame, at 60 frames a second a quarter short of the walk and half of a slide
+	left := carryWhole(&moveCarry, distance)
+	for !blocked && left > 0 {
 		var step int32
-		if distance < stepSize {
-			step = distance
-			distance = 0
+		if left < stepSize {
+			step = left
+			left = 0
 		} else {
-			distance -= stepSize
+			left -= stepSize
 			step = stepSize
 		}
 		blocked = PlayerTryMove(step)
@@ -532,7 +550,7 @@ func PlayerMovementUpdate() {
 			LinksTrigger(MovingModel, 3)
 		}
 	}
-	if distance == 0 && FloorObject != nil && LinksObjectMotion(FloorObject) != nil {
+	if left == 0 && FloorObject != nil && LinksObjectMotion(FloorObject) != nil {
 		PlayerTryMove(0)
 	}
 	dy = 0
@@ -545,7 +563,7 @@ func PlayerMovementUpdate() {
 				SkillAddUses(18, 1)
 			}
 			PlayerMotionFlags |= 32
-			dy = -int32(PlayerSpeed) / 3
+			dy = -carryWhole(&climbCarry, PlayerSpeed/3) // port: the fraction carried
 			if uint32(GameMinutes-MoveLastMinute) > 1 {
 				SkillAddUses(18, 1)
 				MoveLastMinute = GameMinutes
@@ -592,16 +610,18 @@ func PlayerMovementUpdate() {
 		PlayerOnGround = 0
 		CollideLanded = 1
 	}
+	var sink int32 // port: units a second, moved below with the fraction carried
 	if KeyActionHeld(6) && (PlayerCharacter.Conditions&0x8 != 0 || InDungeonWater != 0) && PlayerObject.Y-100 > CeilingHeight {
 		if PlayerEnvironment != 1 || CollideHeight-1024 <= PlayerObject.Y {
-			dy += FrameTicks * -80 / 1000
+			sink -= 80
 		}
 	} else if KeyActionHeld(7) && (PlayerCharacter.Conditions&0x8 != 0 || InDungeonWater != 0) {
-		dy += FrameTicks * 80 / 1000
+		sink += 80
 	}
 	if InDungeonWater != 0 && ObjectWeight(PlayerEntity) > 250 && !KeyActionHeld(7) && PlayerCharacter.Conditions&1048584 == 0 {
-		dy += FrameTicks * 80 / 1000
+		sink += 80
 	}
+	dy += carryWhole(&sinkCarry, float64(FrameTicks*sink)/1000)
 	savedY := PlayerObject.Y
 	airborne = playerAirborne()
 	if CollideFlags&16 != 0 || airborne || (xn.DungeonWaterLevel != 10000 && PlayerObject.Y-50 > xn.DungeonWaterLevel) {
@@ -666,12 +686,12 @@ func PlayerMovementUpdate() {
 }
 
 // PlayerHorseSounds plays the horse's or cart's hooves at the speed.
-func PlayerHorseSounds(speed int32) {
+func PlayerHorseSounds(speed float64) {
 	if PlayerCharacter.Flags&1536 == 0 {
 		return
 	}
 	sound := int32(365)
-	if int32(PlayerBaseSpeed)-int32(PlayerBaseSpeed)>>2 < speed {
+	if PlayerBaseSpeed*3/4 < speed {
 		sound = 366
 	}
 	if PlayerCharacter.Flags&1024 != 0 {
@@ -788,6 +808,8 @@ func CursorDraw(region int16) {
 // PlayerMouseLook turns the player with the mouse in mouse-look mode, else moves the free
 // look while it is on.
 func PlayerMouseLook() {
+	// port (Hardware 3D): drawn a little larger while the mouse looks around (xn.ViewTurn)
+	xn.ViewTurn.On = Controls.MouseControlMode == 1 && ViewCursorActive == 0
 	if GameMode != 0 || GameStateFlags&0x24 != 0 {
 		return
 	}
@@ -813,6 +835,13 @@ func PlayerMouseLook() {
 		}
 		PlayerObject.AngleX = min(max(PlayerObject.AngleX, -256), 256)
 		CameraObject.AngleX, CameraObject.Yaw = PlayerObject.AngleX, PlayerObject.Yaw
+		// port (Hardware 3D): and on by the fraction of a step the motion left
+		across, down := xn.MouseMotionLeft()
+		if Controls.MouseTurnRate&0x80 != 0 {
+			down = -down
+		}
+		pitch := float64(PlayerObject.AngleX)
+		xn.ViewTurn.Yaw, xn.ViewTurn.Pitch = across, min(max(pitch+down, -256), 256)-pitch
 	} else if MiscStateFlags&0x40 != 0 {
 		ViewLookPitch = min(max(ViewLookPitch+int32(MouseMotionY), -256), 256)
 		ViewLookYaw = min(max(ViewLookYaw+int32(MouseMotionX), -512), 512)

@@ -5,36 +5,32 @@ import (
 )
 
 // The options screen (options.c): save, load, exit, the volumes and detail, full screen,
-// head bobbing, and the controls, mouse and joystick screens.
+// head bobbing, and the controls and mouse screens. The joystick screen is cut: the port
+// has no joystick.
 
 const (
-	addrOptionsButtons        = 0x17B790
-	addrControlsButtons       = 0x17B808
-	addrOptionsMouseButtons   = 0x17BA0C
-	addrOptionsJoystickButton = 0x17BA60
-	addrBindingNames          = 0x17B73C // the names of bindings 200..220
-	strOptn00i0Img            = 0x170EDB
-	strCnfg00i0Img            = 0x170EF2
-	strCnfg00i1Img            = 0x170EFF
-	strMultipleAssignments    = 0x170F0C
-	strCnfg01i0Img            = 0x170F2D
-	strCnfg02i0Img            = 0x170F3A
-	strCnfg03i0Img            = 0x170F47
-	strCnfg04i0Img            = 0x170F54
-	strCnfg05i0Cif            = 0x170F61
-	strCnfg06i0Img            = 0x170F6E
+	addrOptionsButtons      = 0x17B790
+	addrControlsButtons     = 0x17B808
+	addrOptionsMouseButtons = 0x17BA0C
+	addrBindingNames        = 0x17B73C // the names of bindings 200..220
+	strOptn00i0Img          = 0x170EDB
+	strCnfg00i0Img          = 0x170EF2
+	strCnfg00i1Img          = 0x170EFF
+	strMultipleAssignments  = 0x170F0C
+	strCnfg01i0Img          = 0x170F2D
+	strCnfg02i0Img          = 0x170F3A
+	strCnfg03i0Img          = 0x170F47
+
+	controlsJoystickButton = 38 // the CONTROLS screen's JOYSTICK button
 )
 
 var (
 	optionsImage       xn.Img
 	optionsSavedScreen []byte
 	controlsViewImage  xn.Img
-	optionsScreenImg1  []byte // screen_image_1: the mouse screen's tick, the joystick's arrows
+	optionsScreenImg1  []byte // screen_image_1: the mouse screen's tick
 	optionsScreenImg2  xn.Img // screen_image_2
-	// No joystick is read here (joystick_status stays 2), so its position stays centred.
-	joystickX, joystickY int32
-	joystickThreshold    int16 = 20
-	SavedThumbnail       []byte
+	SavedThumbnail     []byte
 )
 
 // optionsRect is a button table's rect (12-byte rows: the rect, the handler).
@@ -178,7 +174,7 @@ func OptionsToggleFullScreen() {
 	xn.CamSetFocal(200, 180)
 }
 
-// optionsControlsRebind waits for the key, mouse button (or joystick move) for the action.
+// optionsControlsRebind waits for the key or mouse button for the action.
 func optionsControlsRebind(action int, background []byte) {
 	code := -1
 	clear(xn.KeyDown[:])
@@ -241,6 +237,7 @@ func optionsControlsDraw(editing int, background []byte) {
 
 func optionsControlsScreen() {
 	background := DiskReadFile(S(strCnfg00i0Img))
+	controlsGreyButton(background, controlsJoystickButton) // port: no joystick
 	controlsViewImage = xn.ParseImg(DiskReadFile(S(strCnfg00i1Img)))
 	for done := false; !done; {
 		if xn.KeyDown[scanEsc] != 0 && optionsControlsCheck() {
@@ -259,12 +256,11 @@ func optionsControlsScreen() {
 				switch {
 				case button < 38:
 					optionsControlsRebind(button, background)
-				case button == 38:
-					optionsJoystickScreen()
+				case button == controlsJoystickButton:
 				case button == 39:
 					optionsMouseScreen()
 				case button == 40:
-					KeyMap = DefaultKeyMap
+					KeyMap = EnhKeyMap() // port: the WASD preset's, when on
 				default:
 					done = optionsControlsCheck()
 				}
@@ -277,7 +273,8 @@ func optionsControlsScreen() {
 	optionsSaveControls()
 }
 
-// optionsSaveControls writes the controls file: the 54 settings bytes and the key map.
+// optionsSaveControls writes the controls file: the 54 settings bytes (the joystick's, from
+// byte 4, as 0) and the key map.
 func optionsSaveControls() {
 	f, err := DiskCreate(ControlsFile)
 	if err != nil {
@@ -290,12 +287,26 @@ func optionsSaveControls() {
 	b[1] = c.MouseTurnRate
 	b[2] = c.MouseSensitivityX
 	b[3] = c.MouseSensitivityY
-	b[4] = c.JoystickSetting
-	copy(b[5:8], c.JoystickPad[:])
-	b[6], b[7] = byte(joystickThreshold), byte(uint16(joystickThreshold)>>8)
-	copy(b[8:], c.JoyCalibrationSaved[:])
 	f.Write(b[:])
 	f.Write(KeyMap[:])
+}
+
+// controlsGreyButton greys a button of the CONTROLS screen's picture (320 x 200), as one
+// that does nothing.
+func controlsGreyButton(screen []byte, button int) {
+	r := optionsRect(addrControlsButtons, button)
+	var grey [256]int16 // the grey of each colour, + 1 (0: not found yet)
+	for y := int(r.Y0); y <= int(r.Y1); y++ {
+		for x := int(r.X0); x <= int(r.X1); x++ {
+			c := &screen[y*320+x]
+			if grey[*c] == 0 {
+				p := xn.PalCurrent[int(*c)*3:]
+				l := (int32(p[0])*30 + int32(p[1])*59 + int32(p[2])*11) / 100 * 3 / 4
+				grey[*c] = int16(xn.PalFindNearest(uint8(l), uint8(l), uint8(l))) + 1
+			}
+			*c = byte(grey[*c] - 1)
+		}
+	}
 }
 
 func optionsControlsCheck() bool {
@@ -381,131 +392,4 @@ func optionsMouseDraw(background xn.Img) {
 		return
 	}
 	drawParsedImg(optionsScreenImg2)
-}
-
-func optionsJoystickScreen() {
-	background := xn.ParseImg(DiskReadFile(S(strCnfg04i0Img)))
-	optionsScreenImg1 = DiskReadFile(S(strCnfg05i0Cif))
-	optionsScreenImg2 = xn.ParseImg(DiskReadFile(S(strCnfg06i0Img)))
-	handlers := [6]func() bool{
-		func() bool {
-			if Controls.JoystickSetting == 1 {
-				Controls.JoystickSetting = 2
-			} else {
-				Controls.JoystickSetting = 1
-			}
-			JoystickStatus = Controls.JoystickSetting
-			return false
-		},
-		func() bool { optionsJoystickCalibrate(background); return false },
-		func() bool { joystickThreshold = 10; return false },
-		func() bool { joystickThreshold = 20; return false },
-		func() bool { joystickThreshold = 40; return false },
-		func() bool { return true },
-	}
-	for done := false; !done; {
-		xn.MouseButtonsPrev = xn.MouseButtons
-		xn.MousePollClamped()
-		optionsJoystickDraw(false, background)
-		CursorDrawArrow()
-		if xn.MouseButtons != 0 && xn.MouseButtonsPrev == 0 {
-			for i, h := range handlers {
-				if mouseInRect(optionsRect(addrOptionsJoystickButton, i)) {
-					SoundPlay(203, PlayerObject, 100)
-					done = h()
-				}
-			}
-		}
-		xn.PresentInclusive(false)
-	}
-	optionsScreenImg1, optionsScreenImg2 = nil, xn.Img{}
-}
-
-func optionsJoystickDraw(calibrating bool, background xn.Img) {
-	copy(xn.Screen, optionsSavedScreen)
-	drawParsedImg(background)
-	if Controls.JoystickSetting == 2 {
-		xn.TextColour = 246
-		xn.FillRect(138, 42, 5, 5)
-	}
-	index := 2
-	switch joystickThreshold {
-	case 10:
-		index = 0
-	case 20:
-		index = 1
-	}
-	// the chosen threshold's button, lit, from the image of lit buttons
-	r := optionsRect(addrOptionsJoystickButton, index+2)
-	w, h := int(r.X1-r.X0)+1, int(r.Y1-r.Y0)+1
-	stride := int(optionsScreenImg2.Width)
-	for y := 0; y < h; y++ {
-		src := y*stride + int(r.X0) - 113
-		copy(xn.Screen[(int(r.Y0)+y)*320+int(r.X0):][:w], optionsScreenImg2.Pixels[src:src+w])
-	}
-	if !calibrating || joystickX == 0 && joystickY == 0 {
-		return
-	}
-	index = optionsJoystickDirection()
-	b := optionsScreenImg1
-	for ; index != 0; index-- {
-		b = b[int(le16(b[10:]))+12:]
-	}
-	im := xn.ParseImg(b)
-	xn.DrawImageTransparent(int32(im.X), int32(im.Y), int32(im.Width), int32(im.Height), im.Pixels)
-}
-
-// optionsJoystickCalibrate shows the stick's direction until Done (nothing without a stick).
-func optionsJoystickCalibrate(background xn.Img) {
-	if JoystickStatus == 2 {
-		return
-	}
-	for {
-		xn.MouseButtonsPrev = xn.MouseButtons
-		xn.MousePollClamped()
-		optionsJoystickDraw(true, background)
-		CursorDrawArrow()
-		if xn.MouseButtons != 0 && xn.MouseButtonsPrev == 0 && mouseInRect(optionsRect(addrOptionsJoystickButton, 1)) {
-			return
-		}
-		xn.PresentInclusive(false)
-	}
-}
-
-func optionsJoystickDirection() int {
-	x, y := joystickX, joystickY
-	if x < 0 {
-		if y < 0 {
-			if x > -2048 {
-				return 0
-			}
-			if y > -2048 {
-				return 6
-			}
-			return 7
-		}
-		if x > -2048 {
-			return 4
-		}
-		if y < 2048 {
-			return 6
-		}
-		return 5
-	}
-	if y < 0 {
-		if x < 2048 {
-			return 0
-		}
-		if y > -2048 {
-			return 2
-		}
-		return 1
-	}
-	if x < 2048 {
-		return 4
-	}
-	if y < 2048 {
-		return 2
-	}
-	return 3
 }

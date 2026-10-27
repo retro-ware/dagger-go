@@ -442,7 +442,11 @@ func (r *renderer) camera(s *Scene3D, w, h int) []byte {
 	b = f32s(b, s.Near, s.Far, s.HalfW/s.FocalX, s.HalfH/s.FocalY)
 	b = f32s(b, s.FogStart, s.FogStep, s.FogLast, s.ShadeLast)
 	b = f32s(b, 320/float32(w), 200/float32(h), float32(s.FlatMat), 0)
-	return f32s(b, 2*s.HalfW/320, 2*s.CX/320-1, 2*s.HalfH/200, 1-2*s.CY/200)
+	z := s.Zoom
+	if z == 0 {
+		z = 1
+	}
+	return f32s(b, z*2*s.HalfW/320, 2*s.CX/320-1, z*2*s.HalfH/200, 1-2*s.CY/200)
 }
 
 func (r *renderer) group(uni *gbuf, t *targets) *wgpu.BindGroup {

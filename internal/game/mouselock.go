@@ -16,3 +16,36 @@ func mouseLockUpdate() {
 		xn.LockPointer()
 	}
 }
+
+var (
+	worldShown uint32 // xn.Shown after the last world frame's present
+	uiWasOpen  bool   // a screen was over the world since the world last ran
+	lookEarly  bool   // this frame's mouse turn came before its drawing (Enh.MouseLook)
+)
+
+// uiResume takes up the world after a screen over it closed, one run each frame (GameMode or
+// ScreenActive set) or one with a loop of its own (seen by its presents): the keys still held
+// from it (the Enter that closed a prompt) don't act again, the mouse's motion over it doesn't
+// turn the view, and with Enh.MouseLook the mouse looks around again. (port: the game's own
+// edges of the keys kept the Enter that ended the save's name for the world, which turned the
+// cursor on.)
+func uiResume() {
+	if xn.Shown != worldShown {
+		uiWasOpen = true
+	}
+	if GameMode != 0 || ScreenActive != 0 {
+		uiWasOpen = true
+		return
+	}
+	if !uiWasOpen {
+		return
+	}
+	uiWasOpen = false
+	for k := range KeyWasDown {
+		KeyWasDown[k] = xn.KeyDown[k]
+	}
+	xn.MouseReadMotion()
+	if Enh.MouseLook {
+		ViewCursorActive = 0
+	}
+}

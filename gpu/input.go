@@ -121,43 +121,6 @@ const (
 	mouseCount        = 8
 )
 
-// GamepadID is a connected gamepad.
-type GamepadID int
-
-// StandardGamepadButton is a button of the standard layout, named by place.
-type StandardGamepadButton int
-
-const (
-	StandardGamepadButtonRightBottom StandardGamepadButton = iota // A
-	StandardGamepadButtonRightRight                               // B
-	StandardGamepadButtonRightLeft                                // X
-	StandardGamepadButtonRightTop                                 // Y
-	StandardGamepadButtonFrontTopLeft
-	StandardGamepadButtonFrontTopRight
-	StandardGamepadButtonFrontBottomLeft  // left trigger
-	StandardGamepadButtonFrontBottomRight // right trigger
-	StandardGamepadButtonCenterLeft       // back
-	StandardGamepadButtonCenterRight      // start
-	StandardGamepadButtonLeftStick
-	StandardGamepadButtonRightStick
-	StandardGamepadButtonLeftTop // d-pad
-	StandardGamepadButtonLeftBottom
-	StandardGamepadButtonLeftLeft
-	StandardGamepadButtonLeftRight
-	StandardGamepadButtonCenterCenter
-	padButtons
-)
-
-// StandardGamepadAxis is an axis of the standard layout.
-type StandardGamepadAxis int
-
-const (
-	StandardGamepadAxisLeftStickHorizontal StandardGamepadAxis = iota
-	StandardGamepadAxisLeftStickVertical
-	StandardGamepadAxisRightStickHorizontal
-	StandardGamepadAxisRightStickVertical
-)
-
 // TouchID is a touch; there are none on the desktop.
 type TouchID int
 
@@ -208,6 +171,7 @@ func initInput(app *gogpu.App) {
 
 // tickInput advances the held counts; called before each Update.
 func tickInput() {
+	pollCursor()
 	for _, k := range []Key{KeyShift, KeyControl, KeyAlt, KeyMeta} {
 		s := sides[k]
 		in.down[k] = in.down[s[0]] || in.down[s[1]]
@@ -265,21 +229,13 @@ func CursorPosition() (int, int) {
 	if win.app == nil || win.k == 0 {
 		return 0, 0
 	}
-	x, y := in.cursor[0], in.cursor[1]
+	x, y := cursorWindowPos()
 	s := Monitor().DeviceScaleFactor()
 	return int((x*s-win.ox)/win.k) + in.off[0], int((y*s-win.oy)/win.k) + in.off[1]
 }
 
 // Wheel is the wheel movement since the last tick.
 func Wheel() (float64, float64) { return in.tickWheel[0], in.tickWheel[1] }
-
-// Gamepads: gogpu reads none yet, so there are none.
-// ponytail: wire them up when gogpu gets gamepad input
-func AppendGamepadIDs(ids []GamepadID) []GamepadID                            { return ids }
-func IsStandardGamepadLayoutAvailable(GamepadID) bool                         { return false }
-func IsStandardGamepadButtonPressed(GamepadID, StandardGamepadButton) bool    { return false }
-func StandardGamepadButtonPressDuration(GamepadID, StandardGamepadButton) int { return 0 }
-func StandardGamepadAxisValue(GamepadID, StandardGamepadAxis) float64         { return 0 }
 
 // AppendJustPressedTouchIDs: no touches on the desktop.
 func AppendJustPressedTouchIDs(ids []TouchID) []TouchID { return ids }

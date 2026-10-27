@@ -96,8 +96,13 @@ func Present(keep bool) {
 	Poll()
 }
 
+// Shown counts the frames shown. (port: the game tells by it that a screen of its own, with
+// a loop of its own, ran between two world frames.)
+var Shown uint32
+
 // ShowVGA hands the screen's memory to the window.
 func ShowVGA() {
+	Shown++
 	if hwPresent() {
 		return
 	}

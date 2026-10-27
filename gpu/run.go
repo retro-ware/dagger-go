@@ -34,6 +34,7 @@ var win struct {
 
 	// the screen's place in the framebuffer (for the cursor)
 	ox, oy, k float64
+	sw, sh    int // the screen's size
 }
 
 func init() { win.ww, win.wh, win.tps, win.title = 640, 480, 60, "" }
@@ -162,6 +163,7 @@ func RunGameWithOptions(g Game, o *RunGameOptions) error {
 		}
 		screen.Clear()
 		g.Draw(screen)
+		win.sw, win.sh = sw, sh
 		win.k = min(float64(fw)/float64(sw), float64(fh)/float64(sh))
 		win.ox, win.oy = (float64(fw)-float64(sw)*win.k)/2, (float64(fh)-float64(sh)*win.k)/2
 		present(screen, view, fw, fh)

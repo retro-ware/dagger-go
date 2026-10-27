@@ -18,7 +18,14 @@ func dacWrite(i int, r, g, b uint8) {
 	DAC[i&0xFF] = host.Color{R: r & 63, G: g & 63, B: b & 63}
 }
 
-func dacFlush() { host.SetPalette(0, DAC[:]) }
+// dacFlush hands the DAC to the window with video memory as it is now. On the VGA both are
+// live; the window has video memory only when the game shows it, so without this a palette
+// change recoloured the frame shown last (the title in the province map's palette) where
+// the original had already cleared or redrawn the screen.
+func dacFlush() {
+	host.PresentChanged(VGA[:Width*Height], int(Width), int(Height))
+	host.SetPalette(0, DAC[:])
+}
 
 // waitRetrace waits for the start of a vertical retrace.
 func waitRetrace() { WaitVRetraceStart() }

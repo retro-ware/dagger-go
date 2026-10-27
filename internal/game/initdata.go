@@ -14,22 +14,19 @@ const (
 	addrDefaultKeyMap    = 0x18484C
 )
 
-// ControlSettings is the controls file's first 54 bytes (mouse_control_mode at 0x195E7A).
+// ControlSettings is the controls file's first 54 bytes (mouse_control_mode at 0x195E7A)
+// but the joystick's, from byte 4: the port has no joystick.
 type ControlSettings struct {
-	MouseControlMode    int8
-	MouseTurnRate       uint8
-	MouseSensitivityX   uint8
-	MouseSensitivityY   uint8
-	JoystickSetting     uint8
-	JoystickPad         [3]byte
-	JoyCalibrationSaved [46]byte
+	MouseControlMode  int8
+	MouseTurnRate     uint8
+	MouseSensitivityX uint8
+	MouseSensitivityY uint8
 }
 
 var (
-	Controls       ControlSettings
-	KeyMap         [38]byte
-	DefaultKeyMap  [38]byte
-	JoystickStatus uint8
+	Controls      ControlSettings
+	KeyMap        [38]byte
+	DefaultKeyMap [38]byte
 
 	ButtonsRCI          []byte
 	SpellRecords        []Spell
@@ -76,9 +73,6 @@ func (c *ControlSettings) decode(b []byte) {
 	c.MouseTurnRate = b[1]
 	c.MouseSensitivityX = b[2]
 	c.MouseSensitivityY = b[3]
-	c.JoystickSetting = b[4]
-	copy(c.JoystickPad[:], b[5:8])
-	copy(c.JoyCalibrationSaved[:], b[8:54])
 }
 
 // InitGameData loads the game's resources and makes the world.
@@ -140,7 +134,6 @@ func InitGameData() {
 	IntrfaceSetRegions()
 	ColorInitRemapTables()
 	SwiftInit()
-	JoystickStatus = 2 // no joystick: the calibration finds none
 	KeyMap = DefaultKeyMap
 	if f, err := DiskOpenData(ControlsFile); err == nil {
 		var b [54]byte
@@ -157,7 +150,6 @@ func InitGameData() {
 		}
 		xn.MouseSetSensitivity(int32(w), int32(h))
 		f.Close()
-		JoystickStatus = Controls.JoystickSetting
 	} else {
 		Controls.MouseSensitivityX, Controls.MouseSensitivityY = xn.MouseGetSensitivity()
 		Controls.MouseSensitivityX /= 6

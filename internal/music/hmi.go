@@ -168,7 +168,10 @@ func parseHMITrack(d []byte, events *[]Event) int {
 				*events = append(*events, Event{tick, status, byteAt(), 0})
 			case 0x90:
 				note, vel := byteAt(), byteAt()
-				length := vlq()
+				// a note of length 0 (37 in the songs: 09.HMI's low G, SUNNYDAY's) ends a tick
+				// later: at its own tick its off would sort first and leave it sounding until
+				// another off of its key, or the loop
+				length := max(vlq(), 1)
 				*events = append(*events, Event{tick, status, note, vel},
 					Event{tick + length, 0x80 | status&15, note, 0})
 			case 0xB0:

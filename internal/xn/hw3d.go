@@ -1,6 +1,10 @@
 package xn
 
-import "github.com/retro-ware/dagger-go/internal/host"
+import (
+	"math"
+
+	"github.com/retro-ware/dagger-go/internal/host"
+)
 
 // Hardware 3D (an enhancement, not in the original): the 3D view drawn by the GPU. The
 // engine still decides what is in the frame (the queued models, the ground's grid, the
@@ -453,6 +457,81 @@ func hwFlatLight(f *Flat) (mode, row, table uint32) {
 
 // ---- the frame ----
 
+// ViewTurn turns the GPU's view on from the camera by fractions of a step: the mouse's motion
+// not yet turned into the player's angles, so a slow turn moves the window-sized view a little
+// each frame rather than a step (5 of its pixels or more) now and then. The game sets On
+// while the mouse looks around, and the view is drawn a little larger then, so the edge a
+// turn brings in is never one the engine culled; Yaw and Pitch each frame the mouse turns
+// the view (a render uses them up).
+var ViewTurn struct {
+	On         bool
+	Yaw, Pitch float64 // steps
+}
+
+// viewTurnMargin is the turn the larger view takes in at its edges, in steps: a fraction is
+// under one, and a yaw under a pitch moves the corners a little more.
+const viewTurnMargin = 1.25
+
+// hwTurn draws s larger and turned by ViewTurn: as from the camera at its angles plus the
+// fractions, for the models and the ground (the view matrix), the flats and the lights (in
+// view space).
+func hwTurn(s *host.Scene3D) {
+	const step = 2 * math.Pi / Angles
+	ax := math.Atan2(float64(CamHalfWidth), float64(CamFocalX))
+	ay := math.Atan2(float64(CamHalfHeight), float64(CamFocalY))
+	s.Zoom = float32(max(math.Tan(ax)/math.Tan(ax-viewTurnMargin*step),
+		math.Tan(ay)/math.Tan(ay-viewTurnMargin*step)))
+	if ViewTurn.Yaw == 0 && ViewTurn.Pitch == 0 {
+		return
+	}
+	p, y, r := float64(CamPitch)*step, float64(CamYaw)*step, float64(CamRoll)*step
+	a := rotF(p, y, r)
+	b := rotF(p+ViewTurn.Pitch*step, y+ViewTurn.Yaw*step, r)
+	// d = b a^T, from the camera's view space to the turned camera's; m is d in the scaled
+	// view space (x and y scaled to the view's edges) the view matrix and the flats are in
+	var d, m [3][3]float64
+	sc := [3]float64{float64(CamScaleX) / (1 << 14), float64(CamScaleY) / (1 << 14), 1}
+	for i := range 3 {
+		for j := range 3 {
+			for k := range 3 {
+				d[i][j] += b[i][k] * a[j][k]
+			}
+			m[i][j] = sc[i] * d[i][j] / sc[j]
+		}
+	}
+	v := s.View
+	for i := range 3 {
+		for j := range 3 {
+			s.View[3*i+j] = float32(m[i][0]*float64(v[j]) + m[i][1]*float64(v[3+j]) + m[i][2]*float64(v[6+j]))
+		}
+	}
+	for i := range s.Flats {
+		f := &s.Flats[i]
+		f.X, f.Y, f.Z = turnF(&m, f.X, f.Y, f.Z)
+	}
+	for i := 0; i+2 < len(s.Lights); i += 8 {
+		l := s.Lights[i : i+3]
+		l[0], l[1], l[2] = turnF(&d, l[0], l[1], l[2])
+	}
+}
+
+// rotF is MatFromAngles in floating point (angles in radians).
+func rotF(pitch, yaw, roll float64) (m [3][3]float64) {
+	sp, cp := math.Sincos(pitch)
+	sy, cy := math.Sincos(yaw)
+	sr, cr := math.Sincos(roll)
+	m[0] = [3]float64{sp*sr*sy + cr*cy, -sr * cp, sr*sp*cy - sy*cr}
+	m[1] = [3]float64{-sp*sy*cr + sr*cy, cp * cr, -cr*sp*cy - sr*sy}
+	m[2] = [3]float64{sy * cp, sp, cp * cy}
+	return m
+}
+
+func turnF(m *[3][3]float64, x, y, z float32) (float32, float32, float32) {
+	u, v, w := float64(x), float64(y), float64(z)
+	return float32(m[0][0]*u + m[0][1]*v + m[0][2]*w), float32(m[1][0]*u + m[1][1]*v + m[1][2]*w),
+		float32(m[2][0]*u + m[2][1]*v + m[2][2]*w)
+}
+
 // hwRenderFrame is RenderFrame on the GPU: 1 when the texture cache filled.
 func hwRenderFrame(flags int32) int32 {
 	for i := range ModelQueueN {
@@ -490,6 +569,10 @@ func hwRenderFrame(flags int32) int32 {
 	}
 	s.Falloff = hw.falloff
 	s.Tables = hw.tables
+	if ViewTurn.On {
+		hwTurn(s)
+	}
+	ViewTurn.Yaw, ViewTurn.Pitch = 0, 0
 	// the host owns what it was sent
 	hw.mats, hw.lights, hw.inst, hw.ground, hw.flats = nil, nil, nil, nil, nil
 	hw.newTex, hw.newMsh = nil, nil

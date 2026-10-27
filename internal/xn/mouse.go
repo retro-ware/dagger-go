@@ -56,6 +56,10 @@ func MouseGetSensitivity() (h, v uint8) {
 // MouseReadMotion is the motion since the last read.
 func MouseReadMotion() (int16, int16) { return pointerMotion() }
 
+// MouseMotionLeft is the motion not yet read: the fraction of a unit MouseReadMotion left, and
+// any since.
+func MouseMotionLeft() (float64, float64) { return ptr.mx, ptr.my }
+
 func MouseSetPosition(x, y int32) { pointerSet(int16(x), int16(y)) }
 
 // near16 is |a - b| < 4 in 16 bits (Q-MOUSE-02: negating -32768 leaves it negative: near).

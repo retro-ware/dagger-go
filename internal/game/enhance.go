@@ -2,6 +2,7 @@ package game
 
 import (
 	"fmt"
+	"math"
 	"strconv"
 	"strings"
 
@@ -9,10 +10,10 @@ import (
 	"github.com/retro-ware/dagger-go/internal/xn"
 )
 
-// Enhancements: opt-in changes to the original's controls, after Daggerfall Unity. Each one
-// is off by default, so the game plays as FALL.EXE until the player turns it on, from the
-// Enhancements screen (the title menu and the options). They are kept in ENHANCE.CFG next
-// to the saves.
+// Enhancements: changes to the original's controls, after Daggerfall Unity. The WASD keys
+// and the diagonal moves are on by default, as in Daggerfall Unity; the rest are off, as
+// FALL.EXE plays, until the player turns them on, from the Enhancements screen (the title menu and the options). They
+// are kept in ENHANCE.CFG next to the saves.
 
 const enhanceFile = "ENHANCE.CFG"
 
@@ -28,13 +29,17 @@ var Enh struct {
 	MouseLook     bool // the mouse always looks around (VIEW mode), in the air too
 	ClickActivate bool // the left button uses what the crosshair is on
 	Swing         int  // SwingDrag, SwingClick or SwingHold
-	WASD          bool // the WASD key preset
+	WASD          bool // the WASD key preset (on by default)
+	Diagonal      bool // a slide with FORWARD or REVERSE moves diagonally (on by default)
 	Crosshair     bool // a crosshair while the mouse looks around
 }
 
 // enhWASD is the WASD preset over the original's keys: {action, scan code or binding}.
-// The rest keep their keys (arrows turn, R rest, T transport, Backspace cast, Q recast,
-// Enter the cursor, F1-F4 the modes, I status, F5 the sheet, F6 the inventory).
+// These are Daggerfall Unity's defaults but for ACTIVATE CENTER OBJECT, there the left
+// button (here the Activate enhancement: a binding would fire at a click with the HUD's
+// cursor too), so E uses and ABORT SPELL takes G. The rest keep their keys, as in Daggerfall
+// Unity (arrows turn, R rest, T transport, Backspace cast, Q recast, U a magic item, Enter
+// the cursor, Alt looks around, F1-F4 the modes, I status, F5 the sheet, F6 the inventory).
 var enhWASD = [][2]byte{
 	{0, 0x11},  // FORWARD: W
 	{1, 0x1F},  // REVERSE: S
@@ -59,8 +64,19 @@ func wasdKeyMap() [38]byte {
 	return m
 }
 
-// EnhLoad reads ENHANCE.CFG (lines of name=value).
+// EnhKeyMap is the default keys: the WASD preset's when it is on, else the original's.
+func EnhKeyMap() [38]byte {
+	if Enh.WASD {
+		return wasdKeyMap()
+	}
+	return DefaultKeyMap
+}
+
+// EnhLoad reads ENHANCE.CFG (lines of name=value). The keys are keys=wasd or
+// keys=original; the wasd=0/1 of before is not read, as it was saved whether the player
+// chose it or not, so those files get the WASD default too.
 func EnhLoad() {
+	Enh.WASD, Enh.Diagonal = true, true
 	b, err := dosfs.ReadFile(enhanceFile)
 	if err != nil {
 		return
@@ -80,8 +96,10 @@ func EnhLoad() {
 			if n, err := strconv.Atoi(value); err == nil && n >= SwingDrag && n <= SwingHold {
 				Enh.Swing = n
 			}
-		case "wasd":
-			Enh.WASD = on
+		case "keys":
+			Enh.WASD = value != "original"
+		case "diagonal":
+			Enh.Diagonal = on
 		case "crosshair":
 			Enh.Crosshair = on
 		case "hw3d":
@@ -92,8 +110,12 @@ func EnhLoad() {
 
 func enhSave() {
 	n := func(b bool) int { return int(b2i32(b)) }
-	s := fmt.Sprintf("mouselook=%d\nclickactivate=%d\nswing=%d\nwasd=%d\ncrosshair=%d\nhw3d=%d\n",
-		n(Enh.MouseLook), n(Enh.ClickActivate), Enh.Swing, n(Enh.WASD), n(Enh.Crosshair), n(xn.HW3D))
+	keys := "original"
+	if Enh.WASD {
+		keys = "wasd"
+	}
+	s := fmt.Sprintf("mouselook=%d\nclickactivate=%d\nswing=%d\nkeys=%s\ndiagonal=%d\ncrosshair=%d\nhw3d=%d\n",
+		n(Enh.MouseLook), n(Enh.ClickActivate), Enh.Swing, keys, n(Enh.Diagonal), n(Enh.Crosshair), n(xn.HW3D))
 	_ = dosfs.WriteFile(enhanceFile, []byte(s))
 }
 
@@ -122,6 +144,33 @@ func EnhSwingStart() (dx, dy int32, ok bool) {
 	dirs := [][2]int32{{0, 64}, {-64, 64}, {64, 64}, {-64, 0}, {64, 0}, {64, -64}}
 	d := dirs[Rand()%int32(len(dirs))]
 	return d[0], d[1], true
+}
+
+// EnhSteerDiagonal moves forward or back and sideways at once when a slide's steering (the
+// keys' region 6 or 8) has FORWARD or REVERSE held too, where FALL.EXE only slides: each way
+// at 0.7071 of its own speed, as Daggerfall Unity and Daggerfall Online move diagonally.
+func EnhSteerDiagonal() {
+	var side float64
+	switch SteerKeyRegion {
+	case 6:
+		side = -float64(SteerWeightLeft) / 256
+	case 8:
+		side = float64(SteerWeightRight) / 256
+	default:
+		return
+	}
+	var ahead float64
+	switch forward, back := KeyActionHeld(0), KeyActionHeld(1); {
+	case forward && !back:
+		ahead = float64(SteerWeightUp) / 220
+	case back && !forward:
+		ahead = -float64(SteerWeightDown) / 256
+	default:
+		return
+	}
+	const diagonal = 0.7071
+	PlayerSpeed = PlayerBaseSpeed * diagonal * math.Hypot(ahead, side)
+	MoveAngleOffset = int32(math.Round(math.Atan2(side, ahead) * xn.Angles / (2 * math.Pi)))
 }
 
 // EnhDrawCrosshair draws a small plus at the view's centre: a light cross in a dark outline.
@@ -181,18 +230,21 @@ var enhRows = []enhRow{
 		return "Original"
 	}, func() {
 		Enh.WASD = !Enh.WASD
-		KeyMap = DefaultKeyMap
-		if Enh.WASD {
-			KeyMap = wasdKeyMap()
-		}
+		KeyMap = EnhKeyMap()
 		optionsSaveControls()
 	}},
+	{"Movement", func() string {
+		if Enh.Diagonal {
+			return "Diagonal"
+		}
+		return "Original"
+	}, func() { Enh.Diagonal = !Enh.Diagonal }},
 	{"Crosshair", func() string { return onOff(Enh.Crosshair) }, func() { Enh.Crosshair = !Enh.Crosshair }},
 	{"Hardware 3D", func() string { return onOff(xn.HW3D) }, func() { xn.HW3D = !xn.HW3D }},
 }
 
 const (
-	enhBoxX, enhBoxY, enhBoxW, enhBoxH = 50, 40, 220, 120
+	enhBoxX, enhBoxY, enhBoxW, enhBoxH = 50, 34, 220, 132
 	enhRowY                            = enhBoxY + 26
 	enhRowH                            = 12
 	enhValueX                          = 160
@@ -266,6 +318,9 @@ func EnhancementsScreen(onTitle bool) {
 			}
 		}
 		if onTitle {
+			// the screen is drawn afresh each frame: nothing to erase, and what the cursor saved
+			// last frame (a row's old highlight) must not go back over it
+			xn.CursorDrawn &^= 1
 			xn.CursorMove(int16(xn.MouseX), int16(xn.MouseY))
 			screenToVGA()
 		} else {

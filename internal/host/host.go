@@ -5,6 +5,7 @@
 package host
 
 import (
+	"bytes"
 	"image"
 	"image/png"
 	"os"
@@ -54,9 +55,22 @@ var Scripted bool
 // Present shows a frame of w x h palette indices.
 func Present(px []byte, w, h int) {
 	st.mu.Lock()
+	presentPace(st.scene != nil || w != st.w || h != st.h || !bytes.Equal(st.frame[:w*h], px))
 	st.w, st.h = w, h
 	copy(st.frame[:w*h], px)
 	st.scene = nil
+	st.mu.Unlock()
+}
+
+// PresentChanged shows a frame of w x h palette indices unless the window shows it already
+// (an unchanged frame keeps its Hardware 3D view).
+func PresentChanged(px []byte, w, h int) {
+	st.mu.Lock()
+	if w != st.w || h != st.h || !bytes.Equal(st.frame[:w*h], px) {
+		st.w, st.h = w, h
+		copy(st.frame[:w*h], px)
+		st.scene = nil
+	}
 	st.mu.Unlock()
 }
 
@@ -235,6 +249,7 @@ func Run(title string, game func()) error {
 	gpu.SetWindowResizingMode(gpu.WindowResizingModeEnabled)
 	gpu.SetTPS(240)
 	gpu.SetRunnableOnUnfocused(true)
+	gpu.SetFullscreen(os.Getenv("GOPLAY_FULLSCREEN") == "1") // goplay starts games fullscreen
 	return gpu.RunGame(&window{done: done})
 }
 

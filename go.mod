@@ -44,3 +44,7 @@ replace github.com/gogpu/wgpu => ../gogpu-wgpu
 replace github.com/gogpu/naga => ../gogpu-naga
 
 replace github.com/retro-ware/gameimport => ../gameimport
+
+replace github.com/go-webgpu/goffi => ../goplay/third_party/goffi
+
+replace github.com/gogpu/gogpu => ../goplay/third_party/gogpu // macOS fullscreen fixes, see goplay/third_party/README.md

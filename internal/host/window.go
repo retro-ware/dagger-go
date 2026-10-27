@@ -4,6 +4,7 @@ import (
 	"github.com/gogpu/gpucontext"
 
 	"fmt"
+	"math"
 	"os"
 	"time"
 
@@ -111,9 +112,10 @@ func (g *window) Update() error {
 	return nil
 }
 
-// mouse hands the window's mouse to the game. The OS pointer, hidden over the window,
-// places the game's cursor directly. While the game asks for relative motion (mouse look, a
-// weapon swing: RequestPointerLock) the pointer is locked and its raw motion is sent;
+// mouse hands the window's mouse to the game. The OS pointer, hidden over the picture,
+// places the game's cursor directly (a screen pixel by its centre, so that the game's moves
+// of its cursor read back unchanged). While the game asks for relative motion (mouse look,
+// a weapon swing: RequestPointerLock) the pointer is locked and its raw motion is sent;
 // losing the focus or the game no longer asking releases it.
 func (g *window) mouse() {
 	st.mu.Lock()
@@ -138,10 +140,11 @@ func (g *window) mouse() {
 			g.hidden = true
 		}
 		if warp {
-			gpu.SetCursorPosition(int(wx*float64(g.dw)/float64(w)), int(wy*float64(g.dh)/float64(h)))
+			gpu.SetCursorPosition(int((math.Floor(wx)+0.5)*float64(g.dw)/float64(w)),
+				int((math.Floor(wy)+0.5)*float64(g.dh)/float64(h)))
 		} else {
 			x, y := gpu.CursorPosition()
-			MouseTo(float64(x)*float64(w)/float64(g.dw), float64(y)*float64(h)/float64(g.dh))
+			MouseTo((float64(x)+0.5)*float64(w)/float64(g.dw), (float64(y)+0.5)*float64(h)/float64(g.dh))
 		}
 	}
 	st.mu.Lock()
@@ -240,9 +243,16 @@ func (g *window) guard(f func() bool) (ok bool) {
 	return f()
 }
 
-// Layout keeps the window's whole area, so the frame scales to it; the cursor maps through
-// the same size.
+// Layout fits the frame into the window at the frame's aspect ratio (black bars take the
+// rest); the frame scales to that size, and the cursor maps through it.
 func (g *window) Layout(ow, oh int) (int, int) {
-	g.dw, g.dh = ow, oh
-	return ow, oh
+	st.mu.Lock()
+	w, h := st.w, st.h
+	st.mu.Unlock()
+	g.dw, g.dh = ow, ow*h/w
+	if g.dh > oh {
+		g.dw, g.dh = oh*w/h, oh
+	}
+	g.dw, g.dh = max(g.dw, 1), max(g.dh, 1)
+	return g.dw, g.dh
 }

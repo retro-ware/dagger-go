@@ -32,11 +32,6 @@ const (
 )
 
 var (
-	JoystickButton1      uint8
-	JoystickButton2      uint8
-	JoystickButtonLatch  [2]uint8
-	JoystickX            int32
-	JoystickY            int32
 	InteractionMode      int32 // 0 steal, 1 grab, 2 info, 3 talk
 	SpellCastBusy        int32
 	SpellReadyTouch      *Record
@@ -56,24 +51,11 @@ var (
 )
 
 // KeyActionPressed is whether the action's key or button went down since the last call.
+// The joystick's bindings (200, 201, 204-207) are cut: they never fire.
 func KeyActionPressed(action int32) bool {
 	k := KeyMap[action]
 	if k >= 200 {
 		switch k {
-		case 200, 201:
-			button := k - 200
-			down := JoystickButton1
-			if button == 1 {
-				down = JoystickButton2
-			}
-			if down != 0 && JoystickButtonLatch[button] == 0 {
-				JoystickButtonLatch[button] = 1
-				return true
-			}
-			if down == 0 {
-				JoystickButtonLatch[button] = 0
-			}
-			return false
 		case 202:
 			return xn.MouseButtons&1 != 0 && xn.MouseButtonsPrev&1 == 0
 		case 203:
@@ -101,40 +83,16 @@ func KeyActionHeld(action int32) bool {
 	k := KeyMap[action]
 	if k >= 200 {
 		switch k - 200 {
-		case 0:
-			return JoystickButton1 != 0
-		case 1:
-			return JoystickButton2 != 0
 		case 2:
 			return xn.MouseButtons&1 != 0
 		case 3:
 			return xn.MouseButtons&2 != 0
 		case 12:
 			return xn.MouseButtons&4 != 0
-		case 4:
-			KeysJoystickSteerWeights(JoystickX)
-			return JoystickX < 0
-		case 5:
-			KeysJoystickSteerWeights(JoystickX)
-			return JoystickX > 0
-		case 6:
-			KeysJoystickSteerWeights(JoystickY)
-			return JoystickY < 0
-		case 7:
-			KeysJoystickSteerWeights(JoystickY)
-			return JoystickY > 0
 		}
 		return false
 	}
 	return k < 128 && xn.KeyDown[k] != 0
-}
-
-// KeysJoystickSteerWeights weighs steering by a joystick axis.
-func KeysJoystickSteerWeights(axis int32) {
-	SteerWeightRight = int16((axis << 8) / 4096)
-	SteerWeightDown = int16((axis << 8) / 4096)
-	SteerWeightLeft = int16((-axis << 8) / 4096)
-	SteerWeightUp = int16((-axis << 8) / 4096)
 }
 
 // InteractionModeCycle steps the interaction mode and shows it.

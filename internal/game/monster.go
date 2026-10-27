@@ -454,7 +454,8 @@ func monsterMoveDetour(o, target *Record, heading, turnDir int32) {
 
 func monsterMoveInDirection(o, target *Record, heading int32) {
 	c := o.Character
-	speed := (int32(c.Attributes[AttrSpd]) + 100) * xn.FrameTicks / 1000
+	rate := int32(c.Attributes[AttrSpd]) + 100
+	speed := carryWhole(&o.stepCarry, float64(rate*xn.FrameTicks)/1000) // port: the fraction carried
 	var dx, dz int32
 	if c.FallVelocity == 0 {
 		dx, dz = xn.YawOffsetXZ(heading, speed)
@@ -513,7 +514,8 @@ func monsterMoveInDirection(o, target *Record, heading int32) {
 func monsterMoveStep(o, target *Record, angle int32) bool {
 	c := o.Character
 	oldX, oldZ := o.X, o.Z
-	speed := xn.FrameTicks * (int32(c.Attributes[AttrSpd]) - 50 + PlayerSpeedBonus) / 1000
+	rate := int32(c.Attributes[AttrSpd]) - 50 + PlayerSpeedBonus
+	speed := carryWhole(&o.stepCarry, float64(xn.FrameTicks*rate)/1000) // port: the fraction carried
 	var dx, dz int32
 	if c.FallVelocity == 0 {
 		dx, dz = xn.YawOffsetXZ(angle, speed)
@@ -962,7 +964,7 @@ func aiStealthCheck(monsterType, detected, dist, encountered int32) int32 {
 	if int32(GameMinutes) == pc.LastStealthCheckMinutes {
 		return detected
 	}
-	half := int32(PlayerBaseSpeed) >> 1
+	half := PlayerBaseSpeed / 2
 	if encountered != 0 && half < PlayerMomentum {
 		return 1
 	}

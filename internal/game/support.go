@@ -168,8 +168,16 @@ func SizeFit(width, height *int16, maxW, maxH int16) {
 	*width = maxW
 }
 
-// RandRange is a random number in low..high.
-func RandRange(low, high int32) int32 { return low + Rand()%(high-low+1) }
+// RandRange is a random number in low..high. For high = low - 1 (a shield's style, of its 0
+// variants) the division faults and XnGine's handler gives a remainder of 0 (Q-SYS-01): low,
+// still drawing a number.
+func RandRange(low, high int32) int32 {
+	r, span := Rand(), high-low+1
+	if span == 0 {
+		return low
+	}
+	return low + r%span
+}
 
 // ObjectFreeLater queues o for deletion after the sweep.
 func ObjectFreeLater(o *Record) {
@@ -377,6 +385,16 @@ func FrameTicksUpdate() {
 	FrameTicksFraction &= 7
 	xn.TimerTickCount = 0
 	xn.FrameTicks = FrameTicks
+}
+
+// carryWhole adds v to *carry and takes out its whole units. port: a move a frame makes, a few
+// units at the port's rates, keeps its fraction for the next frame, as FALL.EXE's pedestrians
+// keep theirs (Data2B), so its speed doesn't depend on the frame rate.
+func carryWhole(carry *float64, v float64) int32 {
+	*carry += v
+	n := int32(*carry)
+	*carry -= float64(n)
+	return n
 }
 
 // PlayerPositionSave saves the player's position in slot.

@@ -63,6 +63,13 @@ func Main(cfgPath string) {
 				host.Sleep()
 			}
 			FrameCheckpoint = 0
+			// port (Enh.MouseLook): the mouse turns the view before the frame is drawn, which
+			// shows the turn a frame sooner
+			lookEarly = Enh.MouseLook && MoveSettleFrames == 0
+			if lookEarly {
+				MouseMotionX, MouseMotionY = xn.MouseReadMotion()
+				PlayerMouseLook()
+			}
 			GameFrame()
 			FrameCheckpoint = 1
 			if PlayerDeathTimer < 0 {
@@ -73,14 +80,18 @@ func Main(cfgPath string) {
 			HudDrawHeadingStrip(0)
 			xn.TimerFPSUpdate()
 			FrameCheckpoint = 2
+			uiResume()
 			mouseLockUpdate()
-			MouseMotionX, MouseMotionY = xn.MouseReadMotion()
+			if !lookEarly {
+				MouseMotionX, MouseMotionY = xn.MouseReadMotion()
+			}
 			PlayerMovementUpdate()
 			KeysWorldActions()
 			QuestDebugOverlay()
 			FrameCheckpoint = 3
 			TextShadowColour = FogColour
 			xn.PresentInclusive(true)
+			worldShown = xn.Shown
 			ScreenshotPoll()
 			FrameCounter++
 		}

@@ -446,7 +446,9 @@ func loadFixObject(o *Record) {
 			o.Type = 2
 		}
 	case 6, 32:
-		o.Instance = nil
+		if o.Instance != nil { // only the model: the base angles stay (a dungeon's models are built fresh)
+			o.Instance.Model = nil
+		}
 	}
 }
 

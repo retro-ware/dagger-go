@@ -79,7 +79,7 @@ func PlayerFrameUpdate() {
 		g := xn.CIFGroup(overlay, 0)
 		xn.CIFRLEFrame(&g, frame, y)
 	}
-	PlayerBaseSpeed = int16(speed * FrameTicks / 1000)
+	PlayerBaseSpeed = float64(speed*FrameTicks) / 1000
 	if pc.Flags&1 != 0 {
 		ClothingGenderGroup, ClothingGenderOffset = 12, 0
 	} else {

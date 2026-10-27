@@ -18,9 +18,11 @@ const (
 )
 
 var pace struct {
-	interval time.Duration // the display's measured refresh interval
-	shown    uint64        // frames shown when the last game frame began
-	began    time.Duration // when it began (Now)
+	interval  time.Duration // the display's measured refresh interval
+	shown     uint64        // frames shown when the last game frame began
+	began     time.Duration // when it began (Now)
+	presented uint64        // frames shown when the game last presented
+	presentAt time.Duration // when it did (Now)
 }
 
 // refreshNote folds a measured interval between shown frames into the estimate (st.mu
@@ -66,4 +68,24 @@ func GameFrameDue() bool {
 	}
 	pace.shown, pace.began = st.frameSeq, Now()
 	return true
+}
+
+// presentPace holds a present that changes nothing on screen until the window has shown a
+// frame since the last present (st.mu held, released while it waits), so the game's screens
+// with a loop of their own (the save menu, the message boxes), which present each time round,
+// go round at the display's pace instead of 190,000 times a second. A frame that changes the
+// screen goes at once, so nothing the game draws waits.
+func presentPace(changed bool) {
+	if !changed {
+		iv := pace.interval
+		if iv == 0 {
+			iv = time.Second / fallbackRate
+		}
+		for st.frameSeq == pace.presented && Now()-pace.presentAt < iv*3/2 {
+			st.mu.Unlock()
+			Sleep()
+			st.mu.Lock()
+		}
+	}
+	pace.presented, pace.presentAt = st.frameSeq, Now()
 }

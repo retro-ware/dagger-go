@@ -1,7 +1,5 @@
 package gpu
 
-import "github.com/gogpu/gpucontext"
-
 var capture struct {
 	on     bool
 	dx, dy float64 // locked motion since the last CursorDelta
@@ -14,11 +12,7 @@ func SetCursorCaptured(on bool) {
 		return
 	}
 	capture.on = on
-	if on {
-		win.app.SetCursorMode(gpucontext.CursorModeLocked)
-	} else {
-		win.app.SetCursorMode(gpucontext.CursorModeNormal)
-	}
+	cursorCapture(on)
 	capture.dx, capture.dy = 0, 0
 }
 
@@ -41,9 +35,5 @@ func SetCursorHidden(on bool) {
 	if win.app == nil || capture.on {
 		return
 	}
-	shape := gpucontext.CursorDefault
-	if on {
-		shape = gpucontext.CursorNone
-	}
-	win.app.SetCursor(shape)
+	cursorHide(on)
 }
